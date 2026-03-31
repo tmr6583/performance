@@ -13,7 +13,7 @@ export default async function HomePage() {
 
   ensureDbInitialized();
 
-  const hoje = new Date().toISOString().slice(0, 10);
+  const hoje = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' });
 
   type CacheRow = {
     id_vendedor: number;

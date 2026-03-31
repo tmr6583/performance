@@ -12,7 +12,6 @@ Uso::
 
 import os
 import smtplib
-import sqlite3
 import ssl
 import sys
 from email.mime.multipart import MIMEMultipart
@@ -27,30 +26,18 @@ from config import (
     SMTP_PASSWORD,
     SMTP_PORT,
     SMTP_USER,
-    SQLITE_DB_PATH,
 )
+from db_util import get_db
 from logger_util import setup_logger
 from olist_auth import OlistAuth, OlistAuthError
 
 logger = setup_logger("refresh_tokens")
 
 
-def _get_db() -> sqlite3.Connection:
-    if not os.path.isabs(SQLITE_DB_PATH):
-        project_root = os.path.dirname(os.path.abspath(__file__))
-        path = os.path.join(project_root, SQLITE_DB_PATH)
-    else:
-        path = SQLITE_DB_PATH
-
-    conn = sqlite3.connect(path)
-    conn.row_factory = sqlite3.Row
-    return conn
-
-
 def _admins_com_email() -> list[dict]:
     """Retorna admins com recebe_relatorio=1 e e-mail configurado."""
     try:
-        conn = _get_db()
+        conn = get_db()
         rows = conn.execute(
             "SELECT name, email FROM users "
             "WHERE role = 'admin' AND recebe_relatorio = 1 "

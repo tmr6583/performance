@@ -97,8 +97,12 @@ class OlistAuth:
             logger.info("Token renovado com sucesso.")
             return True
         except requests.RequestException as e:
-            logger.error(f"Falha na renovação do token: {e}")
-            self._clear_tokens()
+            resp = getattr(e, "response", None)
+            if resp is not None and resp.status_code in (400, 401):
+                logger.error("Token rejeitado pelo servidor (400/401) — limpando tokens.")
+                self._clear_tokens()
+            else:
+                logger.error(f"Falha de rede ao renovar token (tokens preservados): {e}")
             return False
 
     def get_valid_access_token(self) -> str:

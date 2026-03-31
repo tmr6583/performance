@@ -33,8 +33,18 @@ export async function POST(request: Request) {
   if (!hora || !/^\d{2}:\d{2}$/.test(hora)) {
     return NextResponse.json({ error: 'Hora inválida (use HH:MM)' }, { status: 400 });
   }
-  if (!dias) {
+  const [hh, mm] = hora.split(':').map(Number);
+  if (hh > 23 || mm > 59) {
+    return NextResponse.json({ error: 'Hora inválida (HH deve ser 00–23, MM deve ser 00–59)' }, { status: 400 });
+  }
+
+  const DIAS_VALIDOS = new Set(['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab']);
+  const diasArr = dias.split(',').map((d: string) => d.trim()).filter(Boolean);
+  if (diasArr.length === 0) {
     return NextResponse.json({ error: 'Pelo menos um dia deve ser selecionado' }, { status: 400 });
+  }
+  if (!diasArr.every((d: string) => DIAS_VALIDOS.has(d))) {
+    return NextResponse.json({ error: 'Dia inválido. Use: dom, seg, ter, qua, qui, sex, sab' }, { status: 400 });
   }
 
   ensureDbInitialized();

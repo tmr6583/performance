@@ -26,15 +26,23 @@ function buildCronExpr(hora: string, dias: string): string {
 
 async function triggerSend(): Promise<void> {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_PATH
-      ? `http://127.0.0.1:${process.env.PORT ?? 3200}${process.env.NEXT_PUBLIC_BASE_PATH}`
-      : `http://127.0.0.1:${process.env.PORT ?? 3200}`;
+    const port    = process.env.PORT ?? 3200;
+    const base    = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+    const baseUrl = `http://127.0.0.1:${port}${base}`;
+    const secret  = process.env.INTERNAL_SECRET ?? '';
 
-    await fetch(`${baseUrl}/api/scripts`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-internal': '1' },
+    const res = await fetch(`${baseUrl}/api/scripts`, {
+      method:  'POST',
+      headers: {
+        'Content-Type':     'application/json',
+        'x-internal-secret': secret,
+      },
       body: JSON.stringify({ acao: 'fetch_and_send' }),
     });
+
+    if (!res.ok) {
+      console.error(`[scheduler] fetch_and_send retornou HTTP ${res.status}`);
+    }
   } catch (e) {
     console.error('[scheduler] Erro ao disparar fetch_and_send:', e);
   }
@@ -76,8 +84,9 @@ export function reloadScheduler(): void {
   }
 }
 
-// Middleware interno: permite que /api/scripts seja chamado pelo scheduler
-// sem cookie de autenticação
+// Verifica se a requisição é interna do scheduler (via segredo compartilhado)
 export function isInternalRequest(request: Request): boolean {
-  return request.headers.get('x-internal') === '1';
+  const secret = process.env.INTERNAL_SECRET;
+  if (!secret) return false;
+  return request.headers.get('x-internal-secret') === secret;
 }

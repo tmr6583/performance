@@ -17,7 +17,9 @@ const execFileAsync = promisify(execFile);
 const VALID_ACOES = ['fetch', 'send', 'fetch_and_send'] as const;
 type Acao = (typeof VALID_ACOES)[number];
 
-const ROOT_DIR = path.join(process.cwd(), '..');
+// Usa variável de ambiente definida no systemd; fallback para ../cwd
+const ROOT_DIR = process.env.PERFORMANCE_SCRIPT_DIR
+  ?? path.join(process.cwd(), '..');
 
 function pythonCmd(): string {
   const venv = path.join(ROOT_DIR, '.venv', 'bin', 'python');
@@ -28,7 +30,7 @@ async function runScript(scriptName: string): Promise<{ code: number; output: st
   const scriptPath = path.join(ROOT_DIR, scriptName);
   try {
     const { stdout, stderr } = await execFileAsync(pythonCmd(), [scriptPath], {
-      cwd: ROOT_DIR,
+      cwd:     ROOT_DIR,
       timeout: 5 * 60 * 1000, // 5 min
     });
     const output = stdout + (stderr ? `\nSTDERR:\n${stderr}` : '');
@@ -39,6 +41,9 @@ async function runScript(scriptName: string): Promise<{ code: number; output: st
     return { code: e.code ?? 1, output: output || e.message || 'Erro desconhecido' };
   }
 }
+
+// Controle de execução concorrente
+let running = false;
 
 export async function POST(request: Request) {
   const internal = isInternalRequest(request);
@@ -55,32 +60,44 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Ação inválida' }, { status: 400 });
   }
 
-  if (acao === 'fetch') {
-    const result = await runScript('fetch_performance.py');
-    return NextResponse.json({ success: result.code === 0, ...result });
+  if (running) {
+    return NextResponse.json(
+      { error: 'Já existe uma execução em andamento. Aguarde.' },
+      { status: 409 }
+    );
   }
 
-  if (acao === 'send') {
-    const result = await runScript('send_emails.py');
-    return NextResponse.json({ success: result.code === 0, ...result });
-  }
+  running = true;
+  try {
+    if (acao === 'fetch') {
+      const result = await runScript('fetch_performance.py');
+      return NextResponse.json({ success: result.code === 0, ...result });
+    }
 
-  // fetch_and_send: executa sequencialmente
-  const fetch = await runScript('fetch_performance.py');
-  if (fetch.code !== 0) {
+    if (acao === 'send') {
+      const result = await runScript('send_emails.py');
+      return NextResponse.json({ success: result.code === 0, ...result });
+    }
+
+    // fetch_and_send: executa sequencialmente
+    const fetch = await runScript('fetch_performance.py');
+    if (fetch.code !== 0) {
+      return NextResponse.json({
+        success: false,
+        step:    'fetch',
+        code:    fetch.code,
+        output:  fetch.output,
+      });
+    }
+
+    const send = await runScript('send_emails.py');
     return NextResponse.json({
-      success: false,
-      step:    'fetch',
-      code:    fetch.code,
-      output:  fetch.output,
+      success: send.code === 0,
+      step:    'send',
+      code:    send.code,
+      output:  `[fetch]\n${fetch.output}\n\n[send]\n${send.output}`,
     });
+  } finally {
+    running = false;
   }
-
-  const send = await runScript('send_emails.py');
-  return NextResponse.json({
-    success: send.code === 0,
-    step:    'send',
-    code:    send.code,
-    output:  `[fetch]\n${fetch.output}\n\n[send]\n${send.output}`,
-  });
 }

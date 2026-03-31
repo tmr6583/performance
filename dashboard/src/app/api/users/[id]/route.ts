@@ -104,7 +104,9 @@ export async function DELETE(
 
   if (!target) return NextResponse.json({ error: 'Usuário não encontrado' }, { status: 404 });
 
-  const privileged = new Set(['admin@empresa.com', 'thiago@betinalimpeza.com.br']);
+  const privileged = new Set(
+    (process.env.PRIVILEGED_ADMINS ?? 'admin@empresa.com').split(',').map(e => e.trim())
+  );
   if (target.role === 'admin' && !privileged.has(authUser.email)) {
     return NextResponse.json({ error: 'Não autorizado' }, { status: 403 });
   }

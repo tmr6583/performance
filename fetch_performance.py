@@ -18,7 +18,8 @@ from datetime import date, datetime
 
 import requests
 
-from config import CLIENT_ID, CLIENT_SECRET, API_REQUEST_SLEEP, SQLITE_DB_PATH
+from config import CLIENT_ID, CLIENT_SECRET, API_REQUEST_SLEEP
+from db_util import get_db
 from logger_util import setup_logger
 from olist_auth import OlistAuth, OlistAuthError, OlistClient
 
@@ -43,22 +44,6 @@ def _fmt_br(iso: str) -> str:
     except ValueError:
         return iso
 
-
-# ── Banco de dados ─────────────────────────────────────────────────────────
-
-def _get_db() -> sqlite3.Connection:
-    import os
-    if not os.path.isabs(SQLITE_DB_PATH):
-        project_root = os.path.dirname(os.path.abspath(__file__))
-        path = os.path.join(project_root, SQLITE_DB_PATH)
-    else:
-        path = SQLITE_DB_PATH
-
-    conn = sqlite3.connect(path)
-    conn.row_factory = sqlite3.Row
-    conn.execute("PRAGMA journal_mode = WAL")
-    conn.execute("PRAGMA busy_timeout = 5000")
-    return conn
 
 
 def _upsert_cache(conn: sqlite3.Connection, row: dict) -> None:
@@ -166,7 +151,7 @@ def main() -> None:
         logger.warning("Nenhum vendedor ativo encontrado. Encerrando.")
         sys.exit(0)
 
-    conn = _get_db()
+    conn = get_db()
     erros = 0
 
     try:

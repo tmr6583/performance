@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     ensureDbInitialized();
 
     const user = db
-      .prepare('SELECT * FROM users WHERE email = ?')
+      .prepare('SELECT id, email, role, name, password FROM users WHERE email = ?')
       .get(email) as
         | { id: number; email: string; role: 'admin' | 'salesperson'; name: string; password: string }
         | undefined;

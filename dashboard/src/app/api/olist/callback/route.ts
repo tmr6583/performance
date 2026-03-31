@@ -1,14 +1,12 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import path from 'path';
-import fs from 'fs';
+import { writeTokens } from '@/lib/olist-tokens';
 
 const CLIENT_ID     = process.env.OLIST_CLIENT_ID;
 const CLIENT_SECRET = process.env.OLIST_CLIENT_SECRET;
 const REDIRECT_URI  = process.env.OLIST_REDIRECT_URI
   ?? 'https://betinalimpeza.ddns.net/performance/api/olist/callback';
-const TOKEN_URL     = 'https://accounts.tiny.com.br/realms/tiny/protocol/openid-connect/token';
-const TOKEN_FILE    = path.join(process.cwd(), '..', '.tiny_tokens.json');
+const TOKEN_URL = 'https://accounts.tiny.com.br/realms/tiny/protocol/openid-connect/token';
 
 export async function GET(request: NextRequest) {
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
@@ -17,8 +15,18 @@ export async function GET(request: NextRequest) {
   const baseUrl  = `${proto}://${host}${basePath}`;
 
   const { searchParams } = request.nextUrl;
-  const code  = searchParams.get('code');
-  const error = searchParams.get('error');
+  const code        = searchParams.get('code');
+  const error       = searchParams.get('error');
+  const stateParam  = searchParams.get('state');
+  const storedState = request.cookies.get('oauth_state')?.value;
+
+  // Valida parâmetro state para prevenir CSRF
+  if (!stateParam || !storedState || stateParam !== storedState) {
+    return NextResponse.redirect(
+      `${baseUrl}?olist_error=${encodeURIComponent('Estado OAuth inválido. Tente novamente.')}`,
+      { status: 302 }
+    );
+  }
 
   if (error || !code) {
     const msg = error ?? 'Código de autorização não recebido';
@@ -42,9 +50,9 @@ export async function GET(request: NextRequest) {
     });
 
     const res = await fetch(TOKEN_URL, {
-      method: 'POST',
+      method:  'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: body.toString(),
+      body:    body.toString(),
     });
 
     if (!res.ok) {
@@ -63,12 +71,15 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    fs.writeFileSync(TOKEN_FILE, JSON.stringify({
+    await writeTokens({
       access_token:  tokens.access_token,
       refresh_token: tokens.refresh_token ?? null,
-    }));
+    });
 
-    return NextResponse.redirect(`${baseUrl}/admin?olist_ok=1`, { status: 302 });
+    // Remove cookie de state após uso
+    const response = NextResponse.redirect(`${baseUrl}/admin?olist_ok=1`, { status: 302 });
+    response.cookies.set('oauth_state', '', { maxAge: 0, path: '/' });
+    return response;
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'Erro inesperado';
     return NextResponse.redirect(

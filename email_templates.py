@@ -1,9 +1,21 @@
 """Templates HTML para os e-mails de performance."""
 
+import html as _html
 from datetime import date
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────
+
+_MESES = [
+    "", "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+    "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
+]
+
+
+def _esc(text: object) -> str:
+    """Escapa caracteres HTML para prevenir XSS."""
+    return _html.escape(str(text))
+
 
 def _fmt_brl(valor: float) -> str:
     return f"R$ {valor:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
@@ -11,20 +23,12 @@ def _fmt_brl(valor: float) -> str:
 
 def _fmt_data(iso: str | None = None) -> str:
     d = date.fromisoformat(iso) if iso else date.today()
-    meses = [
-        "", "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-        "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
-    ]
-    return f"{d.day:02d} de {meses[d.month]} de {d.year}"
+    return f"{d.day:02d} de {_MESES[d.month]} de {d.year}"
 
 
 def _fmt_mes_ano(iso: str | None = None) -> str:
     d = date.fromisoformat(iso) if iso else date.today()
-    meses = [
-        "", "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-        "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
-    ]
-    return f"{meses[d.month]} de {d.year}"
+    return f"{_MESES[d.month]} de {d.year}"
 
 
 _BASE_STYLE = """
@@ -102,7 +106,7 @@ def vendedora_html(
 <div class="wrap">
 
   <div class="header">
-    <h1>Olá, {nome}!</h1>
+    <h1>Olá, {_esc(nome)}!</h1>
     <p>Seu desempenho em {data_exib}</p>
     <div class="accent-bar"></div>
   </div>
@@ -182,7 +186,7 @@ def admin_html(
     for v in sorted(vendedoras, key=lambda x: x.get("valor_mes", 0), reverse=True):
         linhas_html += f"""
         <tr>
-          <td>{v.get('nome_vendedor', '—')}</td>
+          <td>{_esc(v.get('nome_vendedor', '—'))}</td>
           <td class="text-right">{v.get('pedidos_dia', 0)}</td>
           <td class="text-right">{_fmt_brl(v.get('valor_dia', 0.0))}</td>
           <td class="text-right">{v.get('pedidos_mes', 0)}</td>

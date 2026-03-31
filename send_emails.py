@@ -27,8 +27,8 @@ from config import (
     SMTP_PASSWORD,
     SMTP_PORT,
     SMTP_USER,
-    SQLITE_DB_PATH,
 )
+from db_util import get_db
 from email_templates import admin_html, vendedora_html
 from logger_util import setup_logger
 
@@ -57,22 +57,6 @@ def _enviar_email(destinatario: str, assunto: str, html: str) -> None:
         smtp.login(SMTP_USER, SMTP_PASSWORD)
         smtp.sendmail(SMTP_USER, destinatario, msg.as_string())
 
-
-# ── Banco de dados ─────────────────────────────────────────────────────────
-
-def _get_db() -> sqlite3.Connection:
-    import os
-    if not os.path.isabs(SQLITE_DB_PATH):
-        project_root = os.path.dirname(os.path.abspath(__file__))
-        path = os.path.join(project_root, SQLITE_DB_PATH)
-    else:
-        path = SQLITE_DB_PATH
-
-    conn = sqlite3.connect(path)
-    conn.row_factory = sqlite3.Row
-    conn.execute("PRAGMA journal_mode = WAL")
-    conn.execute("PRAGMA busy_timeout = 5000")
-    return conn
 
 
 def _registrar_log(
@@ -106,7 +90,7 @@ def main() -> None:
     logger.info(f"=== Início do envio de e-mails — execução {execucao_id} ===")
     logger.info(f"Data de referência: {hoje}")
 
-    conn = _get_db()
+    conn = get_db()
     ok_count  = 0
     err_count = 0
 
@@ -170,7 +154,7 @@ def main() -> None:
 
         # ── 3. E-mail de resumo para administradores ───────────────────────
         admins = conn.execute(
-            "SELECT * FROM users WHERE role = 'admin' AND recebe_relatorio = 1"
+            "SELECT name, email FROM users WHERE role = 'admin' AND recebe_relatorio = 1"
         ).fetchall()
 
         logger.info(f"{len(admins)} admin(s) habilitado(s) para receber resumo.")
