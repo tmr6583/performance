@@ -1,0 +1,19 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/_global-error/page": "app/_global-error/page.js",
+  "/api/auth/login/route": "app/api/auth/login/route.js",
+  "/api/auth/logout/route": "app/api/auth/logout/route.js",
+  "/api/email-logs/route": "app/api/email-logs/route.js",
+  "/api/olist/callback/route": "app/api/olist/callback/route.js",
+  "/api/olist/connect/route": "app/api/olist/connect/route.js",
+  "/api/olist/status/route": "app/api/olist/status/route.js",
+  "/api/schedule/route": "app/api/schedule/route.js",
+  "/api/scripts/route": "app/api/scripts/route.js",
+  "/api/users/[id]/route": "app/api/users/[id]/route.js",
+  "/api/users/route": "app/api/users/route.js",
+  "/api/vendedores/[id]/route": "app/api/vendedores/[id]/route.js",
+  "/api/vendedores/route": "app/api/vendedores/route.js",
+  "/admin/page": "app/admin/page.js",
+  "/login/page": "app/login/page.js",
+  "/page": "app/page.js"
+}

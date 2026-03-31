@@ -1,0 +1,1 @@
+globalThis.__RSC_MANIFEST=(globalThis.__RSC_MANIFEST||{});globalThis.__RSC_MANIFEST["/api/scripts/route"]={"moduleLoading":{"prefix":"/performance/_next/"},"ssrModuleMapping":{},"edgeSSRModuleMapping":{},"clientModules":{},"entryCSSFiles":{"/opt/betina/performance/dashboard/src/app/api/scripts/route":[]},"rscModuleMapping":{},"edgeRscModuleMapping":{}};

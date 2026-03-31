@@ -1,0 +1,7 @@
+30/03/2026 23:36:11 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+30/03/2026 23:36:11 - OlistAuth - WARNING - Erro ao ler tokens: Expecting value: line 1 column 1 (char 0). Nova autorização necessária.
+30/03/2026 23:37:04 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+30/03/2026 23:37:04 - OlistAuth - WARNING - Erro ao ler tokens: Expecting value: line 1 column 1 (char 0). Nova autorização necessária.
+30/03/2026 23:37:04 - refresh_tokens - INFO - Nenhum token encontrado — OAuth ainda não autorizado. Acesse o painel e conecte ao Olist.
+30/03/2026 23:37:08 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+30/03/2026 23:37:08 - refresh_tokens - INFO - Nenhum token encontrado — OAuth ainda não autorizado. Acesse o painel e conecte ao Olist.
