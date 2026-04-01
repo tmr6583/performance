@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build --webpack",
     "start": "next start",
+    "start:unified": "node unified-server.mjs",
     "lint": "eslint"
   },
   "dependencies": {

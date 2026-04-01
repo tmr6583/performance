@@ -50,11 +50,13 @@ async function verifyJwt(token: string, secret: string): Promise<boolean> {
 
 // ── Middleware ──────────────────────────────────────────────────────────────
 
+const MOUNT_PATH = '/performance';
+
 export async function middleware(request: NextRequest) {
-  const basePath = request.nextUrl.basePath ?? '';
   const { pathname } = request.nextUrl;
-  const effectivePath =
-    basePath && pathname.startsWith(basePath) ? pathname.slice(basePath.length) || '/' : pathname;
+  const effectivePath = pathname.startsWith(MOUNT_PATH)
+    ? pathname.slice(MOUNT_PATH.length) || '/'
+    : pathname;
 
   // Assets estáticos — sem verificação
   if (
@@ -89,7 +91,7 @@ export async function middleware(request: NextRequest) {
   const jwtSecret = process.env.JWT_SECRET ?? '';
 
   if (!token || !(await verifyJwt(token, jwtSecret))) {
-    return NextResponse.redirect(new URL(`${basePath}/login`, request.url));
+    return NextResponse.redirect(new URL(`${MOUNT_PATH}/login`, request.url));
   }
 
   return NextResponse.next();
