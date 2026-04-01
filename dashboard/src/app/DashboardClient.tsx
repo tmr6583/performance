@@ -47,7 +47,7 @@ export default function DashboardClient({ user, hoje, rows, totais, basePath }: 
         </div>
         <div className="header-actions">
           {user.role === 'admin' && (
-            <Link href={`${basePath}/admin`} className="btn-primary">
+            <Link href="/admin" className="btn-primary">
               Administração
             </Link>
           )}

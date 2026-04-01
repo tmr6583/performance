@@ -48,7 +48,7 @@ export async function POST() {
   // Busca todas as páginas de vendedores
   let offset   = 0;
   let total    = 1;
-  const todos: { id: number; nome: string }[] = [];
+  const todos: { id: number; nome: string; email: string | null }[] = [];
 
   while (offset < total) {
     let res = await fetch(
@@ -70,13 +70,15 @@ export async function POST() {
     }
     if (!res.ok) break;
     const data = await res.json() as {
-      itens?: { id: number; situacao: string; contato?: { nome?: string } }[];
+      itens?: { id: number; situacao: string; contato?: { nome?: string; email?: string } }[];
       paginacao?: { total?: number };
     };
     total = data.paginacao?.total ?? 0;
     for (const v of data.itens ?? []) {
       if (v.situacao === 'A' || v.situacao === 'B') {
-        todos.push({ id: v.id, nome: v.contato?.nome ?? `Vendedor ${v.id}` });
+        const rawEmail = typeof v.contato?.email === 'string' ? v.contato.email.trim().toLowerCase() : '';
+        const email = rawEmail && rawEmail.includes('@') ? rawEmail : null;
+        todos.push({ id: v.id, nome: v.contato?.nome ?? `Vendedor ${v.id}`, email });
       }
     }
     offset += 100;
@@ -84,15 +86,20 @@ export async function POST() {
 
   let inseridos = 0;
   for (const v of todos) {
-    const exists = db.prepare('SELECT id_olist FROM vendedores WHERE id_olist = ?').get(v.id);
+    const exists = db.prepare('SELECT id_olist, email FROM vendedores WHERE id_olist = ?').get(v.id) as
+      | { id_olist: number; email: string | null }
+      | undefined;
     if (!exists) {
       db.prepare(
-        'INSERT INTO vendedores (id_olist, nome, email, recebe_email) VALUES (?, ?, NULL, 0)'
-      ).run(v.id, v.nome);
+        'INSERT INTO vendedores (id_olist, nome, email, recebe_email) VALUES (?, ?, ?, 0)'
+      ).run(v.id, v.nome, v.email);
       inseridos++;
     } else {
       // Atualiza nome (pode ter mudado), preserva e-mail e toggle
       db.prepare('UPDATE vendedores SET nome = ? WHERE id_olist = ?').run(v.nome, v.id);
+      if ((!exists.email || !String(exists.email).trim()) && v.email) {
+        db.prepare('UPDATE vendedores SET email = ? WHERE id_olist = ?').run(v.email, v.id);
+      }
     }
   }
 
