@@ -8,11 +8,17 @@ const REDIRECT_URI  = process.env.OLIST_REDIRECT_URI
   ?? 'https://betinalimpeza.ddns.net/performance/api/olist/callback';
 const TOKEN_URL = 'https://accounts.tiny.com.br/realms/tiny/protocol/openid-connect/token';
 
-export async function GET(request: NextRequest) {
+function resolveBaseUrl(request: NextRequest): string {
+  const configured = process.env.APP_BASE_URL;
+  if (configured) return configured.replace(/\/+$/, '');
+
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
-  const proto    = request.headers.get('x-forwarded-proto') ?? 'https';
-  const host     = request.headers.get('host') ?? 'betinalimpeza.ddns.net';
-  const baseUrl  = `${proto}://${host}${basePath}`;
+  const origin = request.nextUrl.origin;
+  return `${origin}${basePath}`.replace(/\/+$/, '');
+}
+
+export async function GET(request: NextRequest) {
+  const baseUrl = resolveBaseUrl(request);
 
   const { searchParams } = request.nextUrl;
   const code        = searchParams.get('code');
@@ -56,9 +62,8 @@ export async function GET(request: NextRequest) {
     });
 
     if (!res.ok) {
-      const text = await res.text();
       return NextResponse.redirect(
-        `${baseUrl}?olist_error=${encodeURIComponent(`Erro ao trocar token: ${text}`)}`,
+        `${baseUrl}?olist_error=${encodeURIComponent('Falha ao trocar token. Tente novamente.')}`,
         { status: 302 }
       );
     }
@@ -80,10 +85,9 @@ export async function GET(request: NextRequest) {
     const response = NextResponse.redirect(`${baseUrl}/admin?olist_ok=1`, { status: 302 });
     response.cookies.set('oauth_state', '', { maxAge: 0, path: '/' });
     return response;
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : 'Erro inesperado';
+  } catch {
     return NextResponse.redirect(
-      `${baseUrl}?olist_error=${encodeURIComponent(msg)}`,
+      `${baseUrl}?olist_error=${encodeURIComponent('Erro inesperado. Tente novamente.')}`,
       { status: 302 }
     );
   }

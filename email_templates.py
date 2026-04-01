@@ -82,6 +82,9 @@ def vendedora_html(
     pedidos_mes: int,
     valor_mes: float,
     ticket_mes: float,
+    meta_mensal: float = 0.0,
+    perc_meta: float = 0.0,
+    falta_meta: float = 0.0,
     data: str | None = None,
 ) -> str:
     """Gera HTML do e-mail individual da vendedora."""
@@ -96,6 +99,25 @@ def vendedora_html(
                     padding:12px 16px;border-radius:4px;margin-bottom:20px;
                     font-size:13px;color:#7A5C00;">
           Nenhum pedido registrado neste período.
+        </div>
+        """
+
+    meta_html = ""
+    if meta_mensal and meta_mensal > 0:
+        meta_html = f"""
+        <div class="kpi-grid" style="grid-template-columns:1fr 1fr 1fr">
+          <div class="kpi">
+            <div class="label">Meta Mensal</div>
+            <div class="val" style="font-size:15px">{_fmt_brl(meta_mensal)}</div>
+          </div>
+          <div class="kpi">
+            <div class="label">% da Meta</div>
+            <div class="val">{perc_meta:.2f}%</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Falta</div>
+            <div class="val" style="font-size:15px">{_fmt_brl(falta_meta)}</div>
+          </div>
         </div>
         """
 
@@ -147,6 +169,7 @@ def vendedora_html(
         <div class="val" style="font-size:15px">{_fmt_brl(ticket_mes)}</div>
       </div>
     </div>
+    {meta_html}
 
   </div>
 
@@ -181,9 +204,18 @@ def admin_html(
     total_vd  = sum(v.get("valor_dia",   0.0) for v in vendedoras)
     total_pm  = sum(v.get("pedidos_mes", 0) for v in vendedoras)
     total_vm  = sum(v.get("valor_mes",   0.0) for v in vendedoras)
+    total_meta = sum(v.get("meta_mensal", 0.0) for v in vendedoras)
+    has_meta = total_meta > 0
 
     linhas_html = ""
     for v in sorted(vendedoras, key=lambda x: x.get("valor_mes", 0), reverse=True):
+        meta_cols = ""
+        if has_meta:
+            meta_cols = f"""
+              <td class="text-right">{_fmt_brl(v.get('meta_mensal', 0.0))}</td>
+              <td class="text-right">{v.get('perc_meta', 0.0):.2f}%</td>
+              <td class="text-right">{_fmt_brl(v.get('falta_meta', 0.0))}</td>"""
+
         linhas_html += f"""
         <tr>
           <td>{_esc(v.get('nome_vendedor', '—'))}</td>
@@ -191,6 +223,7 @@ def admin_html(
           <td class="text-right">{_fmt_brl(v.get('valor_dia', 0.0))}</td>
           <td class="text-right">{v.get('pedidos_mes', 0)}</td>
           <td class="text-right">{_fmt_brl(v.get('valor_mes', 0.0))}</td>
+          {meta_cols}
         </tr>"""
 
     return f"""<!DOCTYPE html>
@@ -219,6 +252,18 @@ def admin_html(
       </div>
     </div>
 
+    <div class="section-title">Totais do Mês — {mes_exib}</div>
+    <div class="kpi-grid" style="grid-template-columns:1fr 1fr;margin-bottom:24px">
+      <div class="kpi">
+        <div class="label">Pedidos</div>
+        <div class="val">{total_pm}</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Faturado</div>
+        <div class="val" style="font-size:15px">{_fmt_brl(total_vm)}</div>
+      </div>
+    </div>
+
     <div class="divider"></div>
 
     <div class="section-title">Performance Individual — {mes_exib}</div>
@@ -231,6 +276,7 @@ def admin_html(
             <th class="text-right">Valor Dia</th>
             <th class="text-right">Pd. Mês</th>
             <th class="text-right">Valor Mês</th>
+            {('<th class="text-right">Meta</th><th class="text-right">% Meta</th><th class="text-right">Falta</th>' if has_meta else '')}
           </tr>
         </thead>
         <tbody>
@@ -243,6 +289,7 @@ def admin_html(
             <td class="text-right">{_fmt_brl(total_vd)}</td>
             <td class="text-right">{total_pm}</td>
             <td class="text-right">{_fmt_brl(total_vm)}</td>
+            {('<td class="text-right">' + _fmt_brl(total_meta) + '</td><td class="text-right"></td><td class="text-right"></td>' if has_meta else '')}
           </tr>
         </tfoot>
       </table>

@@ -104,7 +104,7 @@ self.__SERVER_FILES_MANIFEST={
         "transform": "lodash/{{member}}"
       }
     },
-    "outputFileTracingRoot": "/opt/betina/performance/dashboard",
+    "outputFileTracingRoot": "/opt/betina/performance",
     "cacheComponents": false,
     "cacheLife": {
       "default": {
@@ -304,12 +304,12 @@ self.__SERVER_FILES_MANIFEST={
     "bundlePagesRouterDependencies": false,
     "configFileName": "next.config.ts",
     "turbopack": {
-      "root": "/opt/betina/performance/dashboard"
+      "root": "/opt/betina/performance"
     },
     "distDirRoot": ".next"
   },
   "appDir": "/opt/betina/performance/dashboard",
-  "relativeAppDir": "",
+  "relativeAppDir": "dashboard",
   "files": [
     ".next/routes-manifest.json",
     ".next/server/pages-manifest.json",

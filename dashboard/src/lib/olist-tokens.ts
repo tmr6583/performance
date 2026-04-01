@@ -6,10 +6,13 @@
 import fs from 'fs/promises';
 import path from 'path';
 
-export const TOKEN_FILE = path.join(process.cwd(), '..', '.tiny_tokens.json');
+const tokenFileEnv = process.env.TOKEN_FILE;
+export const TOKEN_FILE = tokenFileEnv
+  ? path.resolve(tokenFileEnv)
+  : path.join(process.cwd(), '..', '.tiny_tokens.json');
 
-const CLIENT_ID     = process.env.OLIST_CLIENT_ID;
-const CLIENT_SECRET = process.env.OLIST_CLIENT_SECRET;
+const CLIENT_ID     = process.env.OLIST_CLIENT_ID ?? process.env.CLIENT_ID;
+const CLIENT_SECRET = process.env.OLIST_CLIENT_SECRET ?? process.env.CLIENT_SECRET;
 const TOKEN_URL     = 'https://accounts.tiny.com.br/realms/tiny/protocol/openid-connect/token';
 
 export interface Tokens {
@@ -82,6 +85,7 @@ export async function refreshAccessToken(refreshToken: string): Promise<string |
 export async function getValidAccessToken(): Promise<string | null> {
   const tokens = await readTokens();
   if (!tokens) return null;
-  if (!tokens.refresh_token) return tokens.access_token || null;
+  if (tokens.access_token) return tokens.access_token;
+  if (!tokens.refresh_token) return null;
   return await refreshAccessToken(tokens.refresh_token);
 }

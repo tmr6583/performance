@@ -12,7 +12,7 @@ export async function GET() {
   ensureDbInitialized();
 
   const users = db
-    .prepare('SELECT id, name, email, role, recebe_relatorio, created_at FROM users ORDER BY name')
+    .prepare('SELECT id, name, email, role, id_olist, recebe_relatorio, created_at FROM users ORDER BY name')
     .all();
 
   return NextResponse.json(users);
@@ -27,13 +27,13 @@ export async function POST(request: Request) {
   ensureDbInitialized();
 
   const body = (await request.json()) as {
-    name?: unknown; email?: unknown; password?: unknown; role?: unknown;
+    name?: unknown; email?: unknown; password?: unknown;
   };
 
   const name     = typeof body.name     === 'string' ? body.name.trim()                : '';
   const email    = typeof body.email    === 'string' ? body.email.trim().toLowerCase() : '';
   const password = typeof body.password === 'string' ? body.password                   : '';
-  const role     = body.role === 'admin' || body.role === 'salesperson' ? body.role : 'salesperson';
+  const role = 'admin';
 
   if (!name || !email || !password) {
     return NextResponse.json({ error: 'Nome, e-mail e senha são obrigatórios' }, { status: 400 });
@@ -49,8 +49,8 @@ export async function POST(request: Request) {
 
   const hashed = bcrypt.hashSync(password, 10);
   const info = db.prepare(
-    'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)'
+    'INSERT INTO users (name, email, password, role, id_olist) VALUES (?, ?, ?, ?, NULL)'
   ).run(name, email, hashed, role);
 
-  return NextResponse.json({ id: info.lastInsertRowid, name, email, role });
+  return NextResponse.json({ id: info.lastInsertRowid, name, email, role, id_olist: null });
 }

@@ -24,6 +24,7 @@ export async function PATCH(
   const body = (await request.json()) as {
     password?: unknown; newPassword?: unknown; currentPassword?: unknown;
     recebe_relatorio?: unknown;
+    id_olist?: unknown;
   };
 
   const target = db
@@ -39,9 +40,31 @@ export async function PATCH(
     return NextResponse.json({ error: 'Não autorizado' }, { status: 403 });
   }
 
+  if (body.id_olist !== undefined) {
+    if (!isAdmin) return NextResponse.json({ error: 'Não autorizado' }, { status: 403 });
+    if (target.role !== 'salesperson') {
+      return NextResponse.json({ error: 'id_olist só é permitido para vendedoras' }, { status: 400 });
+    }
+    const idOlist = typeof body.id_olist === 'number'
+      ? body.id_olist
+      : typeof body.id_olist === 'string'
+        ? parseInt(body.id_olist, 10)
+        : null;
+
+    if (idOlist != null && (!Number.isFinite(idOlist) || idOlist <= 0)) {
+      return NextResponse.json({ error: 'id_olist inválido' }, { status: 400 });
+    }
+
+    db.prepare('UPDATE users SET id_olist = ? WHERE id = ?').run(idOlist, userId);
+    return NextResponse.json({ success: true });
+  }
+
   // ── Toggle recebe_relatorio (só admin, só para outros admins) ──────────
   if (body.recebe_relatorio !== undefined) {
     if (!isAdmin) return NextResponse.json({ error: 'Não autorizado' }, { status: 403 });
+    if (target.role !== 'admin') {
+      return NextResponse.json({ error: 'recebe_relatorio só é permitido para administradores' }, { status: 400 });
+    }
     db.prepare('UPDATE users SET recebe_relatorio = ? WHERE id = ?').run(
       body.recebe_relatorio ? 1 : 0,
       userId

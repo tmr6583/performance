@@ -24,7 +24,7 @@ export async function PATCH(
     return NextResponse.json({ error: 'Vendedora não encontrada' }, { status: 404 });
   }
 
-  const body = (await request.json()) as { email?: unknown; recebe_email?: unknown };
+  const body = (await request.json()) as { email?: unknown; recebe_email?: unknown; meta_mensal?: unknown };
 
   const email = body.email !== undefined
     ? (typeof body.email === 'string' ? body.email.trim() || null : null)
@@ -33,6 +33,10 @@ export async function PATCH(
   const recebeEmail = body.recebe_email !== undefined
     ? (body.recebe_email ? 1 : 0)
     : undefined;
+
+  if (body.meta_mensal !== undefined) {
+    return NextResponse.json({ error: 'Meta é gerenciada pelo Olist' }, { status: 400 });
+  }
 
   if (email !== undefined && recebeEmail !== undefined) {
     db.prepare(

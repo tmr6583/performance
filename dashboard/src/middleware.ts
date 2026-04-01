@@ -36,9 +36,13 @@ async function verifyJwt(token: string, secret: string): Promise<boolean> {
     );
     if (!valid) return false;
 
-    // Verifica expiração
+    // Verifica expiração e role
     const body = JSON.parse(new TextDecoder().decode(b64urlToBytes(payload)));
-    return typeof body.exp === 'number' && body.exp > Date.now() / 1000;
+    return (
+      typeof body.exp === 'number' &&
+      body.exp > Date.now() / 1000 &&
+      body.role === 'admin'
+    );
   } catch {
     return false;
   }
@@ -49,21 +53,23 @@ async function verifyJwt(token: string, secret: string): Promise<boolean> {
 export async function middleware(request: NextRequest) {
   const basePath = request.nextUrl.basePath ?? '';
   const { pathname } = request.nextUrl;
+  const effectivePath =
+    basePath && pathname.startsWith(basePath) ? pathname.slice(basePath.length) || '/' : pathname;
 
   // Assets estáticos — sem verificação
   if (
-    pathname.startsWith('/_next/') ||
-    pathname === '/favicon.ico' ||
-    /\.(?:svg|png|jpg|jpeg|webp|ico)$/i.test(pathname)
+    effectivePath.startsWith('/_next/') ||
+    effectivePath === '/favicon.ico' ||
+    /\.(?:svg|png|jpg|jpeg|webp|ico)$/i.test(effectivePath)
   ) {
     return NextResponse.next();
   }
 
   // Rotas públicas de autenticação e OAuth
   if (
-    pathname === '/login' ||
-    pathname.startsWith('/api/auth') ||
-    pathname === '/api/olist/callback'
+    effectivePath === '/login' ||
+    effectivePath.startsWith('/api/auth') ||
+    effectivePath === '/api/olist/callback'
   ) {
     return NextResponse.next();
   }
@@ -72,6 +78,7 @@ export async function middleware(request: NextRequest) {
   const internalSecret = process.env.INTERNAL_SECRET;
   if (
     internalSecret &&
+    effectivePath === '/api/scripts' &&
     request.headers.get('x-internal-secret') === internalSecret
   ) {
     return NextResponse.next();

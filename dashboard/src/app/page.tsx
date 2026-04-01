@@ -10,6 +10,7 @@ function fmtBrl(v: number) {
 export default async function HomePage() {
   const user = await getAuthUser();
   if (!user) redirect('/login');
+  if (user.role !== 'admin') redirect('/login');
 
   ensureDbInitialized();
 
@@ -28,23 +29,9 @@ export default async function HomePage() {
 
   let cacheRows: CacheRow[] = [];
 
-  if (user.role === 'admin') {
-    cacheRows = db
-      .prepare('SELECT * FROM performance_cache WHERE data = ? ORDER BY valor_mes DESC')
-      .all(hoje) as CacheRow[];
-  } else {
-    // Salesperson: encontra id_olist pelo e-mail
-    const vend = db
-      .prepare('SELECT id_olist FROM vendedores WHERE email = ?')
-      .get(user.email) as { id_olist: number } | undefined;
-
-    if (vend) {
-      const row = db
-        .prepare('SELECT * FROM performance_cache WHERE data = ? AND id_vendedor = ?')
-        .get(hoje, vend.id_olist) as CacheRow | undefined;
-      if (row) cacheRows = [row];
-    }
-  }
+  cacheRows = db
+    .prepare('SELECT * FROM performance_cache WHERE data = ? ORDER BY valor_mes DESC')
+    .all(hoje) as CacheRow[];
 
   const totalPedidosDia = cacheRows.reduce((s, r) => s + r.pedidos_dia,  0);
   const totalValorDia   = cacheRows.reduce((s, r) => s + r.valor_dia,    0);

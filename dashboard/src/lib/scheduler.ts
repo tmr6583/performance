@@ -14,7 +14,7 @@ const DIA_MAP: Record<string, number> = {
   dom: 0, seg: 1, ter: 2, qua: 3, qui: 4, sex: 5, sab: 6,
 };
 
-function buildCronExpr(hora: string, dias: string): string {
+function buildWeeklyCronExpr(hora: string, dias: string): string {
   const [hh, mm] = hora.split(':');
   const nums = dias
     .split(',')
@@ -22,6 +22,32 @@ function buildCronExpr(hora: string, dias: string): string {
     .filter(n => n !== undefined);
 
   return `${mm} ${hh} * * ${nums.join(',')}`;
+}
+
+function buildDailyCronExpr(hora: string): string {
+  const [hh, mm] = hora.split(':');
+  return `${mm} ${hh} * * *`;
+}
+
+function datePartsInTimeZone(date: Date, timeZone: string): { year: number; month: number; day: number } {
+  const fmt = new Intl.DateTimeFormat('en-US', {
+    timeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+  const parts = fmt.formatToParts(date);
+  const year = Number(parts.find(p => p.type === 'year')?.value ?? '0');
+  const month = Number(parts.find(p => p.type === 'month')?.value ?? '0');
+  const day = Number(parts.find(p => p.type === 'day')?.value ?? '0');
+  return { year, month, day };
+}
+
+function shouldRunMonthly(targetDay: number, timeZone: string): boolean {
+  const { year, month, day } = datePartsInTimeZone(new Date(), timeZone);
+  const lastDay = new Date(Date.UTC(year, month, 0)).getUTCDate();
+  const runDay = Math.min(Math.max(targetDay, 1), lastDay);
+  return day === runDay;
 }
 
 async function triggerSend(): Promise<void> {
@@ -57,8 +83,8 @@ export function reloadScheduler(): void {
 
   try {
     ensureDbInitialized();
-    const row = db.prepare('SELECT hora, dias, ativo FROM schedules WHERE id = 1').get() as
-      | { hora: string; dias: string; ativo: number }
+    const row = db.prepare('SELECT hora, dias, recorrencia, dia_mes, ativo FROM schedules WHERE id = 1').get() as
+      | { hora: string; dias: string; recorrencia?: string; dia_mes?: number; ativo: number }
       | undefined;
 
     if (!row || !row.ativo) {
@@ -66,7 +92,13 @@ export function reloadScheduler(): void {
       return;
     }
 
-    const expr = buildCronExpr(row.hora, row.dias);
+    const timeZone = process.env.TZ ?? 'America/Sao_Paulo';
+    const recorrencia = row.recorrencia ?? 'weekly';
+    const diaMes = row.dia_mes ?? 1;
+
+    const expr = recorrencia === 'weekly'
+      ? buildWeeklyCronExpr(row.hora, row.dias)
+      : buildDailyCronExpr(row.hora);
 
     if (!cron.validate(expr)) {
       console.error(`[scheduler] Expressão cron inválida: ${expr}`);
@@ -74,11 +106,17 @@ export function reloadScheduler(): void {
     }
 
     currentTask = cron.schedule(expr, () => {
+      if (recorrencia === 'monthly' && !shouldRunMonthly(diaMes, timeZone)) return;
       console.log(`[scheduler] Disparando fetch_and_send — ${new Date().toISOString()}`);
       triggerSend();
-    });
+    }, { timezone: timeZone });
 
-    console.log(`[scheduler] Job agendado: ${expr} (${row.hora} em ${row.dias})`);
+    const details = recorrencia === 'weekly'
+      ? `${row.hora} em ${row.dias}`
+      : recorrencia === 'monthly'
+        ? `${row.hora} no dia ${diaMes} do mês`
+        : `${row.hora} todos os dias`;
+    console.log(`[scheduler] Job agendado: ${expr} (${details})`);
   } catch (e) {
     console.error('[scheduler] Erro ao carregar schedule:', e);
   }

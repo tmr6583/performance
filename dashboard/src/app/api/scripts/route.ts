@@ -11,6 +11,7 @@ import path from 'path';
 import fs from 'fs';
 import { getAuthUser } from '@/lib/auth';
 import { isInternalRequest } from '@/lib/scheduler';
+import db, { ensureDbInitialized } from '@/lib/db';
 
 const execFileAsync = promisify(execFile);
 
@@ -26,11 +27,20 @@ function pythonCmd(): string {
   return fs.existsSync(venv) ? venv : 'python3';
 }
 
+function buildPythonEnv(): NodeJS.ProcessEnv {
+  const env: NodeJS.ProcessEnv = { ...process.env };
+  if (!env.CLIENT_ID && env.OLIST_CLIENT_ID) env.CLIENT_ID = env.OLIST_CLIENT_ID;
+  if (!env.CLIENT_SECRET && env.OLIST_CLIENT_SECRET) env.CLIENT_SECRET = env.OLIST_CLIENT_SECRET;
+  env.PYTHONUNBUFFERED = env.PYTHONUNBUFFERED ?? '1';
+  return env;
+}
+
 async function runScript(scriptName: string): Promise<{ code: number; output: string }> {
   const scriptPath = path.join(ROOT_DIR, scriptName);
   try {
     const { stdout, stderr } = await execFileAsync(pythonCmd(), [scriptPath], {
       cwd:     ROOT_DIR,
+      env:     buildPythonEnv(),
       timeout: 5 * 60 * 1000, // 5 min
     });
     const output = stdout + (stderr ? `\nSTDERR:\n${stderr}` : '');
@@ -42,8 +52,30 @@ async function runScript(scriptName: string): Promise<{ code: number; output: st
   }
 }
 
-// Controle de execução concorrente
-let running = false;
+function tryAcquireJobLock(jobName: string, ttlMs: number): { ok: true; lockId: string } | { ok: false } {
+  ensureDbInitialized();
+  const now = Date.now();
+  const lockId = `${now}-${Math.random().toString(16).slice(2)}`;
+  const lockedUntil = now + ttlMs;
+
+  const result = db.prepare(
+    `
+    INSERT INTO job_locks (name, locked_until, lock_id)
+    VALUES (?, ?, ?)
+    ON CONFLICT(name) DO UPDATE SET
+      locked_until = excluded.locked_until,
+      lock_id = excluded.lock_id
+    WHERE job_locks.locked_until < ?
+    `
+  ).run(jobName, lockedUntil, lockId, now);
+
+  return result.changes > 0 ? { ok: true, lockId } : { ok: false };
+}
+
+function releaseJobLock(jobName: string, lockId: string): void {
+  ensureDbInitialized();
+  db.prepare('UPDATE job_locks SET locked_until = 0 WHERE name = ? AND lock_id = ?').run(jobName, lockId);
+}
 
 export async function POST(request: Request) {
   const internal = isInternalRequest(request);
@@ -60,14 +92,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Ação inválida' }, { status: 400 });
   }
 
-  if (running) {
-    return NextResponse.json(
-      { error: 'Já existe uma execução em andamento. Aguarde.' },
-      { status: 409 }
-    );
+  const lock = tryAcquireJobLock('fetch_and_send', 6 * 60 * 1000);
+  if (!lock.ok) {
+    return NextResponse.json({ error: 'Já existe uma execução em andamento. Aguarde.' }, { status: 409 });
   }
-
-  running = true;
   try {
     if (acao === 'fetch') {
       const result = await runScript('fetch_performance.py');
@@ -98,6 +126,6 @@ export async function POST(request: Request) {
       output:  `[fetch]\n${fetch.output}\n\n[send]\n${send.output}`,
     });
   } finally {
-    running = false;
+    releaseJobLock('fetch_and_send', lock.lockId);
   }
 }

@@ -6,7 +6,7 @@
 import { NextResponse } from 'next/server';
 import db, { ensureDbInitialized } from '@/lib/db';
 import { getAuthUser } from '@/lib/auth';
-import { getValidAccessToken } from '@/lib/olist-tokens';
+import { getValidAccessToken, refreshAccessToken, readTokens } from '@/lib/olist-tokens';
 
 const API_BASE = 'https://api.tiny.com.br/public-api/v3';
 
@@ -18,9 +18,13 @@ export async function GET() {
 
   ensureDbInitialized();
 
-  const rows = db.prepare(
-    'SELECT id_olist, nome, email, recebe_email FROM vendedores ORDER BY nome'
-  ).all();
+  const rows = db.prepare(`
+    SELECT v.id_olist, v.nome, v.email, v.recebe_email,
+           COALESCE(m.meta_mensal, 0) AS meta_mensal
+    FROM vendedores v
+    LEFT JOIN metas_vendedores m ON m.id_olist = v.id_olist
+    ORDER BY v.nome
+  `).all();
 
   return NextResponse.json(rows);
 }
@@ -33,7 +37,7 @@ export async function POST() {
 
   ensureDbInitialized();
 
-  const token = await getValidAccessToken();
+  let token = await getValidAccessToken();
   if (!token) {
     return NextResponse.json(
       { error: 'Olist desconectado. Clique em "Conectar ao Olist" primeiro.' },
@@ -47,10 +51,23 @@ export async function POST() {
   const todos: { id: number; nome: string }[] = [];
 
   while (offset < total) {
-    const res = await fetch(
+    let res = await fetch(
       `${API_BASE}/vendedores?limit=100&offset=${offset}`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
+    if (res.status === 401) {
+      const current = await readTokens();
+      if (current?.refresh_token) {
+        const refreshed = await refreshAccessToken(current.refresh_token);
+        if (refreshed) {
+          token = refreshed;
+          res = await fetch(
+            `${API_BASE}/vendedores?limit=100&offset=${offset}`,
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+        }
+      }
+    }
     if (!res.ok) break;
     const data = await res.json() as {
       itens?: { id: number; situacao: string; contato?: { nome?: string } }[];

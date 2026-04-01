@@ -5,8 +5,9 @@ import Link from 'next/link';
 
 /* ── Types ─────────────────────────────────────────────────────────────── */
 interface Vendedora { id_olist: number; nome: string; email: string | null; recebe_email: number; }
-interface User { id: number; name: string; email: string; role: string; recebe_relatorio: number; }
-interface Schedule { hora: string; dias: string; ativo: number; }
+interface VendedoraWithMeta extends Vendedora { meta_mensal?: number }
+interface User { id: number; name: string; email: string; role: string; id_olist: number | null; recebe_relatorio: number; }
+interface Schedule { hora: string; dias: string; recorrencia: 'daily' | 'weekly' | 'monthly'; dia_mes: number; ativo: number; }
 interface EmailLog { id: number; enviado_em: string; tipo: string; destinatario: string; nome: string; status: string; mensagem: string; execucao_id: string; }
 interface OlistStatus { status: 'connected' | 'disconnected' | 'expired' | 'loading' | 'unknown'; }
 
@@ -41,9 +42,9 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
 /* ── Main Component ─────────────────────────────────────────────────────── */
 export default function AdminClient({ basePath, userName }: { basePath: string; userName: string }) {
   const [olist,       setOlist]       = useState<OlistStatus>({ status: 'loading' });
-  const [vendedoras,  setVendedoras]  = useState<Vendedora[]>([]);
+  const [vendedoras,  setVendedoras]  = useState<VendedoraWithMeta[]>([]);
   const [users,       setUsers]       = useState<User[]>([]);
-  const [schedule,    setSchedule]    = useState<Schedule>({ hora: '18:00', dias: 'seg,ter,qua,qui,sex', ativo: 0 });
+  const [schedule,    setSchedule]    = useState<Schedule>({ hora: '18:00', dias: 'seg,ter,qua,qui,sex', recorrencia: 'weekly', dia_mes: 1, ativo: 0 });
   const [logs,        setLogs]        = useState<EmailLog[]>([]);
   const [logsTotal,   setLogsTotal]   = useState(0);
   const [logsPage,    setLogsPage]    = useState(0);
@@ -55,7 +56,6 @@ export default function AdminClient({ basePath, userName }: { basePath: string; 
   const [newName,  setNewName]  = useState('');
   const [newEmail, setNewEmail] = useState('');
   const [newPwd,   setNewPwd]   = useState('');
-  const [newRole,  setNewRole]  = useState<'admin' | 'salesperson'>('salesperson');
 
   /* ── Loaders ──────────────────────────────────────────────────────────── */
   const loadOlist = useCallback(async () => {
@@ -77,7 +77,16 @@ export default function AdminClient({ basePath, userName }: { basePath: string; 
 
   const loadSchedule = useCallback(async () => {
     const r = await fetch(`${basePath}/api/schedule`);
-    setSchedule(await r.json());
+    const d = await r.json() as Partial<Schedule>;
+    setSchedule({
+      hora:        typeof d.hora === 'string' ? d.hora : '18:00',
+      dias:        typeof d.dias === 'string' ? d.dias : 'seg,ter,qua,qui,sex',
+      recorrencia: d.recorrencia === 'daily' || d.recorrencia === 'weekly' || d.recorrencia === 'monthly'
+        ? d.recorrencia
+        : 'weekly',
+      dia_mes:     typeof d.dia_mes === 'number' && Number.isFinite(d.dia_mes) ? d.dia_mes : 1,
+      ativo:       d.ativo ? 1 : 0,
+    });
   }, [basePath]);
 
   const loadLogs = useCallback(async (page = 0) => {
@@ -166,7 +175,11 @@ export default function AdminClient({ basePath, userName }: { basePath: string; 
     const r = await fetch(`${basePath}/api/users`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: newName, email: newEmail, password: newPwd, role: newRole }),
+      body: JSON.stringify({
+        name: newName,
+        email: newEmail,
+        password: newPwd,
+      }),
     });
     const d = await r.json();
     if (d.error) { setMsg(`Erro: ${d.error}`); return; }
@@ -283,36 +296,70 @@ export default function AdminClient({ basePath, userName }: { basePath: string; 
             />
           </div>
 
-          <div>
-            <label style={{ display: 'block', marginBottom: 8, fontSize: 'var(--text-sm)', fontWeight: 500, color: 'var(--text-muted)' }}>
-              Dias da semana
-            </label>
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-              {DIAS_ORDER.map(dia => {
-                const ativo = schedule.dias.split(',').map(d => d.trim()).includes(dia);
-                return (
-                  <button
-                    key={dia}
-                    onClick={() => toggleDia(dia)}
-                    style={{
-                      padding: '6px 12px', borderRadius: 999, border: '1.5px solid',
-                      borderColor: ativo ? 'var(--accent)' : 'var(--border)',
-                      background: ativo ? 'rgba(17,86,199,.1)' : 'var(--surface)',
-                      color: ativo ? 'var(--accent)' : 'var(--text-muted)',
-                      fontWeight: 600, fontSize: 'var(--text-xs)', cursor: 'pointer',
-                    }}
-                  >
-                    {DIAS_LABEL[dia]}
-                  </button>
-                );
-              })}
-            </div>
+          <div className="form-group" style={{ margin: 0 }}>
+            <label>Recorrência</label>
+            <select
+              value={schedule.recorrencia}
+              onChange={e => setSchedule(s => ({ ...s, recorrencia: e.target.value as Schedule['recorrencia'] }))}
+              style={{ width: 180, padding: '8px 10px', borderRadius: 8, border: '1px solid var(--border)' }}
+            >
+              <option value="daily">Todo dia</option>
+              <option value="weekly">Dias da semana</option>
+              <option value="monthly">Dia do mês</option>
+            </select>
           </div>
+
+          {schedule.recorrencia === 'weekly' && (
+            <div>
+              <label style={{ display: 'block', marginBottom: 8, fontSize: 'var(--text-sm)', fontWeight: 500, color: 'var(--text-muted)' }}>
+                Dias da semana
+              </label>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {DIAS_ORDER.map(dia => {
+                  const ativo = schedule.dias.split(',').map(d => d.trim()).includes(dia);
+                  return (
+                    <button
+                      key={dia}
+                      onClick={() => toggleDia(dia)}
+                      style={{
+                        padding: '6px 12px', borderRadius: 999, border: '1.5px solid',
+                        borderColor: ativo ? 'var(--accent)' : 'var(--border)',
+                        background: ativo ? 'rgba(17,86,199,.1)' : 'var(--surface)',
+                        color: ativo ? 'var(--accent)' : 'var(--text-muted)',
+                        fontWeight: 600, fontSize: 'var(--text-xs)', cursor: 'pointer',
+                      }}
+                    >
+                      {DIAS_LABEL[dia]}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {schedule.recorrencia === 'monthly' && (
+            <div className="form-group" style={{ margin: 0 }}>
+              <label>Dia do mês</label>
+              <input
+                type="number"
+                min={1}
+                max={31}
+                value={schedule.dia_mes}
+                onChange={e => setSchedule(s => ({ ...s, dia_mes: parseInt(e.target.value, 10) || 1 }))}
+                style={{ width: 120, padding: '8px 10px', borderRadius: 8, border: '1px solid var(--border)' }}
+              />
+            </div>
+          )}
         </div>
         <button className="btn-primary" onClick={saveSchedule}>Salvar agendamento</button>
         {schedule.ativo ? (
           <p style={{ marginTop: 12, fontSize: 'var(--text-sm)', color: 'var(--text-muted)' }}>
-            Próximo envio: {schedule.hora} em dias: {schedule.dias.replace(/,/g, ', ')}
+            Próximo envio: {schedule.hora}{' '}
+            {schedule.recorrencia === 'daily'
+              ? '(todo dia)'
+              : schedule.recorrencia === 'monthly'
+                ? `(dia ${schedule.dia_mes} do mês)`
+                : `(dias: ${schedule.dias.replace(/,/g, ', ')})`}
           </p>
         ) : (
           <p style={{ marginTop: 12, fontSize: 'var(--text-sm)', color: 'var(--text-muted)' }}>
@@ -345,6 +392,12 @@ export default function AdminClient({ basePath, userName }: { basePath: string; 
                   vs.map(x => x.id_olist === v.id_olist ? { ...x, email: e.target.value } : x)
                 )}
               />
+              <input
+                type="text"
+                value={v.meta_mensal != null ? `Meta (Olist): R$ ${v.meta_mensal}` : 'Meta (Olist): —'}
+                disabled
+                style={{ width: 220 }}
+              />
               <div className="toggle-wrap">
                 <Toggle
                   checked={!!v.recebe_email}
@@ -356,7 +409,11 @@ export default function AdminClient({ basePath, userName }: { basePath: string; 
                   {v.recebe_email ? 'Habilitada' : 'Desabilitada'}
                 </span>
               </div>
-              <button className="btn-secondary" style={{ whiteSpace: 'nowrap' }} onClick={() => saveVendedora(v)}>
+              <button
+                className="btn-secondary"
+                style={{ whiteSpace: 'nowrap' }}
+                onClick={() => saveVendedora(v as Vendedora)}
+              >
                 Salvar
               </button>
             </div>
@@ -386,10 +443,6 @@ export default function AdminClient({ basePath, userName }: { basePath: string; 
           <input placeholder="Nome" value={newName}  onChange={e => setNewName(e.target.value)} />
           <input placeholder="E-mail" type="email" value={newEmail} onChange={e => setNewEmail(e.target.value)} />
           <input placeholder="Senha (mín. 6)" type="password" value={newPwd} onChange={e => setNewPwd(e.target.value)} />
-          <select value={newRole} onChange={e => setNewRole(e.target.value as 'admin' | 'salesperson')}>
-            <option value="salesperson">Vendedora</option>
-            <option value="admin">Admin</option>
-          </select>
           <button className="btn-primary" onClick={createUser}>Criar</button>
         </div>
 

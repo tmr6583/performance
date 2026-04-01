@@ -96,12 +96,28 @@ def main() -> None:
 
     try:
         # ── 1. Dados de performance do dia ─────────────────────────────────
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS metas_vendedores (
+                id_olist     INTEGER PRIMARY KEY,
+                meta_mensal  REAL    NOT NULL DEFAULT 0,
+                vigencia_ini TEXT,
+                vigencia_fim TEXT,
+                updated_at   DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
         caches = conn.execute(
             "SELECT * FROM performance_cache WHERE data = ?", (hoje,)
         ).fetchall()
 
         cache_por_vendedor: dict[int, dict] = {
             row["id_vendedor"]: dict(row) for row in caches
+        }
+
+        metas_rows = conn.execute(
+            "SELECT id_olist, meta_mensal FROM metas_vendedores"
+        ).fetchall()
+        metas_por_vendedor: dict[int, float] = {
+            r["id_olist"]: float(r["meta_mensal"] or 0) for r in metas_rows
         }
 
         # ── 2. E-mails individuais para vendedoras ─────────────────────────
@@ -117,6 +133,10 @@ def main() -> None:
             dest = v["email"]
 
             dados = cache_por_vendedor.get(vid, {})
+            meta  = metas_por_vendedor.get(vid, 0.0)
+            valor_mes = float(dados.get("valor_mes", 0.0) or 0.0)
+            perc_meta = round((valor_mes / meta) * 100, 2) if meta > 0 else 0.0
+            falta     = round(max(meta - valor_mes, 0.0), 2) if meta > 0 else 0.0
             html  = vendedora_html(
                 nome        = nome,
                 pedidos_dia = dados.get("pedidos_dia",      0),
@@ -125,6 +145,9 @@ def main() -> None:
                 pedidos_mes = dados.get("pedidos_mes",      0),
                 valor_mes   = dados.get("valor_mes",        0.0),
                 ticket_mes  = dados.get("ticket_medio_mes", 0.0),
+                meta_mensal = meta,
+                perc_meta   = perc_meta,
+                falta_meta  = falta,
                 data        = hoje,
             )
             assunto = f"Seu desempenho — {nome}"
@@ -160,7 +183,17 @@ def main() -> None:
         logger.info(f"{len(admins)} admin(s) habilitado(s) para receber resumo.")
 
         if admins:
-            todos_dados = list(cache_por_vendedor.values())
+            todos_dados = []
+            for vid, row in cache_por_vendedor.items():
+                meta = metas_por_vendedor.get(vid, 0.0)
+                valor_mes = float(row.get("valor_mes", 0.0) or 0.0)
+                perc_meta = round((valor_mes / meta) * 100, 2) if meta > 0 else 0.0
+                falta     = round(max(meta - valor_mes, 0.0), 2) if meta > 0 else 0.0
+                r = dict(row)
+                r["meta_mensal"] = meta
+                r["perc_meta"]   = perc_meta
+                r["falta_meta"]  = falta
+                todos_dados.append(r)
             html_admin  = admin_html(todos_dados, data=hoje)
             assunto_admin = f"Desempenho da Equipe — {hoje}"
 
