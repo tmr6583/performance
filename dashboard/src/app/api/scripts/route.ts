@@ -23,8 +23,14 @@ const ROOT_DIR = process.env.PERFORMANCE_SCRIPT_DIR
   ?? path.join(process.cwd(), '..');
 
 function pythonCmd(): string {
-  const venv = path.join(ROOT_DIR, '.venv', 'bin', 'python');
-  return fs.existsSync(venv) ? venv : 'python3';
+  const isWin = process.platform === 'win32';
+  const venvWin = path.join(ROOT_DIR, '.venv', 'Scripts', 'python.exe');
+  const venvLin = path.join(ROOT_DIR, '.venv', 'bin', 'python');
+  
+  if (isWin && fs.existsSync(venvWin)) return venvWin;
+  if (!isWin && fs.existsSync(venvLin)) return venvLin;
+  
+  return isWin ? 'python' : 'python3';
 }
 
 function buildPythonEnv(): NodeJS.ProcessEnv {

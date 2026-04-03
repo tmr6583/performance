@@ -675,7 +675,11 @@ O sistema é composto por duas camadas independentes:
   Type=simple
   WorkingDirectory=/opt/betina/performance/dashboard
   EnvironmentFile=/opt/betina/performance/env/performance.env
-  ExecStart=/usr/bin/npm start -- -H 127.0.0.1 -p 3200
+  Environment=NODE_ENV=production
+  Environment=PORT=3200
+  Environment=HOSTNAME=127.0.0.1
+  # Usa a versão otimizada (standalone) com limite de 128MB de RAM para economizar recursos
+  ExecStart=/usr/bin/npm run start:optimized
   Restart=always
   RestartSec=5
   User=www-data
@@ -686,6 +690,8 @@ O sistema é composto por duas camadas independentes:
 
   Comportamento:
   - Inicia APÓS performance-token-refresh.service concluir
+  - Usa versão build 'standalone' otimizada (npm run start:optimized)
+  - Limite rígido de memória via flag --max-old-space-size=128
   - Binding em 127.0.0.1:3200 (não exposto diretamente na internet)
   - Reinicia automaticamente em caso de falha (intervalo 5s)
   - Carrega variáveis de performance.env

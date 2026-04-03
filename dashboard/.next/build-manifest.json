@@ -1,20 +1,21 @@
 {
-  "polyfillFiles": [
-    "static/chunks/polyfills-42372ed130431b0a.js"
-  ],
-  "devFiles": [],
-  "lowPriorityFiles": [
-    "static/Ef_0mVVve4rrFjcL5jfUG/_buildManifest.js",
-    "static/Ef_0mVVve4rrFjcL5jfUG/_ssgManifest.js"
-  ],
-  "rootMainFiles": [
-    "static/chunks/webpack-2bddec9cea701ffa.js",
-    "static/chunks/4bd1b696-215e5051988c3dde.js",
-    "static/chunks/794-cae23333edbcb029.js",
-    "static/chunks/main-app-c7b462d75364cbbe.js"
-  ],
-  "rootMainFilesTree": {},
   "pages": {
     "/_app": []
-  }
+  },
+  "devFiles": [],
+  "polyfillFiles": [
+    "static/chunks/03~yq9q893hmn.js"
+  ],
+  "lowPriorityFiles": [
+    "static/w70DUMaK2yGeeP5t2dXo6/_buildManifest.js",
+    "static/w70DUMaK2yGeeP5t2dXo6/_ssgManifest.js",
+    "static/w70DUMaK2yGeeP5t2dXo6/_clientMiddlewareManifest.js"
+  ],
+  "rootMainFiles": [
+    "static/chunks/0qcbxr8ut3jw5.js",
+    "static/chunks/0y25y9-fiib2v.js",
+    "static/chunks/0hdy_k4d.15ge.js",
+    "static/chunks/0czmgwbkyeaeq.js",
+    "static/chunks/turbopack-0-vvkjx_az7tj.js"
+  ]
 }

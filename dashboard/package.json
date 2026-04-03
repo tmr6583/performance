@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build --webpack",
-    "start": "next start",
+    "dev": "next dev -p 3200",
+    "build": "next build && node -e \"require('fs').cpSync('.next/static', '.next/standalone/dashboard/.next/static', {recursive: true})\"",
+    "start": "next start -p 3200",
+    "start:optimized": "cross-env PORT=3200 HOSTNAME=127.0.0.1 node --env-file=.env.local --max-old-space-size=128 .next/standalone/dashboard/server.js",
     "start:unified": "node unified-server.mjs",
     "lint": "eslint"
   },
@@ -18,14 +19,19 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.2.2",
     "@types/bcryptjs": "^2.4.6",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^22",
     "@types/node-cron": "^3.0.11",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "autoprefixer": "^10.4.27",
+    "cross-env": "^10.1.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.1",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^4.2.2",
     "typescript": "^5"
   }
 }

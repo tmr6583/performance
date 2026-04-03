@@ -9,8 +9,10 @@ function fmtBrl(v: number) {
 
 export default async function HomePage() {
   const user = await getAuthUser();
-  if (!user) redirect('/login');
-  if (user.role !== 'admin') redirect('/login');
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+  
+  if (!user) redirect(`${basePath}/login`);
+  if (user.role !== 'admin') redirect(`${basePath}/login`);
 
   ensureDbInitialized();
 
@@ -37,8 +39,6 @@ export default async function HomePage() {
   const totalValorDia   = cacheRows.reduce((s, r) => s + r.valor_dia,    0);
   const totalPedidosMes = cacheRows.reduce((s, r) => s + r.pedidos_mes,  0);
   const totalValorMes   = cacheRows.reduce((s, r) => s + r.valor_mes,    0);
-
-  const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
 
   return (
     <DashboardClient

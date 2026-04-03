@@ -476,8 +476,13 @@ Wants=performance-token-refresh.service
 
 [Service]
 Type=simple
+WorkingDirectory=/opt/betina/performance/dashboard
 EnvironmentFile=/opt/betina/performance/env/performance.env
-ExecStart=/usr/bin/npm start -- -H 127.0.0.1 -p 3200
+Environment=NODE_ENV=production
+Environment=PORT=3200
+Environment=HOSTNAME=127.0.0.1
+# Usa a versão otimizada (standalone) com limite de 128MB de RAM para economizar recursos
+ExecStart=/usr/bin/npm run start:optimized
 Restart=always
 RestartSec=5
 User=www-data

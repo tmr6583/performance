@@ -246,7 +246,7 @@ export default function AdminClient({ basePath, userName }: { basePath: string; 
               <button className="btn-link" style={{ marginLeft: 6 }} onClick={loadOlist}>↻</button>
             )}
           </div>
-          <Link href="/" className="btn-secondary">Dashboard</Link>
+          <Link href={`${basePath}/`} className="btn-secondary">Dashboard</Link>
           <a href={`${basePath}/api/auth/logout`} className="btn-secondary">Sair</a>
         </div>
       </div>

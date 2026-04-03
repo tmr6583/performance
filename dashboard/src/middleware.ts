@@ -50,11 +50,15 @@ async function verifyJwt(token: string, secret: string): Promise<boolean> {
 
 // ── Middleware ──────────────────────────────────────────────────────────────
 
-const MOUNT_PATH = '/performance';
+const MOUNT_PATH = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const effectivePath = pathname.startsWith(MOUNT_PATH)
+  
+  // Next.js já lida com basePath internamente em muitos casos
+  // O request.nextUrl.pathname geralmente já vem sem o basePath
+  // Mas para garantir, vamos limpar se ele estiver lá
+  const effectivePath = MOUNT_PATH && pathname.startsWith(MOUNT_PATH)
     ? pathname.slice(MOUNT_PATH.length) || '/'
     : pathname;
 
@@ -91,7 +95,12 @@ export async function middleware(request: NextRequest) {
   const jwtSecret = process.env.JWT_SECRET ?? '';
 
   if (!token || !(await verifyJwt(token, jwtSecret))) {
-    return NextResponse.redirect(new URL(`${MOUNT_PATH}/login`, request.url));
+    const loginUrl = new URL(`${MOUNT_PATH}/login`, request.url);
+    // Remove o base path duplicado se a URL base já contiver ele
+    if (loginUrl.pathname.startsWith(MOUNT_PATH + MOUNT_PATH)) {
+      loginUrl.pathname = loginUrl.pathname.replace(MOUNT_PATH + MOUNT_PATH, MOUNT_PATH);
+    }
+    return NextResponse.redirect(loginUrl);
   }
 
   return NextResponse.next();
