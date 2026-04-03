@@ -17,8 +17,10 @@ export async function GET() {
     | { hora: string; dias: string; recorrencia?: string; dia_mes?: number; ativo: number }
     | undefined;
 
+  const serverTime = new Date().toLocaleString('pt-BR', { timeZone: process.env.TZ || 'America/Sao_Paulo' });
+
   return NextResponse.json(
-    row ?? { hora: '18:00', dias: 'seg,ter,qua,qui,sex', recorrencia: 'weekly', dia_mes: 1, ativo: 0 }
+    row ? { ...row, server_time: serverTime } : { hora: '18:00', dias: 'seg,ter,qua,qui,sex', recorrencia: 'weekly', dia_mes: 1, ativo: 0, server_time: serverTime }
   );
 }
 

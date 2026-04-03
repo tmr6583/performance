@@ -227,7 +227,7 @@ export default function DashboardClient({ user, hoje, rows, totais, basePath }: 
           <div className="kpi-value">{totais.pedidosMes}</div>
         </div>
         <div className="kpi-card card">
-          <div className="kpi-label">Faturado no Mês</div>
+          <div className="kpi-label">VENDIDO no Mês</div>
           <div className="kpi-value" style={{ fontSize: 20 }}>{totais.valorMes}</div>
         </div>
       </div>

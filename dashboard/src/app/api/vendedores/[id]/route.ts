@@ -35,7 +35,13 @@ export async function PATCH(
     : undefined;
 
   if (body.meta_mensal !== undefined) {
-    return NextResponse.json({ error: 'Meta é gerenciada pelo Olist' }, { status: 400 });
+    db.prepare(`
+      INSERT INTO metas_vendedores (id_olist, meta_mensal, updated_at)
+      VALUES (?, ?, CURRENT_TIMESTAMP)
+      ON CONFLICT(id_olist) DO UPDATE SET
+        meta_mensal = excluded.meta_mensal,
+        updated_at = CURRENT_TIMESTAMP
+    `).run(idOlist, Number(body.meta_mensal) || 0);
   }
 
   if (email !== undefined && recebeEmail !== undefined) {

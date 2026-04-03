@@ -34,3 +34,19 @@ export async function GET(request: Request) {
 
   return NextResponse.json({ total, rows });
 }
+
+export async function DELETE(request: Request) {
+  const user = await getAuthUser();
+  if (!user || user.role !== 'admin') {
+    return NextResponse.json({ error: 'Não autorizado' }, { status: 403 });
+  }
+
+  ensureDbInitialized();
+
+  try {
+    db.prepare('DELETE FROM email_logs').run();
+    return NextResponse.json({ success: true });
+  } catch (e: any) {
+    return NextResponse.json({ error: e.message || 'Erro ao limpar histórico' }, { status: 500 });
+  }
+}

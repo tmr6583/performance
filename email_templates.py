@@ -37,6 +37,9 @@ _BASE_STYLE = """
   .wrap { max-width: 580px; margin: 32px auto; background: #ffffff;
           border-radius: 10px; overflow: hidden;
           box-shadow: 0 4px 24px rgba(11,61,143,.12); }
+  .wrap-admin { max-width: 696px; margin: 32px auto; background: #ffffff;
+                border-radius: 10px; overflow: hidden;
+                box-shadow: 0 4px 24px rgba(11,61,143,.12); }
   .header { background: linear-gradient(135deg, #0B3D8F 0%, #1156C7 60%, #3A9BD5 100%);
             padding: 32px 36px 28px; text-align: center; }
   .header h1 { margin: 0 0 4px; color: #fff; font-size: 22px; font-weight: 700; }
@@ -115,7 +118,7 @@ def vendedora_html(
             <div class="val">{perc_meta:.2f}%</div>
           </div>
           <div class="kpi">
-            <div class="label">Falta</div>
+            <div class="label">Faltam</div>
             <div class="val" style="font-size:15px">{_fmt_brl(falta_meta)}</div>
           </div>
         </div>
@@ -129,30 +132,12 @@ def vendedora_html(
 
   <div class="header">
     <h1>Olá, {_esc(nome)}!</h1>
-    <p>Seu desempenho em {data_exib}</p>
+    <p>Seu desempenho em {mes_exib}</p>
     <div class="accent-bar"></div>
   </div>
 
   <div class="body">
     {aviso_html}
-
-    <div class="section-title">Hoje</div>
-    <div class="kpi-grid">
-      <div class="kpi">
-        <div class="label">Pedidos</div>
-        <div class="val">{pedidos_dia}</div>
-      </div>
-      <div class="kpi">
-        <div class="label">Faturado</div>
-        <div class="val" style="font-size:15px">{_fmt_brl(valor_dia)}</div>
-      </div>
-      <div class="kpi">
-        <div class="label">Ticket Médio</div>
-        <div class="val" style="font-size:15px">{_fmt_brl(ticket_dia)}</div>
-      </div>
-    </div>
-
-    <div class="divider"></div>
 
     <div class="section-title">Mês Corrente — {mes_exib}</div>
     <div class="kpi-grid">
@@ -219,9 +204,6 @@ def admin_html(
         linhas_html += f"""
         <tr>
           <td>{_esc(v.get('nome_vendedor', '—'))}</td>
-          <td class="text-right">{v.get('pedidos_dia', 0)}</td>
-          <td class="text-right">{_fmt_brl(v.get('valor_dia', 0.0))}</td>
-          <td class="text-right">{v.get('pedidos_mes', 0)}</td>
           <td class="text-right">{_fmt_brl(v.get('valor_mes', 0.0))}</td>
           {meta_cols}
         </tr>"""
@@ -230,7 +212,7 @@ def admin_html(
 <html lang="pt-BR">
 <head><meta charset="UTF-8">{_BASE_STYLE}</head>
 <body>
-<div class="wrap">
+<div class="wrap-admin">
 
   <div class="header">
     <h1>Desempenho da Equipe</h1>
@@ -239,18 +221,6 @@ def admin_html(
   </div>
 
   <div class="body">
-
-    <div class="section-title">Totais do Dia</div>
-    <div class="kpi-grid" style="grid-template-columns:1fr 1fr;margin-bottom:24px">
-      <div class="kpi">
-        <div class="label">Pedidos</div>
-        <div class="val">{total_pd}</div>
-      </div>
-      <div class="kpi">
-        <div class="label">Faturado</div>
-        <div class="val" style="font-size:15px">{_fmt_brl(total_vd)}</div>
-      </div>
-    </div>
 
     <div class="section-title">Totais do Mês — {mes_exib}</div>
     <div class="kpi-grid" style="grid-template-columns:1fr 1fr;margin-bottom:24px">
@@ -272,11 +242,8 @@ def admin_html(
         <thead>
           <tr>
             <th>Vendedora</th>
-            <th class="text-right">Pd. Dia</th>
-            <th class="text-right">Valor Dia</th>
-            <th class="text-right">Pd. Mês</th>
             <th class="text-right">Valor Mês</th>
-            {('<th class="text-right">Meta</th><th class="text-right">% Meta</th><th class="text-right">Falta</th>' if has_meta else '')}
+            {('<th class="text-right">Meta</th><th class="text-right">% Meta</th><th class="text-right">Faltam</th>' if has_meta else '')}
           </tr>
         </thead>
         <tbody>
@@ -285,9 +252,6 @@ def admin_html(
         <tfoot>
           <tr class="total">
             <td>TOTAL EQUIPE</td>
-            <td class="text-right">{total_pd}</td>
-            <td class="text-right">{_fmt_brl(total_vd)}</td>
-            <td class="text-right">{total_pm}</td>
             <td class="text-right">{_fmt_brl(total_vm)}</td>
             {('<td class="text-right">' + _fmt_brl(total_meta) + '</td><td class="text-right"></td><td class="text-right"></td>' if has_meta else '')}
           </tr>

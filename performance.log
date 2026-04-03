@@ -5140,3 +5140,75 @@
 03/04/2026 17:56:01 - fetch_performance - INFO -   Salvador Correa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
 03/04/2026 17:56:02 - fetch_performance - INFO -   Julio Lopes: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
 03/04/2026 17:56:02 - fetch_performance - INFO - === Extração concluída em 11s | 10/10 vendedores OK | 0 erro(s) ===
+03/04/2026 18:05:05 - fetch_performance - INFO - === Início da extração de performance ===
+03/04/2026 18:05:05 - fetch_performance - INFO - Data de referência: 03/04/2026  |  Mês alvo: 2026-04 | Busca a partir de: 20/03/2026
+03/04/2026 18:05:05 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+03/04/2026 18:05:06 - fetch_performance - INFO - 10 vendedores ativos encontrados.
+03/04/2026 18:05:09 - fetch_performance - INFO -   Adriana Costa Alves: dia=0 pedidos / R$ 0.00 | mês=16 pedidos / R$ 6908.39 (Fat: R$ 6568.75)
+03/04/2026 18:05:12 - fetch_performance - INFO -   Maria Eduarda Franco Degenario: dia=0 pedidos / R$ 0.00 | mês=9 pedidos / R$ 10889.11 (Fat: R$ 10496.85)
+03/04/2026 18:05:15 - fetch_performance - INFO -   Maria Daniele Marques da Silva: dia=0 pedidos / R$ 0.00 | mês=10 pedidos / R$ 7870.01 (Fat: R$ 6627.15)
+03/04/2026 18:05:17 - fetch_performance - INFO -   Camila Almeida: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+03/04/2026 18:05:19 - fetch_performance - INFO -   Rodrigo Barcia: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+03/04/2026 18:05:21 - fetch_performance - INFO -   Alexandre Cesar da Rosa: dia=0 pedidos / R$ 0.00 | mês=2 pedidos / R$ 485.00 (Fat: R$ 485.00)
+03/04/2026 18:05:23 - fetch_performance - INFO -   Diego Figueiredo: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+03/04/2026 18:05:25 - fetch_performance - INFO -   Breno Kling: dia=0 pedidos / R$ 0.00 | mês=1 pedidos / R$ 423.36 (Fat: R$ 423.36)
+03/04/2026 18:05:27 - fetch_performance - INFO -   Salvador Correa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+03/04/2026 18:05:29 - fetch_performance - INFO -   Julio Lopes: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+03/04/2026 18:05:29 - fetch_performance - INFO - === Extração concluída em 23s | 10/10 vendedores OK | 0 erro(s) ===
+03/04/2026 18:14:06 - fetch_performance - INFO - === Início da extração de performance ===
+03/04/2026 18:14:06 - fetch_performance - INFO - Data de referência: 03/04/2026  |  Mês alvo: 2026-04 | Busca a partir de: 20/03/2026
+03/04/2026 18:14:06 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+03/04/2026 18:14:06 - fetch_performance - INFO - 10 vendedores ativos encontrados.
+03/04/2026 18:14:07 - fetch_performance - INFO -   Adriana Costa Alves: dia=0 pedidos / R$ 0.00 | mês=16 pedidos / R$ 6908.39 (Fat: R$ 6568.75)
+03/04/2026 18:14:09 - fetch_performance - INFO -   Maria Eduarda Franco Degenario: dia=0 pedidos / R$ 0.00 | mês=9 pedidos / R$ 10889.11 (Fat: R$ 10496.85)
+03/04/2026 18:14:10 - fetch_performance - INFO -   Maria Daniele Marques da Silva: dia=0 pedidos / R$ 0.00 | mês=10 pedidos / R$ 7870.01 (Fat: R$ 6627.15)
+03/04/2026 18:14:11 - fetch_performance - INFO -   Camila Almeida: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+03/04/2026 18:14:12 - fetch_performance - INFO -   Rodrigo Barcia: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+03/04/2026 18:14:13 - fetch_performance - INFO -   Alexandre Cesar da Rosa: dia=0 pedidos / R$ 0.00 | mês=2 pedidos / R$ 485.00 (Fat: R$ 485.00)
+03/04/2026 18:14:14 - fetch_performance - INFO -   Diego Figueiredo: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+03/04/2026 18:14:15 - fetch_performance - INFO -   Breno Kling: dia=0 pedidos / R$ 0.00 | mês=1 pedidos / R$ 423.36 (Fat: R$ 423.36)
+03/04/2026 18:14:17 - fetch_performance - INFO -   Salvador Correa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+03/04/2026 18:14:18 - fetch_performance - INFO -   Julio Lopes: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+03/04/2026 18:14:18 - fetch_performance - INFO - === Extração concluída em 12s | 10/10 vendedores OK | 0 erro(s) ===
+03/04/2026 18:16:50 - send_emails - INFO - === Início do envio de e-mails — execução e5b20e94-8f16-4e4e-98d6-232462669472 ===
+03/04/2026 18:16:50 - send_emails - INFO - Data de referência: 2026-04-03
+03/04/2026 18:16:50 - send_emails - INFO - 2 vendedora(s) habilitada(s) para receber e-mail.
+03/04/2026 18:16:58 - send_emails - ERROR - Falha de autenticação SMTP — abortando todos os envios.
+03/04/2026 18:29:19 - send_emails - INFO - === Início do envio de e-mails — execução ff49fbde-8bb2-4aba-be16-6fe4c7d46b08 ===
+03/04/2026 18:29:19 - send_emails - INFO - Data de referência: 2026-04-03
+03/04/2026 18:29:19 - send_emails - INFO - 2 vendedora(s) habilitada(s) para receber e-mail.
+03/04/2026 18:29:20 - send_emails - INFO -   ✓ Enviado para Adriana Costa Alves <tmr6583@gmail.com>
+03/04/2026 18:29:22 - send_emails - INFO -   ✓ Enviado para Maria Eduarda Franco Degenario <thiago.rossi@arphoenix.com.br>
+03/04/2026 18:29:22 - send_emails - INFO - 1 admin(s) habilitado(s) para receber resumo.
+03/04/2026 18:29:23 - send_emails - INFO -   ✓ Resumo enviado para Thiago <thiago@betinalimpeza.com.br>
+03/04/2026 18:29:23 - send_emails - INFO - === Envio concluído | 3 enviado(s) | 0 erro(s) ===
+03/04/2026 18:56:18 - send_emails - INFO - === Início do envio de e-mails — execução 7a83d60f-c6e5-41f0-a64d-37fa85f30049 ===
+03/04/2026 18:56:18 - send_emails - INFO - Data de referência: 2026-04-03
+03/04/2026 18:56:18 - send_emails - INFO - 2 vendedora(s) habilitada(s) para receber e-mail.
+03/04/2026 18:56:19 - send_emails - INFO -   ✓ Enviado para Adriana Costa Alves <tmr6583@gmail.com>
+03/04/2026 18:56:21 - send_emails - INFO -   ✓ Enviado para Maria Eduarda Franco Degenario <thiago.rossi@arphoenix.com.br>
+03/04/2026 18:56:21 - send_emails - INFO - 1 admin(s) habilitado(s) para receber resumo.
+03/04/2026 18:58:26 - send_emails - INFO - === Início do envio de e-mails — execução 6a3a60d1-02eb-4979-99de-fb605cda109b ===
+03/04/2026 18:58:26 - send_emails - INFO - Data de referência: 2026-04-03
+03/04/2026 18:58:26 - send_emails - INFO - 2 vendedora(s) habilitada(s) para receber e-mail.
+03/04/2026 18:58:27 - send_emails - INFO -   ✓ Enviado para Adriana Costa Alves <tmr6583@gmail.com>
+03/04/2026 18:58:29 - send_emails - INFO -   ✓ Enviado para Maria Eduarda Franco Degenario <thiago.rossi@arphoenix.com.br>
+03/04/2026 18:58:29 - send_emails - INFO - 1 admin(s) habilitado(s) para receber resumo.
+03/04/2026 18:58:30 - send_emails - INFO -   ✓ Resumo enviado para Thiago <thiago@betinalimpeza.com.br>
+03/04/2026 18:58:30 - send_emails - INFO - === Envio concluído | 3 enviado(s) | 0 erro(s) ===
+03/04/2026 19:03:54 - send_emails - INFO - === Início do envio de e-mails — execução 2012e6ae-6bbc-4deb-9b08-db726ae1a622 ===
+03/04/2026 19:03:54 - send_emails - INFO - Data de referência: 2026-04-03
+03/04/2026 19:03:54 - send_emails - INFO - 2 vendedora(s) habilitada(s) para receber e-mail.
+03/04/2026 19:03:55 - send_emails - INFO -   ✓ Enviado para Adriana Costa Alves <tmr6583@gmail.com>
+03/04/2026 19:03:57 - send_emails - INFO -   ✓ Enviado para Maria Eduarda Franco Degenario <thiago.rossi@arphoenix.com.br>
+03/04/2026 19:03:57 - send_emails - INFO - 1 admin(s) habilitado(s) para receber resumo.
+03/04/2026 19:03:58 - send_emails - INFO -   ✓ Resumo enviado para Thiago <thiago@betinalimpeza.com.br>
+03/04/2026 19:03:58 - send_emails - INFO - === Envio concluído | 3 enviado(s) | 0 erro(s) ===
+03/04/2026 19:18:57 - send_emails - INFO - === Início do envio de e-mails — execução 99ba8bc6-38ce-48d6-8b17-a64ec885db15 ===
+03/04/2026 19:18:57 - send_emails - INFO - Data de referência: 2026-04-03
+03/04/2026 19:18:57 - send_emails - INFO - 2 vendedora(s) habilitada(s) para receber e-mail.
+03/04/2026 19:18:58 - send_emails - INFO -   ✓ Enviado para Adriana Costa Alves <tmr6583@gmail.com>
+03/04/2026 19:19:00 - send_emails - INFO -   ✓ Enviado para Maria Eduarda Franco Degenario <thiago.rossi@arphoenix.com.br>
+03/04/2026 19:19:00 - send_emails - INFO - 1 admin(s) habilitado(s) para receber resumo.
+03/04/2026 19:19:01 - send_emails - INFO -   ✓ Resumo enviado para Thiago <thiago@betinalimpeza.com.br>
+03/04/2026 19:19:01 - send_emails - INFO - === Envio concluído | 3 enviado(s) | 0 erro(s) ===

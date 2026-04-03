@@ -150,7 +150,7 @@ def main() -> None:
                 falta_meta  = falta,
                 data        = hoje,
             )
-            assunto = f"Seu desempenho — {nome}"
+            assunto = f"Seu desempenho,  {nome}"
 
             try:
                 _enviar_email(dest, assunto, html)
@@ -183,6 +183,7 @@ def main() -> None:
         logger.info(f"{len(admins)} admin(s) habilitado(s) para receber resumo.")
 
         if admins:
+            hoje_br = date.today().strftime("%d/%m/%Y")
             todos_dados = []
             for vid, row in cache_por_vendedor.items():
                 meta = metas_por_vendedor.get(vid, 0.0)
@@ -195,7 +196,7 @@ def main() -> None:
                 r["falta_meta"]  = falta
                 todos_dados.append(r)
             html_admin  = admin_html(todos_dados, data=hoje)
-            assunto_admin = f"Desempenho da Equipe — {hoje}"
+            assunto_admin = f"Desempenho da Equipe — {hoje_br}"
 
             for a in admins:
                 nome_admin = a["name"]

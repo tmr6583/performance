@@ -43,7 +43,10 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
 export default function AdminClient({ basePath, userName, userId }: { basePath: string; userName: string; userId: number }) {
   const [vendedoras,  setVendedoras]  = useState<VendedoraWithMeta[]>([]);
   const [users,       setUsers]       = useState<User[]>([]);
-  const [schedule,    setSchedule]    = useState<Schedule>({ hora: '18:00', dias: 'seg,ter,qua,qui,sex', recorrencia: 'weekly', dia_mes: 1, ativo: 0 });
+  const [schedule, setSchedule] = useState<Schedule>({
+    hora: '18:00', dias: 'seg,ter,qua,qui,sex', recorrencia: 'weekly', dia_mes: 1, ativo: 0
+  });
+  const [serverTime, setServerTime] = useState<string>('');
   const [logs,        setLogs]        = useState<EmailLog[]>([]);
   const [logsTotal,   setLogsTotal]   = useState(0);
   const [logsPage,    setLogsPage]    = useState(0);
@@ -74,7 +77,8 @@ export default function AdminClient({ basePath, userName, userId }: { basePath: 
 
   const loadSchedule = useCallback(async () => {
     const r = await fetch(`${basePath}/api/schedule`);
-    const d = await r.json() as Partial<Schedule>;
+    const d = await r.json() as Partial<Schedule> & { server_time?: string };
+    if (d.server_time) setServerTime(d.server_time);
     setSchedule({
       hora:        typeof d.hora === 'string' ? d.hora : '18:00',
       dias:        typeof d.dias === 'string' ? d.dias : 'seg,ter,qua,qui,sex',
@@ -129,11 +133,11 @@ export default function AdminClient({ basePath, userName, userId }: { basePath: 
   };
 
   /* ── Vendedoras ───────────────────────────────────────────────────────── */
-  const saveVendedora = async (v: Vendedora) => {
+  const saveVendedora = async (v: VendedoraWithMeta) => {
     await fetch(`${basePath}/api/vendedores/${v.id_olist}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: v.email, recebe_email: v.recebe_email }),
+      body: JSON.stringify({ email: v.email, recebe_email: v.recebe_email, meta_mensal: v.meta_mensal }),
     });
     setMsg('Salvo.');
   };
@@ -228,6 +232,24 @@ export default function AdminClient({ basePath, userName, userId }: { basePath: 
     }
   };
 
+  /* ── Email Logs ───────────────────────────────────────────────────────── */
+  const clearLogs = async () => {
+    if (!confirm('Tem certeza que deseja apagar todo o histórico de e-mails? Esta ação não pode ser desfeita.')) return;
+    setMsg('Apagando histórico...');
+    try {
+      const r = await fetch(`${basePath}/api/email-logs`, { method: 'DELETE' });
+      const d = await r.json();
+      if (d.success) {
+        setMsg('Histórico apagado com sucesso.');
+        loadLogs(0);
+      } else {
+        setMsg(`Erro ao apagar histórico: ${d.error}`);
+      }
+    } catch (e) {
+      setMsg('Erro de conexão ao apagar histórico.');
+    }
+  };
+
   /* ── Render ───────────────────────────────────────────────────────────── */
   return (
     <div className="fade-in">
@@ -269,6 +291,9 @@ export default function AdminClient({ basePath, userName, userId }: { basePath: 
 
       {/* ── 2. Agendamento ──────────────────────────────────────────────── */}
       <Section title="2. Agendamento">
+        <p style={{ color: 'var(--text-muted)', marginBottom: 'var(--space-4)' }}>
+          <strong style={{ color: 'var(--text-accent)' }}>Horário do Servidor agora: </strong> {serverTime || 'Carregando...'}
+        </p>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-5)', marginBottom: 'var(--space-5)' }}>
           <div className="toggle-wrap">
             <Toggle
@@ -363,7 +388,7 @@ export default function AdminClient({ basePath, userName, userId }: { basePath: 
       </Section>
 
       {/* ── 3a. Vendedoras ──────────────────────────────────────────────── */}
-      <Section title="3a. Destinatários — Vendedoras">
+      <Section title="3a. Destinatários & Metas — Vendedoras">
         <div className="btn-group" style={{ marginBottom: 'var(--space-5)' }}>
           <button className="btn-secondary" onClick={syncVendedoras}>
             Sincronizar lista do Olist
@@ -376,23 +401,35 @@ export default function AdminClient({ basePath, userName, userId }: { basePath: 
           </p>
         ) : (
           vendedoras.map(v => (
-            <div key={v.id_olist} className="item-row">
-              <span className="item-name">{v.nome}</span>
-              <input
-                type="email"
-                placeholder="e-mail de destino"
-                value={v.email ?? ''}
-                onChange={e => setVendedoras(vs =>
-                  vs.map(x => x.id_olist === v.id_olist ? { ...x, email: e.target.value } : x)
-                )}
-              />
-              <input
-                type="text"
-                value={v.meta_mensal != null ? `Meta (Olist): R$ ${v.meta_mensal}` : 'Meta (Olist): —'}
-                disabled
-                style={{ width: 220 }}
-              />
-              <div className="toggle-wrap">
+            <div key={v.id_olist} className="item-row" style={{ flexWrap: 'wrap', gap: '12px' }}>
+              <span className="item-name" style={{ minWidth: 200 }}>{v.nome}</span>
+              
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <label style={{ fontSize: 'var(--text-sm)', color: 'var(--text-muted)' }}>Meta (R$):</label>
+                <input
+                  type="number"
+                  placeholder="0.00"
+                  value={v.meta_mensal ?? ''}
+                  onChange={e => setVendedoras(vs =>
+                    vs.map(x => x.id_olist === v.id_olist ? { ...x, meta_mensal: parseFloat(e.target.value) || 0 } : x)
+                  )}
+                  style={{ width: 120, padding: '6px 10px' }}
+                />
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, minWidth: 250 }}>
+                <input
+                  type="email"
+                  placeholder="e-mail de destino"
+                  value={v.email ?? ''}
+                  onChange={e => setVendedoras(vs =>
+                    vs.map(x => x.id_olist === v.id_olist ? { ...x, email: e.target.value } : x)
+                  )}
+                  style={{ flex: 1, padding: '6px 10px' }}
+                />
+              </div>
+              
+              <div className="toggle-wrap" style={{ minWidth: 120 }}>
                 <Toggle
                   checked={!!v.recebe_email}
                   onChange={val => setVendedoras(vs =>
@@ -400,13 +437,14 @@ export default function AdminClient({ basePath, userName, userId }: { basePath: 
                   )}
                 />
                 <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
-                  {v.recebe_email ? 'Habilitada' : 'Desabilitada'}
+                  {v.recebe_email ? 'Recebe E-mail' : 'Não Recebe'}
                 </span>
               </div>
+              
               <button
                 className="btn-secondary"
-                style={{ whiteSpace: 'nowrap' }}
-                onClick={() => saveVendedora(v as Vendedora)}
+                style={{ whiteSpace: 'nowrap', padding: '6px 16px' }}
+                onClick={() => saveVendedora(v)}
               >
                 Salvar
               </button>
@@ -484,6 +522,11 @@ export default function AdminClient({ basePath, userName, userId }: { basePath: 
 
       {/* ── 5. Histórico de Envios ───────────────────────────────────────── */}
       <Section title="5. Histórico de E-mails Enviados">
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 'var(--space-4)' }}>
+          <button className="btn-danger" onClick={clearLogs} disabled={logs.length === 0}>
+            Limpar Histórico
+          </button>
+        </div>
         <div className="table-wrap">
           <table className="perf-table">
             <thead>
