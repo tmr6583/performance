@@ -48,18 +48,29 @@ def _fmt_br(iso: str) -> str:
 
 
 
+def _ensure_performance_columns(conn: sqlite3.Connection) -> None:
+    try: conn.execute("ALTER TABLE performance_cache ADD COLUMN clientes_atendidos_mes INTEGER NOT NULL DEFAULT 0")
+    except sqlite3.OperationalError: pass
+    try: conn.execute("ALTER TABLE performance_cache ADD COLUMN clientes_vendas_mes INTEGER NOT NULL DEFAULT 0")
+    except sqlite3.OperationalError: pass
+    try: conn.execute("ALTER TABLE performance_cache ADD COLUMN faturamento_mes REAL NOT NULL DEFAULT 0")
+    except sqlite3.OperationalError: pass
+
 def _upsert_cache(conn: sqlite3.Connection, row: dict) -> None:
+    _ensure_performance_columns(conn)
     conn.execute(
         """
         INSERT INTO performance_cache
             (data, id_vendedor, nome_vendedor,
              pedidos_dia, valor_dia, ticket_medio_dia,
              pedidos_mes, valor_mes, ticket_medio_mes,
+             clientes_atendidos_mes, clientes_vendas_mes, faturamento_mes,
              atualizado_em)
         VALUES
             (:data, :id_vendedor, :nome_vendedor,
              :pedidos_dia, :valor_dia, :ticket_medio_dia,
              :pedidos_mes, :valor_mes, :ticket_medio_mes,
+             :clientes_atendidos_mes, :clientes_vendas_mes, :faturamento_mes,
              CURRENT_TIMESTAMP)
         ON CONFLICT(data, id_vendedor) DO UPDATE SET
             nome_vendedor   = excluded.nome_vendedor,
@@ -69,20 +80,116 @@ def _upsert_cache(conn: sqlite3.Connection, row: dict) -> None:
             pedidos_mes     = excluded.pedidos_mes,
             valor_mes       = excluded.valor_mes,
             ticket_medio_mes = excluded.ticket_medio_mes,
+            clientes_atendidos_mes = excluded.clientes_atendidos_mes,
+            clientes_vendas_mes = excluded.clientes_vendas_mes,
+            faturamento_mes = excluded.faturamento_mes,
             atualizado_em   = CURRENT_TIMESTAMP
         """,
         row,
     )
 
 
+def _ensure_pedidos_cache_table(conn: sqlite3.Connection) -> None:
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS pedidos_cache (
+          id_pedido        INTEGER PRIMARY KEY,
+          data_faturamento TEXT,
+          situacao         TEXT,
+          valor            REAL,
+          id_vendedor      INTEGER,
+          atualizado_em    DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+        """
+    )
+
+def _get_pedido_faturamento(conn: sqlite3.Connection, client: OlistClient, pedido_id: int) -> str | None:
+    """Busca a dataFaturamento no cache; se não tiver, busca na API e salva."""
+    row = conn.execute("SELECT data_faturamento FROM pedidos_cache WHERE id_pedido = ?", (pedido_id,)).fetchone()
+    if row:
+        return row[0]
+        
+    try:
+        # Respeita estritamente o limite da API (Too Many Requests)
+        time.sleep(API_REQUEST_SLEEP)
+        data = client.api_get(f"pedidos/{pedido_id}")
+        data_fat = data.get("dataFaturamento") or ""
+        situacao = str(data.get("situacao") or "")
+        valor = float(data.get("valorTotalPedido") or 0)
+        id_vend = (data.get("vendedor") or {}).get("id")
+        
+        conn.execute(
+            """
+            INSERT INTO pedidos_cache (id_pedido, data_faturamento, situacao, valor, id_vendedor)
+            VALUES (?, ?, ?, ?, ?)
+            ON CONFLICT(id_pedido) DO UPDATE SET
+                data_faturamento = excluded.data_faturamento,
+                situacao = excluded.situacao,
+                valor = excluded.valor,
+                id_vendedor = excluded.id_vendedor,
+                atualizado_em = CURRENT_TIMESTAMP
+            """,
+            (pedido_id, data_fat, situacao, valor, id_vend)
+        )
+        conn.commit()
+        return data_fat
+    except requests.RequestException as e:
+        status = getattr(getattr(e, "response", None), "status_code", None)
+        if status == 429:
+            logger.warning(f"Rate limit ao buscar detalhes do pedido {pedido_id}. Aguardando 2 segundos...")
+            time.sleep(2.0)
+        else:
+            logger.warning(f"Erro ao buscar detalhes do pedido {pedido_id}: HTTP {status} - {e}")
+        return None
+    except Exception as e:
+        logger.warning(f"Erro ao buscar detalhes do pedido {pedido_id}: {e}")
+        return None
+
 # ── Cálculo de totais a partir de lista de pedidos ─────────────────────────
 
-def _calcular(pedidos: list) -> tuple[int, float, float]:
-    """Retorna (quantidade, valor_total, ticket_medio)."""
-    qtd   = len(pedidos)
-    total = sum(float(p.get("valor") or 0) for p in pedidos)
-    ticket = round(total / qtd, 2) if qtd else 0.0
-    return qtd, round(total, 2), ticket
+def _calcular(conn: sqlite3.Connection, client: OlistClient, pedidos: list, mes_alvo: str) -> tuple[int, float, float, int, float]:
+    """Retorna (quantidade, valor_total, ticket_medio, clientes_unicos, faturamento).
+    mes_alvo: string no formato YYYY-MM para filtrar o faturamento.
+    """
+    total = 0.0
+    faturamento = 0.0
+    clientes = set()
+    qtd_valida = 0
+
+    for p in pedidos:
+        val = float(p.get("valor") or 0)
+        situacao = str(p.get("situacao") or "").lower()
+        data_criacao = str(p.get("dataCriacao") or p.get("data") or "")
+
+        # O usuário identificou que na configuração do Tiny deles, a situação '2' (e possivelmente '7') 
+        # representam pedidos cancelados/não faturáveis.
+        if situacao in ("cancelado", "7", "2"):
+            continue
+            
+        # Vendas no mês e tickets consideram apenas pedidos CRIADOS no mês alvo
+        criado_no_mes = data_criacao.startswith(mes_alvo)
+
+        if criado_no_mes:
+            qtd_valida += 1
+            total += val
+
+            cliente = p.get("cliente") or {}
+            cliente_id = cliente.get("id") or cliente.get("nome") or cliente.get("cpf_cnpj")
+            if cliente_id:
+                clientes.add(cliente_id)
+
+        # Faturamento inclui apenas pedidos aprovados/faturados (situacao 1, e outros equivalentes faturados se houver)
+        if situacao in ("faturado", "pronto_envio", "enviado", "entregue", "1", "3", "4", "5", "6"):
+            # Precisamos checar a data de faturamento real
+            pedido_id = p.get("id")
+            if pedido_id:
+                data_fat = _get_pedido_faturamento(conn, client, pedido_id)
+                # Se faturou no mês alvo, entra no faturamento
+                if data_fat and data_fat.startswith(mes_alvo):
+                    faturamento += val
+
+    ticket = round(total / qtd_valida, 2) if qtd_valida else 0.0
+    return qtd_valida, round(total, 2), ticket, len(clientes), round(faturamento, 2)
 
 
 # ── Busca de vendedores ────────────────────────────────────────────────────
@@ -352,10 +459,20 @@ def main() -> None:
 
     hoje       = _hoje()
     ini_mes    = _inicio_mes()
+    mes_alvo   = hoje[:7] # '2026-04'
+    
+    # Para buscar pedidos atrasados, recuamos a busca para o dia 20 do mês passado
+    import datetime as dt
+    dt_ini_mes = datetime.strptime(ini_mes, "%Y-%m-%d").date()
+    # Pega o último dia do mês passado, depois subtrai mais dias para chegar ao dia 20
+    dt_fim_mes_passado = dt_ini_mes - dt.timedelta(days=1)
+    dt_dia_20_mes_passado = dt_fim_mes_passado.replace(day=20)
+    data_busca_retroativa = dt_dia_20_mes_passado.strftime("%Y-%m-%d")
+
     inicio_run = datetime.now()
 
     logger.info("=== Início da extração de performance ===")
-    logger.info(f"Data de referência: {_fmt_br(hoje)}  |  Mês: {_fmt_br(ini_mes)} a {_fmt_br(hoje)}")
+    logger.info(f"Data de referência: {_fmt_br(hoje)}  |  Mês alvo: {mes_alvo} | Busca a partir de: {_fmt_br(data_busca_retroativa)}")
 
     try:
         auth   = OlistAuth()
@@ -370,6 +487,7 @@ def main() -> None:
         sys.exit(0)
 
     conn = get_db()
+    _ensure_pedidos_cache_table(conn)
     erros = 0
 
     try:
@@ -385,11 +503,11 @@ def main() -> None:
                 time.sleep(API_REQUEST_SLEEP)
 
                 # Pedidos do mês
-                pedidos_mes = _buscar_pedidos(client, vid, ini_mes, hoje)
+                pedidos_mes = _buscar_pedidos(client, vid, data_busca_retroativa, hoje)
                 time.sleep(API_REQUEST_SLEEP)
 
-                qtd_dia, val_dia, tick_dia = _calcular(pedidos_dia)
-                qtd_mes, val_mes, tick_mes = _calcular(pedidos_mes)
+                qtd_dia, val_dia, tick_dia, cli_dia, fat_dia = _calcular(conn, client, pedidos_dia, mes_alvo)
+                qtd_mes, val_mes, tick_mes, cli_mes, fat_mes = _calcular(conn, client, pedidos_mes, mes_alvo)
 
                 _upsert_cache(
                     conn,
@@ -403,11 +521,14 @@ def main() -> None:
                         "pedidos_mes":     qtd_mes,
                         "valor_mes":       val_mes,
                         "ticket_medio_mes": tick_mes,
+                        "clientes_atendidos_mes": 0, # Placeholder, não temos rota certa no Tiny ainda
+                        "clientes_vendas_mes": cli_mes,
+                        "faturamento_mes": fat_mes,
                     },
                 )
                 logger.info(
                     f"  {nome}: dia={qtd_dia} pedidos / R$ {val_dia:.2f} | "
-                    f"mês={qtd_mes} pedidos / R$ {val_mes:.2f}"
+                    f"mês={qtd_mes} pedidos / R$ {val_mes:.2f} (Fat: R$ {fat_mes:.2f})"
                 )
 
             except Exception as e:

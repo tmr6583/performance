@@ -14,9 +14,17 @@ import path from 'path';
 import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 
-const dbPath = process.env.SQLITE_DB_PATH
-  ? path.resolve(process.env.SQLITE_DB_PATH)
-  : path.join(process.cwd(), '..', 'database.db');
+const isStandalone = process.cwd().includes('.next');
+const ROOT_DIR = isStandalone 
+  ? path.join(process.cwd(), '../../../../') 
+  : path.join(process.cwd(), '..');
+
+let dbPath = process.env.SQLITE_DB_PATH;
+if (!dbPath) {
+  dbPath = path.join(ROOT_DIR, 'database.db');
+} else if (!path.isAbsolute(dbPath)) {
+  dbPath = path.join(ROOT_DIR, dbPath.replace('../', ''));
+}
 
 const db = new DatabaseSync(dbPath);
 
@@ -91,6 +99,10 @@ export function initDb(): void {
       UNIQUE(data, id_vendedor)
     )
   `);
+
+  try { db.exec('ALTER TABLE performance_cache ADD COLUMN clientes_atendidos_mes INTEGER NOT NULL DEFAULT 0'); } catch { }
+  try { db.exec('ALTER TABLE performance_cache ADD COLUMN clientes_vendas_mes INTEGER NOT NULL DEFAULT 0'); } catch { }
+  try { db.exec('ALTER TABLE performance_cache ADD COLUMN faturamento_mes REAL NOT NULL DEFAULT 0'); } catch { }
 
   // ── Log de e-mails enviados ───────────────────────────────────────────
   db.exec(`

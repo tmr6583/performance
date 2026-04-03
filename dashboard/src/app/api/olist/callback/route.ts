@@ -4,8 +4,6 @@ import { writeTokens } from '@/lib/olist-tokens';
 
 const CLIENT_ID     = process.env.OLIST_CLIENT_ID;
 const CLIENT_SECRET = process.env.OLIST_CLIENT_SECRET;
-const REDIRECT_URI  = process.env.OLIST_REDIRECT_URI
-  ?? 'https://betinalimpeza.ddns.net/performance/api/olist/callback';
 const TOKEN_URL = 'https://accounts.tiny.com.br/realms/tiny/protocol/openid-connect/token';
 
 function resolveBaseUrl(request: NextRequest): string {
@@ -46,6 +44,8 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  const REDIRECT_URI = process.env.OLIST_REDIRECT_URI ?? 'https://betinalimpeza.ddns.net/performance/api/olist/callback';
+
   try {
     const body = new URLSearchParams({
       grant_type:    'authorization_code',
@@ -82,7 +82,7 @@ export async function GET(request: NextRequest) {
     });
 
     // Remove cookie de state após uso
-    const response = NextResponse.redirect(`${baseUrl}/admin?olist_ok=1`, { status: 302 });
+    const response = NextResponse.redirect(`${baseUrl}/?olist_ok=1`, { status: 302 });
     response.cookies.set('oauth_state', '', { maxAge: 0, path: '/' });
     return response;
   } catch {

@@ -5,6 +5,7 @@
  */
 
 import { NextResponse } from 'next/server';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { execFile } from 'child_process';
 import { promisify } from 'util';
 import path from 'path';
@@ -19,8 +20,9 @@ const VALID_ACOES = ['fetch', 'send', 'fetch_and_send'] as const;
 type Acao = (typeof VALID_ACOES)[number];
 
 // Usa variável de ambiente definida no systemd; fallback para ../cwd
+const isStandalone = process.cwd().includes('.next');
 const ROOT_DIR = process.env.PERFORMANCE_SCRIPT_DIR
-  ?? path.join(process.cwd(), '..');
+  ?? (isStandalone ? path.join(process.cwd(), '../../../../') : path.join(process.cwd(), '..'));
 
 function pythonCmd(): string {
   const isWin = process.platform === 'win32';
@@ -37,6 +39,11 @@ function buildPythonEnv(): NodeJS.ProcessEnv {
   const env: NodeJS.ProcessEnv = { ...process.env };
   if (!env.CLIENT_ID && env.OLIST_CLIENT_ID) env.CLIENT_ID = env.OLIST_CLIENT_ID;
   if (!env.CLIENT_SECRET && env.OLIST_CLIENT_SECRET) env.CLIENT_SECRET = env.OLIST_CLIENT_SECRET;
+  
+  // Evitar conflito de caminhos relativos: o Python roda na raiz do projeto e usa os defaults dele
+  delete env.SQLITE_DB_PATH;
+  delete env.TOKEN_FILE;
+  
   env.PYTHONUNBUFFERED = env.PYTHONUNBUFFERED ?? '1';
   return env;
 }
@@ -50,10 +57,12 @@ async function runScript(scriptName: string): Promise<{ code: number; output: st
       timeout: 5 * 60 * 1000, // 5 min
     });
     const output = stdout + (stderr ? `\nSTDERR:\n${stderr}` : '');
+    console.log('Script Output:', output);
     return { code: 0, output };
   } catch (err: unknown) {
     const e = err as { code?: number; stdout?: string; stderr?: string; message?: string };
     const output = (e.stdout ?? '') + (e.stderr ? `\nSTDERR:\n${e.stderr}` : '');
+    console.error('Script Error Output:', output || e.message);
     return { code: e.code ?? 1, output: output || e.message || 'Erro desconhecido' };
   }
 }
@@ -105,6 +114,8 @@ export async function POST(request: Request) {
   try {
     if (acao === 'fetch') {
       const result = await runScript('fetch_performance.py');
+      revalidatePath('/');
+      revalidatePath('/admin');
       return NextResponse.json({ success: result.code === 0, ...result });
     }
 

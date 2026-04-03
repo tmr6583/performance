@@ -6,10 +6,14 @@
 import fs from 'fs/promises';
 import path from 'path';
 
-const tokenFileEnv = process.env.TOKEN_FILE;
-export const TOKEN_FILE = tokenFileEnv
-  ? path.resolve(tokenFileEnv)
-  : path.join(process.cwd(), '..', '.tiny_tokens.json');
+// Determina a raiz do projeto (c:\GitHubLocal\performance)
+const isStandalone = process.cwd().includes('.next');
+const projectRoot = process.env.PERFORMANCE_SCRIPT_DIR 
+  ?? (isStandalone ? path.join(process.cwd(), '../../../../') : path.join(process.cwd(), '..'));
+
+export const TOKEN_FILE = process.env.TOKEN_FILE
+  ? path.resolve(process.env.TOKEN_FILE)
+  : path.join(projectRoot, '.tiny_tokens.json');
 
 const CLIENT_ID     = process.env.OLIST_CLIENT_ID ?? process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.OLIST_CLIENT_SECRET ?? process.env.CLIENT_SECRET;

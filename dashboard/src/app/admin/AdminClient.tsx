@@ -40,8 +40,7 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
 }
 
 /* ── Main Component ─────────────────────────────────────────────────────── */
-export default function AdminClient({ basePath, userName }: { basePath: string; userName: string }) {
-  const [olist,       setOlist]       = useState<OlistStatus>({ status: 'loading' });
+export default function AdminClient({ basePath, userName, userId }: { basePath: string; userName: string; userId: number }) {
   const [vendedoras,  setVendedoras]  = useState<VendedoraWithMeta[]>([]);
   const [users,       setUsers]       = useState<User[]>([]);
   const [schedule,    setSchedule]    = useState<Schedule>({ hora: '18:00', dias: 'seg,ter,qua,qui,sex', recorrencia: 'weekly', dia_mes: 1, ativo: 0 });
@@ -57,14 +56,12 @@ export default function AdminClient({ basePath, userName }: { basePath: string; 
   const [newEmail, setNewEmail] = useState('');
   const [newPwd,   setNewPwd]   = useState('');
 
-  /* ── Loaders ──────────────────────────────────────────────────────────── */
-  const loadOlist = useCallback(async () => {
-    setOlist({ status: 'loading' });
-    const r = await fetch(`${basePath}/api/olist/status`);
-    const d = await r.json();
-    setOlist(d);
-  }, [basePath]);
+  // Password change
+  const [pwdModalUser, setPwdModalUser] = useState<User | null>(null);
+  const [pwdCurrent, setPwdCurrent] = useState('');
+  const [pwdNew, setPwdNew] = useState('');
 
+  /* ── Loaders ──────────────────────────────────────────────────────────── */
   const loadVendedoras = useCallback(async () => {
     const r = await fetch(`${basePath}/api/vendedores`);
     setVendedoras(await r.json());
@@ -98,12 +95,11 @@ export default function AdminClient({ basePath, userName }: { basePath: string; 
   }, [basePath]);
 
   useEffect(() => {
-    loadOlist();
     loadVendedoras();
     loadUsers();
     loadSchedule();
     loadLogs(0);
-  }, [loadOlist, loadVendedoras, loadUsers, loadSchedule, loadLogs]);
+  }, [loadVendedoras, loadUsers, loadSchedule, loadLogs]);
 
   /* ── Script runner ────────────────────────────────────────────────────── */
   const runScript = async (acao: string) => {
@@ -205,22 +201,32 @@ export default function AdminClient({ basePath, userName }: { basePath: string; 
     loadUsers();
   };
 
-  /* ── Olist dot helper ─────────────────────────────────────────────────── */
-  const olistDot = {
-    connected:    'olist-connected',
-    disconnected: 'olist-disconnected',
-    expired:      'olist-expired',
-    loading:      'olist-loading',
-    unknown:      'olist-unknown',
-  }[olist.status] ?? 'olist-unknown';
+  const changePassword = async () => {
+    if (!pwdModalUser) return;
+    if (pwdNew.length < 6) { setMsg('A nova senha deve ter no mínimo 6 caracteres.'); return; }
+    
+    const body: Record<string, string> = { newPassword: pwdNew };
+    if (pwdModalUser.id === userId) {
+      if (!pwdCurrent) { setMsg('A senha atual é obrigatória.'); return; }
+      body.currentPassword = pwdCurrent;
+    }
 
-  const olistText = {
-    connected:    'Olist conectado',
-    disconnected: 'Olist desconectado',
-    expired:      'Token expirado',
-    loading:      'Verificando...',
-    unknown:      'Status desconhecido',
-  }[olist.status] ?? '';
+    const r = await fetch(`${basePath}/api/users/${pwdModalUser.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const d = await r.json();
+    
+    if (d.error) {
+      setMsg(`Erro: ${d.error}`);
+    } else {
+      setMsg('Senha alterada com sucesso.');
+      setPwdModalUser(null);
+      setPwdCurrent('');
+      setPwdNew('');
+    }
+  };
 
   /* ── Render ───────────────────────────────────────────────────────────── */
   return (
@@ -234,18 +240,6 @@ export default function AdminClient({ basePath, userName }: { basePath: string; 
           </p>
         </div>
         <div className="header-actions">
-          <div className="olist-bar">
-            <span className={`olist-dot ${olistDot}`} />
-            <span className="olist-label">{olistText}</span>
-            {olist.status !== 'connected' && olist.status !== 'loading' && (
-              <a href={`${basePath}/api/olist/connect`} className="btn-link" style={{ marginLeft: 6 }}>
-                Conectar
-              </a>
-            )}
-            {olist.status === 'connected' && (
-              <button className="btn-link" style={{ marginLeft: 6 }} onClick={loadOlist}>↻</button>
-            )}
-          </div>
           <Link href={`${basePath}/`} className="btn-secondary">Dashboard</Link>
           <a href={`${basePath}/api/auth/logout`} className="btn-secondary">Sair</a>
         </div>
@@ -447,13 +441,43 @@ export default function AdminClient({ basePath, userName }: { basePath: string; 
         </div>
 
         {users.map(u => (
-          <div key={u.id} className="item-row">
-            <span className="item-name">{u.name}</span>
-            <span style={{ color: 'var(--text-muted)', fontSize: 'var(--text-sm)', flex: 1 }}>{u.email}</span>
-            <span className={`badge ${u.role === 'admin' ? 'badge-admin' : 'badge-vendedora'}`}>
-              {u.role === 'admin' ? 'Admin' : 'Vendedora'}
-            </span>
-            <button className="btn-danger" onClick={() => deleteUser(u.id)}>Excluir</button>
+          <div key={u.id} style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 12 }}>
+            <div className="item-row" style={{ margin: 0 }}>
+              <span className="item-name">{u.name}</span>
+              <span style={{ color: 'var(--text-muted)', fontSize: 'var(--text-sm)', flex: 1 }}>{u.email}</span>
+              <span className={`badge ${u.role === 'admin' ? 'badge-admin' : 'badge-vendedora'}`}>
+                {u.role === 'admin' ? 'Admin' : 'Vendedora'}
+              </span>
+              <button className="btn-secondary" onClick={() => {
+                setPwdModalUser(pwdModalUser?.id === u.id ? null : u);
+                setPwdCurrent('');
+                setPwdNew('');
+              }}>
+                Alterar Senha
+              </button>
+              <button className="btn-danger" onClick={() => deleteUser(u.id)}>Excluir</button>
+            </div>
+
+            {pwdModalUser?.id === u.id && (
+              <div style={{ display: 'flex', gap: 8, padding: '12px 16px', background: 'var(--surface)', borderRadius: 8, border: '1px solid var(--border)' }}>
+                {u.id === userId && (
+                  <input
+                    type="password"
+                    placeholder="Senha atual"
+                    value={pwdCurrent}
+                    onChange={e => setPwdCurrent(e.target.value)}
+                  />
+                )}
+                <input
+                  type="password"
+                  placeholder="Nova senha (mín. 6)"
+                  value={pwdNew}
+                  onChange={e => setPwdNew(e.target.value)}
+                />
+                <button className="btn-primary" onClick={changePassword}>Salvar Senha</button>
+                <button className="btn-secondary" onClick={() => setPwdModalUser(null)}>Cancelar</button>
+              </div>
+            )}
           </div>
         ))}
       </Section>
