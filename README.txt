@@ -192,6 +192,7 @@ O sistema é composto por duas camadas independentes:
   ------------------------------------------------------------------------
 
   JWT_SECRET=<string aleatória longa — nunca expor publicamente>
+  INTERNAL_SECRET=<outra string aleatória para auth do cron job interno>
   OLIST_CLIENT_ID=<Olist Client ID>
   OLIST_CLIENT_SECRET=<Olist Client Secret>
   OLIST_REDIRECT_URI=https://betinalimpeza.ddns.net/performance/api/olist/callback
@@ -199,16 +200,20 @@ O sistema é composto por duas camadas independentes:
   PERFORMANCE_SCRIPT_DIR=/opt/betina/performance
   NEXT_PUBLIC_BASE_PATH=/performance
 
+  NOTA SOBRE STANDALONE BUILD: O Next.js usa caminho absoluto no SQLITE_DB_PATH
+  para garantir que a base não seja duplicada dentro da pasta .next/standalone.
+
   ------------------------------------------------------------------------
   /opt/betina/performance/dashboard/.env.local  (desenvolvimento local)
   ------------------------------------------------------------------------
 
   JWT_SECRET=<mesmo JWT_SECRET>
+  INTERNAL_SECRET=<mesmo INTERNAL_SECRET>
   NEXT_PUBLIC_BASE_PATH=
   OLIST_CLIENT_ID=<Olist Client ID>
   OLIST_CLIENT_SECRET=<Olist Client Secret>
   OLIST_REDIRECT_URI=http://localhost:3200/api/olist/callback
-  SQLITE_DB_PATH=../database.db
+  SQLITE_DB_PATH=c:\GitHubLocal\performance\database.db
 
   NOTA: Em desenvolvimento, NEXT_PUBLIC_BASE_PATH é vazio (app fica na raiz).
 
@@ -245,6 +250,7 @@ O sistema é composto por duas camadas independentes:
   nome             TEXT     Nome (sincronizado via API)
   email            TEXT     E-mail para envio de relatório individual
   recebe_email     INTEGER  1 = recebe e-mail diário de performance
+  meta_mensal      REAL     Meta financeira estipulada para o mês
   updated_at       DATETIME Última atualização
 
   -----------------------------------------------------------------------
@@ -339,7 +345,9 @@ O sistema é composto por duas camadas independentes:
     1. Lista vendedores ativos (situacao = 'A' ou 'B') via GET /vendedores
     2. Para cada vendedor:
        a. Busca pedidos do dia (dataInicial = dataFinal = hoje)
-       b. Busca pedidos do mês (dataInicial = 1º do mês, dataFinal = hoje)
+       b. Busca pedidos do mês (dataInicial = 1º do mês, dataFinal = hoje).
+          A lógica espelha o painel da Olist: faturamento é a soma de
+          todos os pedidos criados no mês vigente com status 1 (não-cancelado).
        c. Calcula: pedidos, valor total, ticket médio (dia e mês)
        d. Faz upsert em performance_cache
     3. Loga resumo: vendedores processados / com erro
@@ -372,19 +380,18 @@ O sistema é composto por duas camadas independentes:
   -----------------------------------------------------------------------
   email_templates.py
   -----------------------------------------------------------------------
-  Gera HTML responsivo para dois tipos de e-mail.
+  Gera HTML responsivo e sem métricas diárias irrelevantes, focando no
+  fechamento mensal vs. meta.
 
   vendedora_html(nome, pedidos_dia, valor_dia, ticket_dia,
                  pedidos_mes, valor_mes, ticket_mes, data)
-    - Exibe métricas individuais do dia e do mês
-    - Alerta visual se não houver pedidos no dia
+    - Exibe métricas individuais mensais
     - Layout responsivo com gradiente azul e destaque amarelo
 
   admin_html(vendedoras[], data)
-    - Tabela consolidada de toda a equipe
+    - Tabela consolidada da equipe (max-width: 696px)
     - Ordenada por valor_mes decrescente
-    - Linha de totais na última linha
-    - KPIs do dia no topo (total de pedidos e valor)
+    - Assunto exibido com data formatada (dd/mm/yyyy)
 
   Funções auxiliares:
     _fmt_brl(valor)    --> "R$ 1.234,56"
@@ -474,7 +481,7 @@ O sistema é composto por duas camadas independentes:
     - Requer autenticação
     - admin: vê métricas de todos os vendedores do dia
     - salesperson: vê apenas a própria performance (match por e-mail)
-    - Exibe KPIs: pedidos do dia, valor do dia, pedidos do mês, valor do mês
+    - Exibe KPIs e tabela com possibilidade de ORDENAÇÃO ao clicar nas colunas.
     - Renderiza DashboardClient.tsx
 
   /performance/admin  (admin/page.tsx)
@@ -491,13 +498,14 @@ O sistema é composto por duas camadas independentes:
 
   2. AGENDAMENTO
      Configura hora (HH:MM) e dias da semana (pílulas clicáveis).
+     Exibe o horário atual do servidor.
      Toggle para ativar/desativar agendamento.
      Salva via POST /api/schedule e recarrega o cron job imediatamente.
 
   3. DESTINATÁRIOS — VENDEDORAS
      Lista vendedoras do banco local.
      Botão "Sincronizar com Olist" (POST /api/vendedores).
-     Campo de e-mail editável por vendedora.
+     Campo de e-mail e campo de "Meta do Mês" editáveis.
      Toggle "Recebe E-mail" por vendedora.
 
   4. DESTINATÁRIOS — ADMINS
@@ -513,6 +521,7 @@ O sistema é composto por duas camadas independentes:
   6. HISTÓRICO DE E-MAILS
      Tabela paginada de email_logs.
      Filtros por tipo (vendedora/admin) e status (ok/erro).
+     Botão "Limpar Histórico" que executa DELETE /api/email-logs.
 
 
 ================================================================================

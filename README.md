@@ -166,6 +166,7 @@ SQLITE_DB_PATH=/opt/betina/performance/database.db
 
 ```ini
 JWT_SECRET=<string aleatória longa>
+INTERNAL_SECRET=<outra string aleatória para auth do cron job interno>
 OLIST_CLIENT_ID=<Olist Client ID>
 OLIST_CLIENT_SECRET=<Olist Client Secret>
 OLIST_REDIRECT_URI=https://betinalimpeza.ddns.net/performance/api/olist/callback
@@ -174,15 +175,18 @@ PERFORMANCE_SCRIPT_DIR=/opt/betina/performance
 NEXT_PUBLIC_BASE_PATH=/performance
 ```
 
+> **Nota sobre Standalone Build:** O Next.js usa um caminho absoluto para o `SQLITE_DB_PATH` garantindo que o build `.next/standalone` não crie um banco isolado e utilize a base de produção correta.
+
 ### `/opt/betina/performance/dashboard/.env.local` — desenvolvimento local
 
 ```ini
 JWT_SECRET=<mesmo JWT_SECRET>
+INTERNAL_SECRET=<mesmo INTERNAL_SECRET>
 NEXT_PUBLIC_BASE_PATH=
 OLIST_CLIENT_ID=<Olist Client ID>
 OLIST_CLIENT_SECRET=<Olist Client Secret>
 OLIST_REDIRECT_URI=http://localhost:3200/api/olist/callback
-SQLITE_DB_PATH=../database.db
+SQLITE_DB_PATH=c:\GitHubLocal\performance\database.db
 ```
 
 ---
@@ -211,6 +215,7 @@ Arquivo: `/opt/betina/performance/database.db` (SQLite, WAL mode)
 | `nome` | TEXT | Nome (sincronizado via API) |
 | `email` | TEXT | E-mail para envio de relatório |
 | `recebe_email` | INTEGER | `1` = recebe e-mail individual |
+| `meta_mensal` | REAL | Meta financeira estipulada para o mês |
 | `updated_at` | DATETIME | Última atualização |
 
 ### Tabela `performance_cache`
@@ -287,7 +292,7 @@ Execução: .venv/bin/python fetch_performance.py
 ```
 
 1. Lista todos os vendedores ativos (`situacao` A ou B) via API
-2. Para cada vendedor: busca pedidos do dia e do mês corrente
+2. Para cada vendedor: busca pedidos do dia e do mês corrente. A lógica do "Faturamento do Mês" espelha o painel da Olist: **soma-se o valor de todos os pedidos criados no mês vigente que não foram cancelados (status `1`).**
 3. Calcula quantidade, valor total e ticket médio por período
 4. Faz upsert em `performance_cache`
 5. Sai com código `1` se todos os vendedores falharem, `0` se ao menos um tiver êxito
@@ -307,10 +312,10 @@ Execução: .venv/bin/python send_emails.py
 
 ### `email_templates.py`
 
-Gera HTML responsivo para dois tipos de e-mail:
+Gera HTML responsivo e sem métricas irrelevantes (estatísticas diárias não são exibidas para focar no fechamento mensal).
 
-- **`vendedora_html()`** — métricas individuais (pedidos e valor do dia e do mês)
-- **`admin_html()`** — tabela consolidada da equipe ordenada por valor mensal decrescente
+- **`vendedora_html()`** — métricas individuais mensais focadas no faturamento vs metas.
+- **`admin_html()`** — tabela consolidada da equipe (696px max-width) ordenada por valor mensal decrescente. O assunto exibe a data formatada como `dd/mm/yyyy`.
 
 ### `refresh_tokens.py`
 
@@ -371,17 +376,17 @@ O header `x-internal: 1` permite que o scheduler execute os scripts sem cookie J
 | Rota | Acesso | Descrição |
 |---|---|---|
 | `/performance/login` | Público | Formulário de login |
-| `/performance` | Autenticado | Performance do dia (admin vê todos; vendedora vê só a própria) |
+| `/performance` | Autenticado | Performance consolidada. Permite ordenação clicando nas colunas da tabela. (Admin vê todos; Vendedora vê só a própria) |
 | `/performance/admin` | Admin | Painel de administração completo |
 
 ### Painel Admin — Seções
 
 1. **Execução Manual** — botões para Buscar Dados, Enviar E-mails ou ambos; exibe saída do script em terminal
-2. **Agendamento** — configura hora e dias da semana; ativa/desativa agendamento automático
-3. **Destinatários — Vendedoras** — sincroniza lista da API Olist, define e-mail e ativa/desativa envio por vendedora
+2. **Agendamento** — configura hora e dias da semana; ativa/desativa agendamento automático. Exibe também o **Horário atual do Servidor**
+3. **Destinatários — Vendedoras** — sincroniza lista da API Olist, define e-mail, gerencia a **Meta do Mês** de cada vendedora, e ativa/desativa envio individual
 4. **Destinatários — Admins** — ativa/desativa recebimento do relatório consolidado por usuário admin
 5. **Usuários Dashboard** — cria, edita e exclui usuários; altera senhas
-6. **Histórico de E-mails** — consulta paginada dos logs com filtros por tipo e status
+6. **Histórico de E-mails** — consulta paginada dos logs com filtros por tipo e status, com opção de **Limpar Histórico**
 
 ---
 
@@ -443,7 +448,8 @@ Restrições de exclusão:
 
 | Método | Rota | Acesso | Parâmetros | Descrição |
 |---|---|---|---|---|
-| GET | `/api/email-logs` | Admin | `tipo`, `status`, `limit` (máx 200), `offset` | Histórico paginado |
+| GET | `/api/email-logs` | Admin | `limit` (máx 200), `offset` | Histórico paginado |
+| DELETE | `/api/email-logs` | Admin | Nenhum | Apaga todo o histórico da tabela |
 
 ---
 
