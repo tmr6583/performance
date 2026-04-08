@@ -17,6 +17,7 @@ import sqlite3
 import ssl
 import sys
 import uuid
+import os
 from datetime import date
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -78,6 +79,15 @@ def _registrar_log(
     )
 
 
+def _aplicar_retencao_logs(conn: sqlite3.Connection) -> None:
+    conn.execute(
+        """
+        DELETE FROM email_logs
+        WHERE enviado_em < datetime('now', '-30 day')
+        """
+    )
+
+
 # ── Ponto de entrada ───────────────────────────────────────────────────────
 
 def main() -> None:
@@ -87,14 +97,21 @@ def main() -> None:
 
     hoje        = date.today().isoformat()
     execucao_id = str(uuid.uuid4())
+    send_mode = (os.getenv("SEND_EMAILS_MODE") or "all").strip().lower()
+    admin_only = send_mode in {"admin_only", "admins_only", "admin"}
     logger.info(f"=== Início do envio de e-mails — execução {execucao_id} ===")
     logger.info(f"Data de referência: {hoje}")
+    if admin_only:
+        logger.info("Modo de envio: somente administradores")
 
     conn = get_db()
     ok_count  = 0
     err_count = 0
 
     try:
+        _aplicar_retencao_logs(conn)
+        conn.commit()
+
         # ── 1. Dados de performance do dia ─────────────────────────────────
         conn.execute("""
             CREATE TABLE IF NOT EXISTS metas_vendedores (
@@ -120,60 +137,60 @@ def main() -> None:
             r["id_olist"]: float(r["meta_mensal"] or 0) for r in metas_rows
         }
 
-        # ── 2. E-mails individuais para vendedoras ─────────────────────────
-        vendedoras = conn.execute(
-            "SELECT * FROM vendedores WHERE recebe_email = 1 AND email IS NOT NULL AND email != ''"
-        ).fetchall()
+        if not admin_only:
+            vendedoras = conn.execute(
+                "SELECT * FROM vendedores WHERE recebe_email = 1 AND email IS NOT NULL AND email != ''"
+            ).fetchall()
 
-        logger.info(f"{len(vendedoras)} vendedora(s) habilitada(s) para receber e-mail.")
+            logger.info(f"{len(vendedoras)} vendedora(s) habilitada(s) para receber e-mail.")
 
-        for v in vendedoras:
-            vid  = v["id_olist"]
-            nome = v["nome"]
-            dest = v["email"]
+            for v in vendedoras:
+                vid  = v["id_olist"]
+                nome = v["nome"]
+                dest = v["email"]
 
-            dados = cache_por_vendedor.get(vid, {})
-            meta  = metas_por_vendedor.get(vid, 0.0)
-            valor_mes = float(dados.get("valor_mes", 0.0) or 0.0)
-            perc_meta = round((valor_mes / meta) * 100, 2) if meta > 0 else 0.0
-            falta     = round(max(meta - valor_mes, 0.0), 2) if meta > 0 else 0.0
-            html  = vendedora_html(
-                nome        = nome,
-                pedidos_dia = dados.get("pedidos_dia",      0),
-                valor_dia   = dados.get("valor_dia",        0.0),
-                ticket_dia  = dados.get("ticket_medio_dia", 0.0),
-                pedidos_mes = dados.get("pedidos_mes",      0),
-                valor_mes   = dados.get("valor_mes",        0.0),
-                ticket_mes  = dados.get("ticket_medio_mes", 0.0),
-                meta_mensal = meta,
-                perc_meta   = perc_meta,
-                falta_meta  = falta,
-                data        = hoje,
-            )
-            assunto = f"Seu desempenho,  {nome}"
-
-            try:
-                _enviar_email(dest, assunto, html)
-                _registrar_log(conn, execucao_id, "vendedora", dest, nome, "ok")
-                conn.commit()
-                logger.info(f"  ✓ Enviado para {nome} <{dest}>")
-                ok_count += 1
-
-            except smtplib.SMTPAuthenticationError:
-                logger.error("Falha de autenticação SMTP — abortando todos os envios.")
-                _registrar_log(
-                    conn, execucao_id, "vendedora", dest, nome, "erro",
-                    "Falha de autenticação SMTP"
+                dados = cache_por_vendedor.get(vid, {})
+                meta  = metas_por_vendedor.get(vid, 0.0)
+                valor_mes = float(dados.get("valor_mes", 0.0) or 0.0)
+                perc_meta = round((valor_mes / meta) * 100, 2) if meta > 0 else 0.0
+                falta     = round(max(meta - valor_mes, 0.0), 2) if meta > 0 else 0.0
+                html  = vendedora_html(
+                    nome        = nome,
+                    pedidos_dia = dados.get("pedidos_dia",      0),
+                    valor_dia   = dados.get("valor_dia",        0.0),
+                    ticket_dia  = dados.get("ticket_medio_dia", 0.0),
+                    pedidos_mes = dados.get("pedidos_mes",      0),
+                    valor_mes   = dados.get("valor_mes",        0.0),
+                    ticket_mes  = dados.get("ticket_medio_mes", 0.0),
+                    meta_mensal = meta,
+                    perc_meta   = perc_meta,
+                    falta_meta  = falta,
+                    data        = hoje,
                 )
-                conn.commit()
-                sys.exit(1)
+                assunto = f"Seu desempenho,  {nome}"
 
-            except Exception as e:
-                msg = str(e)
-                logger.error(f"  ✗ Falha ao enviar para {nome} <{dest}>: {msg}")
-                _registrar_log(conn, execucao_id, "vendedora", dest, nome, "erro", msg)
-                conn.commit()
-                err_count += 1
+                try:
+                    _enviar_email(dest, assunto, html)
+                    _registrar_log(conn, execucao_id, "vendedora", dest, nome, "ok")
+                    conn.commit()
+                    logger.info(f"  ✓ Enviado para {nome} <{dest}>")
+                    ok_count += 1
+
+                except smtplib.SMTPAuthenticationError:
+                    logger.error("Falha de autenticação SMTP — abortando todos os envios.")
+                    _registrar_log(
+                        conn, execucao_id, "vendedora", dest, nome, "erro",
+                        "Falha de autenticação SMTP"
+                    )
+                    conn.commit()
+                    sys.exit(1)
+
+                except Exception as e:
+                    msg = str(e)
+                    logger.error(f"  ✗ Falha ao enviar para {nome} <{dest}>: {msg}")
+                    _registrar_log(conn, execucao_id, "vendedora", dest, nome, "erro", msg)
+                    conn.commit()
+                    err_count += 1
 
         # ── 3. E-mail de resumo para administradores ───────────────────────
         admins = conn.execute(
@@ -186,14 +203,13 @@ def main() -> None:
             hoje_br = date.today().strftime("%d/%m/%Y")
             todos_dados = []
             for vid, row in cache_por_vendedor.items():
-                meta = metas_por_vendedor.get(vid, 0.0)
+                meta = float(metas_por_vendedor.get(vid, 0.0) or 0.0)
                 valor_mes = float(row.get("valor_mes", 0.0) or 0.0)
-                perc_meta = round((valor_mes / meta) * 100, 2) if meta > 0 else 0.0
-                falta     = round(max(meta - valor_mes, 0.0), 2) if meta > 0 else 0.0
+                faturamento_mes = float(row.get("faturamento_mes", 0.0) or 0.0)
+                realizado = round((faturamento_mes / meta) * 100, 2) if meta > 0 else 0.0
                 r = dict(row)
                 r["meta_mensal"] = meta
-                r["perc_meta"]   = perc_meta
-                r["falta_meta"]  = falta
+                r["realizado"] = realizado
                 todos_dados.append(r)
             html_admin  = admin_html(todos_dados, data=hoje)
             assunto_admin = f"Desempenho da Equipe — {hoje_br}"

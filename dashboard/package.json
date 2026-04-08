@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3200",
+    "dev": "next dev -p 3100",
     "build": "next build && node -e \"require('fs').cpSync('.next/static', '.next/standalone/dashboard/.next/static', {recursive: true})\"",
-    "start": "next start -p 3200",
-    "start:optimized": "cross-env PORT=3200 HOSTNAME=127.0.0.1 node --env-file=.env.local --max-old-space-size=128 .next/standalone/dashboard/server.js",
+    "start": "cross-env NODE_ENV=production node server.mjs",
+    "start:optimized": "cross-env-shell NODE_ENV=production APP_ENABLE_CLUSTER=0 APP_WORKERS=1 NODE_OPTIONS=\"--max-old-space-size=192 --expose-gc\" \"node server.mjs\"",
+    "start:cluster": "cross-env NODE_ENV=production APP_ENABLE_CLUSTER=1 node server.mjs",
+    "start:pm2": "pm2 start ecosystem.config.mjs --env production",
     "start:unified": "node unified-server.mjs",
     "lint": "eslint"
   },

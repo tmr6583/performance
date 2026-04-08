@@ -1,11 +1,11 @@
 /**
  * POST /api/scripts
  * Dispara fetch_performance.py ou send_emails.py (apenas admin).
- * Body: { acao: 'fetch' | 'send' | 'fetch_and_send' }
+ * Body: { acao: 'fetch' | 'send' | 'send_admin_only' | 'fetch_and_send' }
  */
 
 import { NextResponse } from 'next/server';
-import { revalidatePath, revalidateTag } from 'next/cache';
+import { revalidatePath } from 'next/cache';
 import { execFile } from 'child_process';
 import { promisify } from 'util';
 import path from 'path';
@@ -13,11 +13,13 @@ import fs from 'fs';
 import { getAuthUser } from '@/lib/auth';
 import { isInternalRequest } from '@/lib/scheduler';
 import db, { ensureDbInitialized } from '@/lib/db';
+import { getOlistCredentialsRaw } from '@/lib/olist-tokens';
 
 const execFileAsync = promisify(execFile);
 
-const VALID_ACOES = ['fetch', 'send', 'fetch_and_send'] as const;
+const VALID_ACOES = ['fetch', 'send', 'send_admin_only', 'fetch_and_send'] as const;
 type Acao = (typeof VALID_ACOES)[number];
+const shouldLogInfo = process.env.NODE_ENV !== 'production' || process.env.APP_VERBOSE_LOGS === '1';
 
 // Usa variável de ambiente definida no systemd; fallback para ../cwd
 const isStandalone = process.cwd().includes('.next');
@@ -37,6 +39,9 @@ function pythonCmd(): string {
 
 function buildPythonEnv(): NodeJS.ProcessEnv {
   const env: NodeJS.ProcessEnv = { ...process.env };
+  const creds = getOlistCredentialsRaw();
+  if (creds.client_id) env.CLIENT_ID = creds.client_id;
+  if (creds.client_secret) env.CLIENT_SECRET = creds.client_secret;
   if (!env.CLIENT_ID && env.OLIST_CLIENT_ID) env.CLIENT_ID = env.OLIST_CLIENT_ID;
   if (!env.CLIENT_SECRET && env.OLIST_CLIENT_SECRET) env.CLIENT_SECRET = env.OLIST_CLIENT_SECRET;
   
@@ -48,16 +53,20 @@ function buildPythonEnv(): NodeJS.ProcessEnv {
   return env;
 }
 
-async function runScript(scriptName: string): Promise<{ code: number; output: string }> {
+async function runScript(
+  scriptName: string,
+  options?: { args?: string[]; env?: Partial<NodeJS.ProcessEnv> }
+): Promise<{ code: number; output: string }> {
   const scriptPath = path.join(ROOT_DIR, scriptName);
   try {
-    const { stdout, stderr } = await execFileAsync(pythonCmd(), [scriptPath], {
+    const args = [scriptPath, ...(options?.args ?? [])];
+    const { stdout, stderr } = await execFileAsync(pythonCmd(), args, {
       cwd:     ROOT_DIR,
-      env:     buildPythonEnv(),
+      env:     { ...buildPythonEnv(), ...(options?.env ?? {}) },
       timeout: 5 * 60 * 1000, // 5 min
     });
     const output = stdout + (stderr ? `\nSTDERR:\n${stderr}` : '');
-    console.log('Script Output:', output);
+    if (shouldLogInfo) console.log('Script Output:', output);
     return { code: 0, output };
   } catch (err: unknown) {
     const e = err as { code?: number; stdout?: string; stderr?: string; message?: string };
@@ -121,6 +130,13 @@ export async function POST(request: Request) {
 
     if (acao === 'send') {
       const result = await runScript('send_emails.py');
+      return NextResponse.json({ success: result.code === 0, ...result });
+    }
+
+    if (acao === 'send_admin_only') {
+      const result = await runScript('send_emails.py', {
+        env: { SEND_EMAILS_MODE: 'admin_only' },
+      });
       return NextResponse.json({ success: result.code === 0, ...result });
     }
 

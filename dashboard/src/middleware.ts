@@ -51,6 +51,10 @@ async function verifyJwt(token: string, secret: string): Promise<boolean> {
 // ── Middleware ──────────────────────────────────────────────────────────────
 
 const MOUNT_PATH = process.env.NEXT_PUBLIC_BASE_PATH || '';
+const MAX_PAYLOAD_MB = Number(process.env.APP_MAX_PAYLOAD_MB ?? '1');
+const MAX_PAYLOAD_BYTES = Number.isFinite(MAX_PAYLOAD_MB) && MAX_PAYLOAD_MB > 0
+  ? MAX_PAYLOAD_MB * 1024 * 1024
+  : 1024 * 1024;
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -68,7 +72,19 @@ export async function middleware(request: NextRequest) {
     effectivePath === '/favicon.ico' ||
     /\.(?:svg|png|jpg|jpeg|webp|ico)$/i.test(effectivePath)
   ) {
-    return NextResponse.next();
+    const response = NextResponse.next();
+    response.headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+    return response;
+  }
+
+  if (
+    effectivePath.startsWith('/api/') &&
+    ['POST', 'PUT', 'PATCH'].includes(request.method)
+  ) {
+    const contentLength = Number(request.headers.get('content-length') ?? '0');
+    if (Number.isFinite(contentLength) && contentLength > MAX_PAYLOAD_BYTES) {
+      return NextResponse.json({ error: 'Payload muito grande' }, { status: 413 });
+    }
   }
 
   // Rotas públicas de autenticação e OAuth

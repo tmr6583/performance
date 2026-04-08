@@ -8,6 +8,7 @@
   "/api/olist/callback/route": "/api/olist/callback",
   "/api/olist/connect/route": "/api/olist/connect",
   "/api/olist/status/route": "/api/olist/status",
+  "/api/olist/token/route": "/api/olist/token",
   "/api/schedule/route": "/api/schedule",
   "/api/scripts/route": "/api/scripts",
   "/api/users/[id]/route": "/api/users/[id]",

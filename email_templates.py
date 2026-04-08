@@ -37,7 +37,7 @@ _BASE_STYLE = """
   .wrap { max-width: 580px; margin: 32px auto; background: #ffffff;
           border-radius: 10px; overflow: hidden;
           box-shadow: 0 4px 24px rgba(11,61,143,.12); }
-  .wrap-admin { max-width: 696px; margin: 32px auto; background: #ffffff;
+  .wrap-admin { max-width: 1040px; margin: 32px auto; background: #ffffff;
                 border-radius: 10px; overflow: hidden;
                 box-shadow: 0 4px 24px rgba(11,61,143,.12); }
   .header { background: linear-gradient(135deg, #0B3D8F 0%, #1156C7 60%, #3A9BD5 100%);
@@ -185,27 +185,26 @@ def admin_html(
     data_exib = _fmt_data(data)
     mes_exib  = _fmt_mes_ano(data)
 
-    total_pd  = sum(v.get("pedidos_dia", 0) for v in vendedoras)
-    total_vd  = sum(v.get("valor_dia",   0.0) for v in vendedoras)
-    total_pm  = sum(v.get("pedidos_mes", 0) for v in vendedoras)
-    total_vm  = sum(v.get("valor_mes",   0.0) for v in vendedoras)
-    total_meta = sum(v.get("meta_mensal", 0.0) for v in vendedoras)
-    has_meta = total_meta > 0
+    total_pd  = sum(int(v.get("pedidos_dia", 0) or 0) for v in vendedoras)
+    total_vd  = sum(float(v.get("valor_dia", 0.0) or 0.0) for v in vendedoras)
+    total_pm  = sum(int(v.get("pedidos_mes", 0) or 0) for v in vendedoras)
+    total_vm  = sum(float(v.get("valor_mes", 0.0) or 0.0) for v in vendedoras)
+    total_meta = sum(float(v.get("meta_mensal", 0.0) or 0.0) for v in vendedoras)
+    total_faturamento = sum(float(v.get("faturamento_mes", 0.0) or 0.0) for v in vendedoras)
+    total_realizado = (total_faturamento / total_meta) * 100 if total_meta > 0 else 0.0
 
     linhas_html = ""
-    for v in sorted(vendedoras, key=lambda x: x.get("valor_mes", 0), reverse=True):
-        meta_cols = ""
-        if has_meta:
-            meta_cols = f"""
-              <td class="text-right">{_fmt_brl(v.get('meta_mensal', 0.0))}</td>
-              <td class="text-right">{v.get('perc_meta', 0.0):.2f}%</td>
-              <td class="text-right">{_fmt_brl(v.get('falta_meta', 0.0))}</td>"""
-
+    for v in sorted(vendedoras, key=lambda x: float(x.get("faturamento_mes", 0.0) or 0.0), reverse=True):
+        meta = float(v.get("meta_mensal", 0.0) or 0.0)
+        faturamento = float(v.get("faturamento_mes", 0.0) or 0.0)
+        realizado = (faturamento / meta) * 100 if meta > 0 else 0.0
         linhas_html += f"""
         <tr>
           <td>{_esc(v.get('nome_vendedor', '—'))}</td>
+          <td class="text-right">{_fmt_brl(meta)}</td>
           <td class="text-right">{_fmt_brl(v.get('valor_mes', 0.0))}</td>
-          {meta_cols}
+          <td class="text-right">{_fmt_brl(faturamento)}</td>
+          <td class="text-right">{f"{realizado:.2f}%" if meta > 0 else "-"}</td>
         </tr>"""
 
     return f"""<!DOCTYPE html>
@@ -222,28 +221,38 @@ def admin_html(
 
   <div class="body">
 
-    <div class="section-title">Totais do Mês — {mes_exib}</div>
-    <div class="kpi-grid" style="grid-template-columns:1fr 1fr;margin-bottom:24px">
+    <div class="section-title">Totais da Equipe — {mes_exib}</div>
+    <div class="kpi-grid" style="grid-template-columns:1fr 1fr 1fr 1fr;margin-bottom:24px">
       <div class="kpi">
-        <div class="label">Pedidos</div>
+        <div class="label">Pedidos Hoje</div>
+        <div class="val">{total_pd}</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Faturado Hoje</div>
+        <div class="val" style="font-size:15px">{_fmt_brl(total_vd)}</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Pedidos no Mês</div>
         <div class="val">{total_pm}</div>
       </div>
       <div class="kpi">
-        <div class="label">Faturado</div>
+        <div class="label">VENDIDO no Mês</div>
         <div class="val" style="font-size:15px">{_fmt_brl(total_vm)}</div>
       </div>
     </div>
 
     <div class="divider"></div>
 
-    <div class="section-title">Performance Individual — {mes_exib}</div>
+    <div class="section-title">Desempenho por Vendedor — {mes_exib}</div>
     <div style="overflow-x:auto">
       <table class="perf-table">
         <thead>
           <tr>
-            <th>Vendedora</th>
-            <th class="text-right">Valor Mês</th>
-            {('<th class="text-right">Meta</th><th class="text-right">% Meta</th><th class="text-right">Faltam</th>' if has_meta else '')}
+            <th>Vendedor</th>
+            <th class="text-right">Meta do mês</th>
+            <th class="text-right">Vendas no mês</th>
+            <th class="text-right">Faturamento no mês</th>
+            <th class="text-right">Realizado</th>
           </tr>
         </thead>
         <tbody>
@@ -251,9 +260,11 @@ def admin_html(
         </tbody>
         <tfoot>
           <tr class="total">
-            <td>TOTAL EQUIPE</td>
+            <td>Totais</td>
+            <td class="text-right">{_fmt_brl(total_meta)}</td>
             <td class="text-right">{_fmt_brl(total_vm)}</td>
-            {('<td class="text-right">' + _fmt_brl(total_meta) + '</td><td class="text-right"></td><td class="text-right"></td>' if has_meta else '')}
+            <td class="text-right">{_fmt_brl(total_faturamento)}</td>
+            <td class="text-right">{f"{total_realizado:.2f}%" if total_meta > 0 else "-"}</td>
           </tr>
         </tfoot>
       </table>

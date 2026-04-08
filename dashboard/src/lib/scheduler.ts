@@ -8,7 +8,12 @@
 import cron from 'node-cron';
 import db, { ensureDbInitialized } from './db';
 
-let currentTask: cron.ScheduledTask | null = null;
+let currentTasks: cron.ScheduledTask[] = [];
+const shouldLogInfo = process.env.NODE_ENV !== 'production' || process.env.APP_VERBOSE_LOGS === '1';
+
+function logInfo(message: string): void {
+  if (shouldLogInfo) console.log(message);
+}
 
 const DIA_MAP: Record<string, number> = {
   dom: 0, seg: 1, ter: 2, qua: 3, qui: 4, sex: 5, sab: 6,
@@ -43,19 +48,21 @@ function datePartsInTimeZone(date: Date, timeZone: string): { year: number; mont
   return { year, month, day };
 }
 
-function shouldRunMonthly(targetDay: number, timeZone: string): boolean {
+function shouldRunMonthly(targetDay: number, lastDayOnly: boolean, timeZone: string): boolean {
   const { year, month, day } = datePartsInTimeZone(new Date(), timeZone);
   const lastDay = new Date(Date.UTC(year, month, 0)).getUTCDate();
+  if (lastDayOnly) return day === lastDay;
   const runDay = Math.min(Math.max(targetDay, 1), lastDay);
   return day === runDay;
 }
 
 async function triggerSend(): Promise<void> {
   try {
-    const port    = process.env.PORT ?? 3200;
+    const port    = process.env.PORT ?? 3100;
     const base    = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
     const baseUrl = `http://127.0.0.1:${port}${base}`;
     const secret  = process.env.INTERNAL_SECRET ?? '';
+    const timeoutMs = Number(process.env.APP_INTERNAL_FETCH_TIMEOUT_MS ?? '15000');
 
     const res = await fetch(`${baseUrl}/api/scripts`, {
       method:  'POST',
@@ -64,6 +71,9 @@ async function triggerSend(): Promise<void> {
         'x-internal-secret': secret,
       },
       body: JSON.stringify({ acao: 'fetch_and_send' }),
+      signal: AbortSignal.timeout(
+        Number.isFinite(timeoutMs) && timeoutMs > 0 ? timeoutMs : 15000
+      ),
     });
 
     if (!res.ok) {
@@ -75,48 +85,62 @@ async function triggerSend(): Promise<void> {
 }
 
 export function reloadScheduler(): void {
-  // Para job anterior
-  if (currentTask) {
-    currentTask.stop();
-    currentTask = null;
-  }
+  for (const task of currentTasks) task.stop();
+  currentTasks = [];
 
   try {
     ensureDbInitialized();
-    const row = db.prepare('SELECT hora, dias, recorrencia, dia_mes, ativo FROM schedules WHERE id = 1').get() as
-      | { hora: string; dias: string; recorrencia?: string; dia_mes?: number; ativo: number }
-      | undefined;
+    const rows = db.prepare(`
+      SELECT id, hora, dias, recorrencia, dia_mes, ultimo_dia_mes, ativo
+      FROM schedules
+      ORDER BY id ASC
+    `).all() as Array<{
+      id: number;
+      hora: string;
+      dias: string;
+      recorrencia?: string;
+      dia_mes?: number;
+      ultimo_dia_mes?: number;
+      ativo: number;
+    }>;
 
-    if (!row || !row.ativo) {
-      console.log('[scheduler] Agendamento desativado.');
+    const activeRows = rows.filter((row) => row.ativo);
+    if (activeRows.length === 0) {
+      logInfo('[scheduler] Agendamento desativado.');
       return;
     }
 
     const timeZone = process.env.TZ ?? 'America/Sao_Paulo';
-    const recorrencia = row.recorrencia ?? 'weekly';
-    const diaMes = row.dia_mes ?? 1;
+    for (const row of activeRows) {
+      const recorrencia = row.recorrencia ?? 'weekly';
+      const diaMes = row.dia_mes ?? 1;
+      const ultimoDiaMes = row.ultimo_dia_mes ? 1 : 0;
 
-    const expr = recorrencia === 'weekly'
-      ? buildWeeklyCronExpr(row.hora, row.dias)
-      : buildDailyCronExpr(row.hora);
+      const expr = recorrencia === 'weekly'
+        ? buildWeeklyCronExpr(row.hora, row.dias)
+        : buildDailyCronExpr(row.hora);
 
-    if (!cron.validate(expr)) {
-      console.error(`[scheduler] Expressão cron inválida: ${expr}`);
-      return;
+      if (!cron.validate(expr)) {
+        console.error(`[scheduler] Expressão cron inválida (schedule ${row.id}): ${expr}`);
+        continue;
+      }
+
+      const task = cron.schedule(expr, () => {
+        if (recorrencia === 'monthly') {
+          if (!shouldRunMonthly(diaMes, Boolean(ultimoDiaMes), timeZone)) return;
+        }
+        logInfo(`[scheduler] Disparando fetch_and_send (schedule ${row.id}) — ${new Date().toISOString()}`);
+        triggerSend();
+      }, { timezone: timeZone });
+      currentTasks.push(task);
+
+      const details = recorrencia === 'weekly'
+        ? `${row.hora} em ${row.dias}`
+        : recorrencia === 'monthly'
+          ? `${row.hora} ${ultimoDiaMes ? 'no último dia do mês' : `no dia ${diaMes} do mês`}`
+          : `${row.hora} todos os dias`;
+      logInfo(`[scheduler] Job ${row.id} agendado: ${expr} (${details})`);
     }
-
-    currentTask = cron.schedule(expr, () => {
-      if (recorrencia === 'monthly' && !shouldRunMonthly(diaMes, timeZone)) return;
-      console.log(`[scheduler] Disparando fetch_and_send — ${new Date().toISOString()}`);
-      triggerSend();
-    }, { timezone: timeZone });
-
-    const details = recorrencia === 'weekly'
-      ? `${row.hora} em ${row.dias}`
-      : recorrencia === 'monthly'
-        ? `${row.hora} no dia ${diaMes} do mês`
-        : `${row.hora} todos os dias`;
-    console.log(`[scheduler] Job agendado: ${expr} (${details})`);
   } catch (e) {
     console.error('[scheduler] Erro ao carregar schedule:', e);
   }

@@ -16,7 +16,7 @@ export async function GET(request: Request) {
   const limit  = Math.min(parseInt(searchParams.get('limit')  ?? '50',  10) || 50,  200);
   const offset = Math.max(parseInt(searchParams.get('offset') ?? '0',   10) || 0,   0);
 
-  const conditions: string[] = [];
+  const conditions: string[] = ["enviado_em >= datetime('now', '-30 day')"];
   const params: (string | number)[] = [];
 
   if (tipo   === 'vendedora' || tipo   === 'admin') { conditions.push('tipo = ?');   params.push(tipo); }
@@ -35,7 +35,7 @@ export async function GET(request: Request) {
   return NextResponse.json({ total, rows });
 }
 
-export async function DELETE(request: Request) {
+export async function DELETE() {
   const user = await getAuthUser();
   if (!user || user.role !== 'admin') {
     return NextResponse.json({ error: 'Não autorizado' }, { status: 403 });
@@ -46,7 +46,8 @@ export async function DELETE(request: Request) {
   try {
     db.prepare('DELETE FROM email_logs').run();
     return NextResponse.json({ success: true });
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message || 'Erro ao limpar histórico' }, { status: 500 });
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : 'Erro ao limpar histórico';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

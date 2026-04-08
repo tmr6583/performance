@@ -101,6 +101,12 @@
       "namedRegex": "^/api/olist/status(?:/)?$"
     },
     {
+      "page": "/api/olist/token",
+      "regex": "^/api/olist/token(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/olist/token(?:/)?$"
+    },
+    {
       "page": "/api/schedule",
       "regex": "^/api/schedule(?:/)?$",
       "routeKeys": {},

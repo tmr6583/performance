@@ -9,6 +9,13 @@ import { getAuthUser } from '@/lib/auth';
 import { getValidAccessToken, refreshAccessToken, readTokens } from '@/lib/olist-tokens';
 
 const API_BASE = 'https://api.tiny.com.br/public-api/v3';
+const REQUEST_TIMEOUT_MS = Number(process.env.APP_EXTERNAL_FETCH_TIMEOUT_MS ?? '20000');
+
+function withTimeout() {
+  return AbortSignal.timeout(
+    Number.isFinite(REQUEST_TIMEOUT_MS) && REQUEST_TIMEOUT_MS > 0 ? REQUEST_TIMEOUT_MS : 20000
+  );
+}
 
 export async function GET() {
   const user = await getAuthUser();
@@ -53,7 +60,7 @@ export async function POST() {
   while (offset < total) {
     let res = await fetch(
       `${API_BASE}/vendedores?limit=100&offset=${offset}`,
-      { headers: { Authorization: `Bearer ${token}` } }
+      { headers: { Authorization: `Bearer ${token}` }, signal: withTimeout() }
     );
     if (res.status === 401) {
       const current = await readTokens();
@@ -63,7 +70,7 @@ export async function POST() {
           token = refreshed;
           res = await fetch(
             `${API_BASE}/vendedores?limit=100&offset=${offset}`,
-            { headers: { Authorization: `Bearer ${token}` } }
+            { headers: { Authorization: `Bearer ${token}` }, signal: withTimeout() }
           );
         }
       }

@@ -1,15 +1,15 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 
 /* ── Types ─────────────────────────────────────────────────────────────── */
 interface Vendedora { id_olist: number; nome: string; email: string | null; recebe_email: number; }
 interface VendedoraWithMeta extends Vendedora { meta_mensal?: number }
 interface User { id: number; name: string; email: string; role: string; id_olist: number | null; recebe_relatorio: number; }
-interface Schedule { hora: string; dias: string; recorrencia: 'daily' | 'weekly' | 'monthly'; dia_mes: number; ativo: number; }
+interface Schedule { id?: number; hora: string; dias: string; recorrencia: 'daily' | 'weekly' | 'monthly'; dia_mes: number; ultimo_dia_mes: number; ativo: number; }
 interface EmailLog { id: number; enviado_em: string; tipo: string; destinatario: string; nome: string; status: string; mensagem: string; execucao_id: string; }
-interface OlistStatus { status: 'connected' | 'disconnected' | 'expired' | 'loading' | 'unknown'; }
+interface TokenRefreshLog { id: number; attempted_at: string; attempted_at_local?: string; status: 'ok' | 'erro' | 'info'; message: string; }
 
 const DIAS_LABEL: Record<string, string> = {
   dom: 'Dom', seg: 'Seg', ter: 'Ter', qua: 'Qua', qui: 'Qui', sex: 'Sex', sab: 'Sáb',
@@ -43,9 +43,9 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
 export default function AdminClient({ basePath, userName, userId }: { basePath: string; userName: string; userId: number }) {
   const [vendedoras,  setVendedoras]  = useState<VendedoraWithMeta[]>([]);
   const [users,       setUsers]       = useState<User[]>([]);
-  const [schedule, setSchedule] = useState<Schedule>({
-    hora: '18:00', dias: 'seg,ter,qua,qui,sex', recorrencia: 'weekly', dia_mes: 1, ativo: 0
-  });
+  const [schedules, setSchedules] = useState<Schedule[]>([
+    { hora: '18:00', dias: 'seg,ter,qua,qui,sex', recorrencia: 'weekly', dia_mes: 1, ultimo_dia_mes: 0, ativo: 0 },
+  ]);
   const [serverTime, setServerTime] = useState<string>('');
   const [logs,        setLogs]        = useState<EmailLog[]>([]);
   const [logsTotal,   setLogsTotal]   = useState(0);
@@ -53,6 +53,22 @@ export default function AdminClient({ basePath, userName, userId }: { basePath: 
   const [scriptOut,   setScriptOut]   = useState('');
   const [scriptLoading, setScriptLoading] = useState(false);
   const [msg,         setMsg]         = useState('');
+  const [tokenRedirectUri, setTokenRedirectUri] = useState('');
+  const [tokenClientId, setTokenClientId] = useState('');
+  const [tokenClientSecret, setTokenClientSecret] = useState('');
+  const [tokenClientSecretSet, setTokenClientSecretSet] = useState(false);
+  const [tokenRefreshTokenSet, setTokenRefreshTokenSet] = useState(false);
+  const [tokenUpdatedAt, setTokenUpdatedAt] = useState<string | null>(null);
+  const [tokenLogs, setTokenLogs] = useState<TokenRefreshLog[]>([]);
+  const [tokenLoading, setTokenLoading] = useState(false);
+  const [tokenSaving, setTokenSaving] = useState(false);
+  const [tokenRefreshing, setTokenRefreshing] = useState(false);
+
+  const getDefaultRedirectUri = useCallback(() => {
+    if (typeof window === 'undefined') return '';
+    const safeBasePath = basePath ? `/${basePath.replace(/^\/+|\/+$/g, '')}` : '';
+    return `${window.location.origin}${safeBasePath}/api/olist/callback`;
+  }, [basePath]);
 
   // User form
   const [newName,  setNewName]  = useState('');
@@ -77,17 +93,22 @@ export default function AdminClient({ basePath, userName, userId }: { basePath: 
 
   const loadSchedule = useCallback(async () => {
     const r = await fetch(`${basePath}/api/schedule`);
-    const d = await r.json() as Partial<Schedule> & { server_time?: string };
+    const d = await r.json() as Partial<Schedule> & { schedules?: Schedule[]; server_time?: string };
     if (d.server_time) setServerTime(d.server_time);
-    setSchedule({
-      hora:        typeof d.hora === 'string' ? d.hora : '18:00',
-      dias:        typeof d.dias === 'string' ? d.dias : 'seg,ter,qua,qui,sex',
-      recorrencia: d.recorrencia === 'daily' || d.recorrencia === 'weekly' || d.recorrencia === 'monthly'
-        ? d.recorrencia
+    const rawSchedules = Array.isArray(d.schedules) && d.schedules.length > 0
+      ? d.schedules
+      : [d];
+    setSchedules(rawSchedules.map((item) => ({
+      id: typeof item.id === 'number' ? item.id : undefined,
+      hora: typeof item.hora === 'string' ? item.hora : '18:00',
+      dias: typeof item.dias === 'string' ? item.dias : 'seg,ter,qua,qui,sex',
+      recorrencia: item.recorrencia === 'daily' || item.recorrencia === 'weekly' || item.recorrencia === 'monthly'
+        ? item.recorrencia
         : 'weekly',
-      dia_mes:     typeof d.dia_mes === 'number' && Number.isFinite(d.dia_mes) ? d.dia_mes : 1,
-      ativo:       d.ativo ? 1 : 0,
-    });
+      dia_mes: typeof item.dia_mes === 'number' && Number.isFinite(item.dia_mes) ? item.dia_mes : 1,
+      ultimo_dia_mes: item.ultimo_dia_mes ? 1 : 0,
+      ativo: item.ativo ? 1 : 0,
+    })));
   }, [basePath]);
 
   const loadLogs = useCallback(async (page = 0) => {
@@ -98,12 +119,33 @@ export default function AdminClient({ basePath, userName, userId }: { basePath: 
     setLogsPage(page);
   }, [basePath]);
 
+  const loadTokenPanel = useCallback(async () => {
+    setTokenLoading(true);
+    try {
+      const r = await fetch(`${basePath}/api/olist/token`);
+      const d = await r.json();
+      if (!r.ok) return;
+      const credentials = d.credentials ?? {};
+      const persistedRedirectUri = typeof credentials.redirect_uri === 'string' ? credentials.redirect_uri.trim() : '';
+      setTokenRedirectUri(persistedRedirectUri || getDefaultRedirectUri());
+      setTokenClientId(typeof credentials.client_id === 'string' ? credentials.client_id : '');
+      setTokenClientSecret('');
+      setTokenClientSecretSet(!!credentials.client_secret_set);
+      setTokenRefreshTokenSet(!!credentials.refresh_token_set);
+      setTokenUpdatedAt(typeof credentials.updated_at === 'string' ? credentials.updated_at : null);
+      setTokenLogs(Array.isArray(d.logs) ? d.logs : []);
+    } finally {
+      setTokenLoading(false);
+    }
+  }, [basePath, getDefaultRedirectUri]);
+
   useEffect(() => {
     loadVendedoras();
     loadUsers();
     loadSchedule();
     loadLogs(0);
-  }, [loadVendedoras, loadUsers, loadSchedule, loadLogs]);
+    loadTokenPanel();
+  }, [loadVendedoras, loadUsers, loadSchedule, loadLogs, loadTokenPanel]);
 
   /* ── Script runner ────────────────────────────────────────────────────── */
   const runScript = async (acao: string) => {
@@ -156,18 +198,50 @@ export default function AdminClient({ basePath, userName, userId }: { basePath: 
     const r = await fetch(`${basePath}/api/schedule`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(schedule),
+      body: JSON.stringify({ schedules }),
     });
     const d = await r.json();
     setMsg(d.success ? 'Agendamento salvo.' : `Erro: ${d.error}`);
+    if (d.success) loadSchedule();
   };
 
-  const toggleDia = (dia: string) => {
-    const arr = schedule.dias.split(',').map(d => d.trim()).filter(Boolean);
+  const updateSchedule = (index: number, patch: Partial<Schedule>) => {
+    setSchedules((prev) => prev.map((item, i) => (i === index ? { ...item, ...patch } : item)));
+  };
+
+  const addSchedule = () => {
+    setSchedules((prev) => [
+      ...prev,
+      { hora: '18:00', dias: 'seg,ter,qua,qui,sex', recorrencia: 'weekly', dia_mes: 1, ultimo_dia_mes: 0, ativo: 1 },
+    ]);
+  };
+
+  const removeSchedule = (index: number) => {
+    setSchedules((prev) => {
+      if (prev.length <= 1) return prev;
+      return prev.filter((_, i) => i !== index);
+    });
+  };
+
+  const toggleDia = (index: number, dia: string) => {
+    const arr = schedules[index]?.dias.split(',').map(d => d.trim()).filter(Boolean) ?? [];
     const idx  = arr.indexOf(dia);
     const novo = idx >= 0 ? arr.filter(d => d !== dia) : [...arr, dia];
-    setSchedule(s => ({ ...s, dias: novo.join(',') }));
+    updateSchedule(index, { dias: novo.join(',') });
   };
+
+  const horariosConflitantes = useMemo(() => {
+    const contagem = schedules.reduce<Record<string, number>>((acc, item) => {
+      if (!item.ativo || !item.hora) return acc;
+      acc[item.hora] = (acc[item.hora] ?? 0) + 1;
+      return acc;
+    }, {});
+    return new Set(
+      Object.entries(contagem)
+        .filter(([, qtd]) => qtd > 1)
+        .map(([hora]) => hora)
+    );
+  }, [schedules]);
 
   /* ── Users ────────────────────────────────────────────────────────────── */
   const createUser = async () => {
@@ -245,8 +319,60 @@ export default function AdminClient({ basePath, userName, userId }: { basePath: 
       } else {
         setMsg(`Erro ao apagar histórico: ${d.error}`);
       }
-    } catch (e) {
+    } catch {
       setMsg('Erro de conexão ao apagar histórico.');
+    }
+  };
+
+  const saveTokenSettings = async () => {
+    setTokenSaving(true);
+    setMsg('');
+    try {
+      const r = await fetch(`${basePath}/api/olist/token`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'save',
+          redirect_uri: tokenRedirectUri,
+          client_id: tokenClientId,
+          client_secret: tokenClientSecret,
+        }),
+      });
+      const d = await r.json();
+      if (!r.ok || d.error) {
+        setMsg(`Erro: ${d.error ?? 'Falha ao salvar dados do token.'}`);
+        return;
+      }
+      setMsg('Dados Olist salvos.');
+      setTokenClientSecret('');
+      await loadTokenPanel();
+    } catch {
+      setMsg('Erro de conexão ao salvar dados do token.');
+    } finally {
+      setTokenSaving(false);
+    }
+  };
+
+  const refreshTokenNow = async () => {
+    setTokenRefreshing(true);
+    setMsg('');
+    try {
+      const r = await fetch(`${basePath}/api/olist/token`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'refresh' }),
+      });
+      const d = await r.json();
+      if (d.success) {
+        setMsg('Token renovado com sucesso.');
+      } else {
+        setMsg('Falha na renovação do token. Verifique o log abaixo.');
+      }
+      await loadTokenPanel();
+    } catch {
+      setMsg('Erro de conexão ao renovar token.');
+    } finally {
+      setTokenRefreshing(false);
     }
   };
 
@@ -282,6 +408,9 @@ export default function AdminClient({ basePath, userName, userId }: { basePath: 
           <button className="btn-secondary" disabled={scriptLoading} onClick={() => runScript('send')}>
             Enviar e-mails agora
           </button>
+          <button className="btn-secondary" disabled={scriptLoading} onClick={() => runScript('send_admin_only')}>
+            Enviar e-mails só admins
+          </button>
           <button className="btn-primary" disabled={scriptLoading} onClick={() => runScript('fetch_and_send')}>
             {scriptLoading ? 'Executando...' : 'Atualizar e Enviar'}
           </button>
@@ -294,97 +423,140 @@ export default function AdminClient({ basePath, userName, userId }: { basePath: 
         <p style={{ color: 'var(--text-muted)', marginBottom: 'var(--space-4)' }}>
           <strong style={{ color: 'var(--text-accent)' }}>Horário do Servidor agora: </strong> {serverTime || 'Carregando...'}
         </p>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-5)', marginBottom: 'var(--space-5)' }}>
-          <div className="toggle-wrap">
-            <Toggle
-              checked={!!schedule.ativo}
-              onChange={v => setSchedule(s => ({ ...s, ativo: v ? 1 : 0 }))}
-            />
-            <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-muted)' }}>
-              {schedule.ativo ? 'Ativo' : 'Inativo'}
-            </span>
-          </div>
-
-          <div className="form-group" style={{ margin: 0 }}>
-            <label>Horário de envio</label>
-            <input
-              type="time"
-              value={schedule.hora}
-              onChange={e => setSchedule(s => ({ ...s, hora: e.target.value }))}
-              style={{ width: 120, padding: '8px 10px', borderRadius: 8, border: '1px solid var(--border)' }}
-            />
-          </div>
-
-          <div className="form-group" style={{ margin: 0 }}>
-            <label>Recorrência</label>
-            <select
-              value={schedule.recorrencia}
-              onChange={e => setSchedule(s => ({ ...s, recorrencia: e.target.value as Schedule['recorrencia'] }))}
-              style={{ width: 180, padding: '8px 10px', borderRadius: 8, border: '1px solid var(--border)' }}
-            >
-              <option value="daily">Todo dia</option>
-              <option value="weekly">Dias da semana</option>
-              <option value="monthly">Dia do mês</option>
-            </select>
-          </div>
-
-          {schedule.recorrencia === 'weekly' && (
-            <div>
-              <label style={{ display: 'block', marginBottom: 8, fontSize: 'var(--text-sm)', fontWeight: 500, color: 'var(--text-muted)' }}>
-                Dias da semana
-              </label>
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                {DIAS_ORDER.map(dia => {
-                  const ativo = schedule.dias.split(',').map(d => d.trim()).includes(dia);
-                  return (
-                    <button
-                      key={dia}
-                      onClick={() => toggleDia(dia)}
-                      style={{
-                        padding: '6px 12px', borderRadius: 999, border: '1.5px solid',
-                        borderColor: ativo ? 'var(--accent)' : 'var(--border)',
-                        background: ativo ? 'rgba(17,86,199,.1)' : 'var(--surface)',
-                        color: ativo ? 'var(--accent)' : 'var(--text-muted)',
-                        fontWeight: 600, fontSize: 'var(--text-xs)', cursor: 'pointer',
-                      }}
-                    >
-                      {DIAS_LABEL[dia]}
-                    </button>
-                  );
-                })}
+        {schedules.map((schedule, index) => (
+          <div
+            key={schedule.id ?? `new-${index}`}
+            className="card"
+            style={{
+              marginBottom: 'var(--space-4)',
+              padding: 'var(--space-4)',
+              border: schedule.ativo && horariosConflitantes.has(schedule.hora) ? '1px solid #f59e0b' : undefined,
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-3)' }}>
+              <strong>Agendamento {index + 1}</strong>
+              <button className="btn-secondary" disabled={schedules.length <= 1} onClick={() => removeSchedule(index)}>
+                Remover
+              </button>
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-5)' }}>
+              <div className="toggle-wrap">
+                <Toggle
+                  checked={!!schedule.ativo}
+                  onChange={v => updateSchedule(index, { ativo: v ? 1 : 0 })}
+                />
+                <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-muted)' }}>
+                  {schedule.ativo ? 'Ativo' : 'Inativo'}
+                </span>
               </div>
-            </div>
-          )}
 
-          {schedule.recorrencia === 'monthly' && (
-            <div className="form-group" style={{ margin: 0 }}>
-              <label>Dia do mês</label>
-              <input
-                type="number"
-                min={1}
-                max={31}
-                value={schedule.dia_mes}
-                onChange={e => setSchedule(s => ({ ...s, dia_mes: parseInt(e.target.value, 10) || 1 }))}
-                style={{ width: 120, padding: '8px 10px', borderRadius: 8, border: '1px solid var(--border)' }}
-              />
+              <div className="form-group" style={{ margin: 0 }}>
+                <label>Horário de envio</label>
+                <input
+                  type="time"
+                  value={schedule.hora}
+                  onChange={e => updateSchedule(index, { hora: e.target.value })}
+                  style={{ width: 120, padding: '8px 10px', borderRadius: 8, border: '1px solid var(--border)' }}
+                />
+              </div>
+
+              <div className="form-group" style={{ margin: 0 }}>
+                <label>Recorrência</label>
+                <select
+                  value={schedule.recorrencia}
+                  onChange={e => updateSchedule(index, {
+                    recorrencia: e.target.value as Schedule['recorrencia'],
+                    ultimo_dia_mes: 0,
+                  })}
+                  style={{ width: 180, padding: '8px 10px', borderRadius: 8, border: '1px solid var(--border)' }}
+                >
+                  <option value="daily">Todo dia</option>
+                  <option value="weekly">Dias da semana</option>
+                  <option value="monthly">Dia do mês</option>
+                </select>
+              </div>
+
+              {schedule.recorrencia === 'weekly' && (
+                <div>
+                  <label style={{ display: 'block', marginBottom: 8, fontSize: 'var(--text-sm)', fontWeight: 500, color: 'var(--text-muted)' }}>
+                    Dias da semana
+                  </label>
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                    {DIAS_ORDER.map(dia => {
+                      const ativo = schedule.dias.split(',').map(d => d.trim()).includes(dia);
+                      return (
+                        <button
+                          key={`${index}-${dia}`}
+                          onClick={() => toggleDia(index, dia)}
+                          style={{
+                            padding: '6px 12px', borderRadius: 999, border: '1.5px solid',
+                            borderColor: ativo ? 'var(--accent)' : 'var(--border)',
+                            background: ativo ? 'rgba(17,86,199,.1)' : 'var(--surface)',
+                            color: ativo ? 'var(--accent)' : 'var(--text-muted)',
+                            fontWeight: 600, fontSize: 'var(--text-xs)', cursor: 'pointer',
+                          }}
+                        >
+                          {DIAS_LABEL[dia]}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {schedule.recorrencia === 'monthly' && (
+                <div style={{ display: 'flex', gap: 'var(--space-4)', alignItems: 'flex-end', flexWrap: 'wrap' }}>
+                  <div className="form-group" style={{ margin: 0 }}>
+                    <label>Dia do mês</label>
+                    <input
+                      type="number"
+                      min={1}
+                      max={31}
+                      disabled={!!schedule.ultimo_dia_mes}
+                      value={schedule.dia_mes}
+                      onChange={e => updateSchedule(index, { dia_mes: parseInt(e.target.value, 10) || 1 })}
+                      style={{ width: 120, padding: '8px 10px', borderRadius: 8, border: '1px solid var(--border)' }}
+                    />
+                  </div>
+                  <div className="toggle-wrap">
+                    <Toggle
+                      checked={!!schedule.ultimo_dia_mes}
+                      onChange={v => updateSchedule(index, { ultimo_dia_mes: v ? 1 : 0 })}
+                    />
+                    <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-muted)' }}>
+                      Último dia do mês
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
-          )}
+            {schedule.ativo ? (
+              <p style={{ marginTop: 12, fontSize: 'var(--text-sm)', color: 'var(--text-muted)' }}>
+                Envio: {schedule.hora}{' '}
+                {schedule.recorrencia === 'daily'
+                  ? '(todo dia)'
+                  : schedule.recorrencia === 'monthly'
+                    ? schedule.ultimo_dia_mes
+                      ? '(último dia do mês)'
+                      : `(dia ${schedule.dia_mes} do mês)`
+                    : `(dias: ${schedule.dias.replace(/,/g, ', ')})`}
+              </p>
+            ) : (
+              <p style={{ marginTop: 12, fontSize: 'var(--text-sm)', color: 'var(--text-muted)' }}>
+                Agendamento desativado.
+              </p>
+            )}
+            {schedule.ativo && horariosConflitantes.has(schedule.hora) && (
+              <p style={{ marginTop: 8, fontSize: 'var(--text-sm)', color: '#b45309', fontWeight: 600 }}>
+                Atenção: existe outro agendamento ativo neste mesmo horário.
+              </p>
+            )}
+          </div>
+        ))}
+        <div className="btn-group">
+          <button className="btn-secondary" onClick={addSchedule}>Novo agendamento</button>
+          <button className="btn-primary" onClick={saveSchedule}>Salvar agendamentos</button>
         </div>
-        <button className="btn-primary" onClick={saveSchedule}>Salvar agendamento</button>
-        {schedule.ativo ? (
-          <p style={{ marginTop: 12, fontSize: 'var(--text-sm)', color: 'var(--text-muted)' }}>
-            Próximo envio: {schedule.hora}{' '}
-            {schedule.recorrencia === 'daily'
-              ? '(todo dia)'
-              : schedule.recorrencia === 'monthly'
-                ? `(dia ${schedule.dia_mes} do mês)`
-                : `(dias: ${schedule.dias.replace(/,/g, ', ')})`}
-          </p>
-        ) : (
-          <p style={{ marginTop: 12, fontSize: 'var(--text-sm)', color: 'var(--text-muted)' }}>
-            Agendamento desativado.
-          </p>
-        )}
       </Section>
 
       {/* ── 3a. Vendedoras ──────────────────────────────────────────────── */}
@@ -564,6 +736,67 @@ export default function AdminClient({ basePath, userName, userId }: { basePath: 
           </button>
         </div>
       </Section>
+
+      <div className="section-card card">
+        <div className="section-header">
+          <h2>6. Renovação Token Olist (12h)</h2>
+        </div>
+        <div className="section-body">
+          <div style={{ display: 'grid', gap: 12, marginBottom: 12 }}>
+            <div className="form-group" style={{ margin: 0 }}>
+              <label>URL de Redirecionamento</label>
+              <input
+                type="text"
+                value={tokenRedirectUri}
+                onChange={e => setTokenRedirectUri(e.target.value)}
+                placeholder="https://seu-dominio/performance/api/olist/callback"
+              />
+            </div>
+            <div className="form-group" style={{ margin: 0 }}>
+              <label>Client ID</label>
+              <input
+                type="text"
+                value={tokenClientId}
+                onChange={e => setTokenClientId(e.target.value)}
+                placeholder="Informe o Client ID"
+              />
+            </div>
+            <div className="form-group" style={{ margin: 0 }}>
+              <label>Client Secret</label>
+              <input
+                type="password"
+                value={tokenClientSecret}
+                onChange={e => setTokenClientSecret(e.target.value)}
+                placeholder={tokenClientSecretSet ? 'Já configurado. Digite para substituir.' : 'Informe o Client Secret'}
+              />
+            </div>
+          </div>
+
+          <div className="btn-group" style={{ marginBottom: 'var(--space-4)' }}>
+            <button className="btn-primary" onClick={saveTokenSettings} disabled={tokenSaving}>
+              {tokenSaving ? 'Salvando...' : 'Salvar dados Olist'}
+            </button>
+            <button className="btn-secondary" onClick={refreshTokenNow} disabled={tokenRefreshing}>
+              {tokenRefreshing ? 'Renovando...' : 'Renovar token agora'}
+            </button>
+            <button className="btn-secondary" onClick={loadTokenPanel} disabled={tokenLoading}>
+              {tokenLoading ? 'Atualizando...' : 'Atualizar log'}
+            </button>
+          </div>
+
+          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-sm)', marginBottom: 8 }}>
+            Renovação automática configurada para cada 12 horas.
+            {tokenRefreshTokenSet ? ' Refresh token disponível.' : ' Refresh token ausente; conecte a conta Olist.'}
+            {tokenUpdatedAt ? ` Dados atualizados em: ${tokenUpdatedAt.replace('T', ' ').slice(0, 16)}` : ''}
+          </p>
+
+          <div className="script-output" style={{ minHeight: 220, maxHeight: 300 }}>
+            {tokenLogs.length === 0
+              ? 'Nenhum log de renovação registrado.'
+              : tokenLogs.map(l => `${(l.attempted_at_local ?? l.attempted_at).replace('T', ' ').slice(0, 19)} [${l.status}] ${l.message}`).join('\n')}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

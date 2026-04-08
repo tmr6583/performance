@@ -36,6 +36,10 @@ export default async function HomePage() {
     faturamento_mes: number;
     meta_mensal: number;
   };
+  type UpdateEventRow = {
+    quando: string;
+    registros: number;
+  };
 
   let cacheRows: CacheRow[] = [];
 
@@ -52,6 +56,28 @@ export default async function HomePage() {
     .all(hoje) as CacheRow[];
 
   cacheRows = dbRows.map(row => ({ ...row }));
+
+  const lastUpdateRow = db
+    .prepare(`
+      SELECT datetime(MAX(atualizado_em), 'localtime') AS ultima_atualizacao
+      FROM performance_cache
+    `)
+    .get() as { ultima_atualizacao: string | null };
+
+  const rawUpdateEvents = db
+    .prepare(`
+      SELECT datetime(atualizado_em, 'localtime') AS quando, COUNT(*) AS registros
+      FROM performance_cache
+      WHERE data = ?
+      GROUP BY atualizado_em
+      ORDER BY atualizado_em DESC
+      LIMIT 5
+    `)
+    .all(hoje) as UpdateEventRow[];
+  const updateEvents = rawUpdateEvents.map(event => ({
+    quando: event.quando,
+    registros: Number(event.registros ?? 0),
+  }));
 
   const totalPedidosDia = cacheRows.reduce((s, r) => s + r.pedidos_dia,  0);
   const totalValorDia   = cacheRows.reduce((s, r) => s + r.valor_dia,    0);
@@ -81,6 +107,10 @@ export default async function HomePage() {
         valorMesNum: totalValorMes,
       }}
       basePath={basePath}
+      updateLog={{
+        ultimaAtualizacao: lastUpdateRow?.ultima_atualizacao ?? null,
+        eventos: updateEvents,
+      }}
     />
   );
 }

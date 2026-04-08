@@ -5212,3 +5212,107 @@
 03/04/2026 19:19:00 - send_emails - INFO - 1 admin(s) habilitado(s) para receber resumo.
 03/04/2026 19:19:01 - send_emails - INFO -   ✓ Resumo enviado para Thiago <thiago@betinalimpeza.com.br>
 03/04/2026 19:19:01 - send_emails - INFO - === Envio concluído | 3 enviado(s) | 0 erro(s) ===
+08/04/2026 15:14:41 - fetch_performance - INFO - === Início da extração de performance ===
+08/04/2026 15:14:41 - fetch_performance - INFO - Data de referência: 08/04/2026  |  Mês alvo: 2026-04 | Busca a partir de: 20/03/2026
+08/04/2026 15:14:41 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+08/04/2026 15:14:42 - fetch_performance - INFO - 10 vendedores ativos encontrados.
+08/04/2026 15:14:56 - fetch_performance - INFO -   Adriana Costa Alves: dia=6 pedidos / R$ 1844.14 | mês=41 pedidos / R$ 15428.29 (Fat: R$ 12200.01)
+08/04/2026 15:15:09 - fetch_performance - INFO -   Maria Eduarda Franco Degenario: dia=5 pedidos / R$ 925.26 | mês=34 pedidos / R$ 21815.27 (Fat: R$ 17839.01)
+08/04/2026 15:15:19 - fetch_performance - INFO -   Maria Daniele Marques da Silva: dia=2 pedidos / R$ 2246.83 | mês=24 pedidos / R$ 18860.27 (Fat: R$ 17020.47)
+08/04/2026 15:15:20 - fetch_performance - INFO -   Camila Almeida: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+08/04/2026 15:15:21 - fetch_performance - INFO -   Rodrigo Barcia: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+08/04/2026 15:15:23 - fetch_performance - INFO -   Alexandre Cesar da Rosa: dia=2 pedidos / R$ 427.60 | mês=4 pedidos / R$ 912.60 (Fat: R$ 882.00)
+08/04/2026 15:15:24 - fetch_performance - INFO -   Diego Figueiredo: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+08/04/2026 15:15:26 - fetch_performance - INFO -   Breno Kling: dia=0 pedidos / R$ 0.00 | mês=1 pedidos / R$ 423.36 (Fat: R$ 423.36)
+08/04/2026 15:15:27 - fetch_performance - INFO -   Salvador Correa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+08/04/2026 15:15:28 - fetch_performance - INFO -   Julio Lopes: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+08/04/2026 15:15:28 - fetch_performance - INFO - === Extração concluída em 47s | 10/10 vendedores OK | 0 erro(s) ===
+08/04/2026 15:38:11 - fetch_performance - INFO - === Início da extração de performance ===
+08/04/2026 15:38:11 - fetch_performance - INFO - Data de referência: 08/04/2026  |  Mês alvo: 2026-04 | Busca a partir de: 20/03/2026
+08/04/2026 15:38:11 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+08/04/2026 15:38:11 - fetch_performance - INFO - 10 vendedores ativos encontrados.
+08/04/2026 15:38:14 - fetch_performance - INFO -   Adriana Costa Alves: dia=6 pedidos / R$ 1844.14 | mês=41 pedidos / R$ 15428.29 (Fat: R$ 12200.01)
+08/04/2026 15:38:15 - fetch_performance - INFO -   Maria Eduarda Franco Degenario: dia=5 pedidos / R$ 925.26 | mês=34 pedidos / R$ 21815.27 (Fat: R$ 17839.01)
+08/04/2026 15:38:18 - fetch_performance - INFO -   Maria Daniele Marques da Silva: dia=2 pedidos / R$ 2246.83 | mês=24 pedidos / R$ 18860.27 (Fat: R$ 17648.84)
+08/04/2026 15:38:19 - fetch_performance - INFO -   Camila Almeida: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+08/04/2026 15:38:20 - fetch_performance - INFO -   Rodrigo Barcia: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+08/04/2026 15:38:22 - fetch_performance - INFO -   Alexandre Cesar da Rosa: dia=2 pedidos / R$ 427.60 | mês=4 pedidos / R$ 912.60 (Fat: R$ 1309.60)
+08/04/2026 15:38:23 - fetch_performance - INFO -   Diego Figueiredo: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+08/04/2026 15:38:25 - fetch_performance - INFO -   Breno Kling: dia=0 pedidos / R$ 0.00 | mês=1 pedidos / R$ 423.36 (Fat: R$ 423.36)
+08/04/2026 15:38:26 - fetch_performance - INFO -   Salvador Correa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+08/04/2026 15:38:27 - fetch_performance - INFO -   Julio Lopes: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+08/04/2026 15:38:27 - fetch_performance - INFO - === Extração concluída em 15s | 10/10 vendedores OK | 0 erro(s) ===
+08/04/2026 15:44:44 - fetch_performance - INFO - === Início da extração de performance ===
+08/04/2026 15:44:44 - fetch_performance - INFO - Data de referência: 08/04/2026  |  Mês alvo: 2026-04 | Busca a partir de: 20/03/2026
+08/04/2026 15:44:44 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+08/04/2026 15:44:44 - fetch_performance - INFO - 10 vendedores ativos encontrados.
+08/04/2026 15:44:46 - fetch_performance - INFO -   Adriana Costa Alves: dia=6 pedidos / R$ 1844.14 | mês=41 pedidos / R$ 15428.29 (Fat: R$ 12200.01)
+08/04/2026 15:44:47 - fetch_performance - INFO -   Maria Eduarda Franco Degenario: dia=5 pedidos / R$ 925.26 | mês=34 pedidos / R$ 21815.27 (Fat: R$ 17839.01)
+08/04/2026 15:44:49 - fetch_performance - INFO -   Maria Daniele Marques da Silva: dia=2 pedidos / R$ 2246.83 | mês=24 pedidos / R$ 18860.27 (Fat: R$ 17648.84)
+08/04/2026 15:44:50 - fetch_performance - INFO -   Camila Almeida: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+08/04/2026 15:44:51 - fetch_performance - INFO -   Rodrigo Barcia: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+08/04/2026 15:44:52 - fetch_performance - INFO -   Alexandre Cesar da Rosa: dia=2 pedidos / R$ 427.60 | mês=4 pedidos / R$ 912.60 (Fat: R$ 1309.60)
+08/04/2026 15:44:53 - fetch_performance - INFO -   Diego Figueiredo: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+08/04/2026 15:44:55 - fetch_performance - INFO -   Breno Kling: dia=0 pedidos / R$ 0.00 | mês=1 pedidos / R$ 423.36 (Fat: R$ 423.36)
+08/04/2026 15:44:56 - fetch_performance - INFO -   Salvador Correa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+08/04/2026 15:44:57 - fetch_performance - INFO -   Julio Lopes: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+08/04/2026 15:44:57 - fetch_performance - INFO - === Extração concluída em 12s | 10/10 vendedores OK | 0 erro(s) ===
+08/04/2026 15:53:12 - fetch_performance - INFO - === Início da extração de performance ===
+08/04/2026 15:53:12 - fetch_performance - INFO - Data de referência: 08/04/2026  |  Mês alvo: 2026-04 | Busca a partir de: 20/03/2026
+08/04/2026 15:53:12 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+08/04/2026 15:53:12 - fetch_performance - INFO - 10 vendedores ativos encontrados.
+08/04/2026 15:53:15 - fetch_performance - INFO -   Adriana Costa Alves: dia=6 pedidos / R$ 1844.14 | mês=41 pedidos / R$ 15428.29 (Fat: R$ 12200.01)
+08/04/2026 15:53:17 - fetch_performance - INFO -   Maria Eduarda Franco Degenario: dia=5 pedidos / R$ 925.26 | mês=34 pedidos / R$ 21815.27 (Fat: R$ 17839.01)
+08/04/2026 15:53:18 - fetch_performance - INFO -   Maria Daniele Marques da Silva: dia=2 pedidos / R$ 2246.83 | mês=24 pedidos / R$ 18860.27 (Fat: R$ 17648.84)
+08/04/2026 15:53:20 - fetch_performance - INFO -   Camila Almeida: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+08/04/2026 15:53:21 - fetch_performance - INFO -   Rodrigo Barcia: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+08/04/2026 15:53:22 - fetch_performance - INFO -   Alexandre Cesar da Rosa: dia=2 pedidos / R$ 427.60 | mês=4 pedidos / R$ 912.60 (Fat: R$ 1309.60)
+08/04/2026 15:53:23 - fetch_performance - INFO -   Diego Figueiredo: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+08/04/2026 15:53:24 - fetch_performance - INFO -   Breno Kling: dia=0 pedidos / R$ 0.00 | mês=1 pedidos / R$ 423.36 (Fat: R$ 423.36)
+08/04/2026 15:53:26 - fetch_performance - INFO -   Salvador Correa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+08/04/2026 15:53:27 - fetch_performance - INFO -   Julio Lopes: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+08/04/2026 15:53:27 - fetch_performance - INFO - === Extração concluída em 14s | 10/10 vendedores OK | 0 erro(s) ===
+08/04/2026 15:55:10 - fetch_performance - INFO - === Início da extração de performance ===
+08/04/2026 15:55:10 - fetch_performance - INFO - Data de referência: 08/04/2026  |  Mês alvo: 2026-04 | Busca a partir de: 20/03/2026
+08/04/2026 15:55:10 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+08/04/2026 15:55:11 - fetch_performance - INFO - 10 vendedores ativos encontrados.
+08/04/2026 15:55:13 - fetch_performance - INFO -   Adriana Costa Alves: dia=6 pedidos / R$ 1844.14 | mês=41 pedidos / R$ 15428.29 (Fat: R$ 12200.01)
+08/04/2026 15:55:14 - fetch_performance - INFO -   Maria Eduarda Franco Degenario: dia=5 pedidos / R$ 925.26 | mês=34 pedidos / R$ 21815.27 (Fat: R$ 17839.01)
+08/04/2026 15:55:16 - fetch_performance - INFO -   Maria Daniele Marques da Silva: dia=2 pedidos / R$ 2246.83 | mês=24 pedidos / R$ 18860.27 (Fat: R$ 17648.84)
+08/04/2026 15:55:17 - fetch_performance - INFO -   Camila Almeida: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+08/04/2026 15:55:18 - fetch_performance - INFO -   Rodrigo Barcia: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+08/04/2026 15:55:20 - fetch_performance - INFO -   Alexandre Cesar da Rosa: dia=2 pedidos / R$ 427.60 | mês=4 pedidos / R$ 912.60 (Fat: R$ 1309.60)
+08/04/2026 15:55:21 - fetch_performance - INFO -   Diego Figueiredo: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+08/04/2026 15:55:22 - fetch_performance - INFO -   Breno Kling: dia=0 pedidos / R$ 0.00 | mês=1 pedidos / R$ 423.36 (Fat: R$ 423.36)
+08/04/2026 15:55:23 - fetch_performance - INFO -   Salvador Correa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+08/04/2026 15:55:25 - fetch_performance - INFO -   Julio Lopes: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+08/04/2026 15:55:25 - fetch_performance - INFO - === Extração concluída em 14s | 10/10 vendedores OK | 0 erro(s) ===
+08/04/2026 15:59:38 - fetch_performance - INFO - === Início da extração de performance ===
+08/04/2026 15:59:38 - fetch_performance - INFO - Data de referência: 08/04/2026  |  Mês alvo: 2026-04 | Busca a partir de: 20/03/2026
+08/04/2026 15:59:38 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+08/04/2026 15:59:39 - fetch_performance - INFO - 10 vendedores ativos encontrados.
+08/04/2026 15:59:41 - fetch_performance - INFO -   Adriana Costa Alves: dia=6 pedidos / R$ 1844.14 | mês=41 pedidos / R$ 15428.29 (Fat: R$ 12200.01)
+08/04/2026 15:59:42 - fetch_performance - INFO -   Maria Eduarda Franco Degenario: dia=5 pedidos / R$ 925.26 | mês=34 pedidos / R$ 21815.27 (Fat: R$ 17839.01)
+08/04/2026 15:59:44 - fetch_performance - INFO -   Maria Daniele Marques da Silva: dia=2 pedidos / R$ 2246.83 | mês=24 pedidos / R$ 18860.27 (Fat: R$ 17648.84)
+08/04/2026 15:59:45 - fetch_performance - INFO -   Camila Almeida: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+08/04/2026 15:59:46 - fetch_performance - INFO -   Rodrigo Barcia: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+08/04/2026 15:59:47 - fetch_performance - INFO -   Alexandre Cesar da Rosa: dia=2 pedidos / R$ 427.60 | mês=4 pedidos / R$ 912.60 (Fat: R$ 1309.60)
+08/04/2026 15:59:48 - fetch_performance - INFO -   Diego Figueiredo: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+08/04/2026 15:59:49 - fetch_performance - INFO -   Breno Kling: dia=0 pedidos / R$ 0.00 | mês=1 pedidos / R$ 423.36 (Fat: R$ 423.36)
+08/04/2026 15:59:50 - fetch_performance - INFO -   Salvador Correa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+08/04/2026 15:59:52 - fetch_performance - INFO -   Julio Lopes: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+08/04/2026 15:59:52 - fetch_performance - INFO - === Extração concluída em 13s | 10/10 vendedores OK | 0 erro(s) ===
+08/04/2026 15:59:52 - send_emails - INFO - === Início do envio de e-mails — execução ee7b4b90-3142-4b00-8c15-493f8006a2d2 ===
+08/04/2026 15:59:52 - send_emails - INFO - Data de referência: 2026-04-08
+08/04/2026 15:59:52 - send_emails - INFO - 2 vendedora(s) habilitada(s) para receber e-mail.
+08/04/2026 15:59:54 - send_emails - INFO -   ✓ Enviado para Adriana Costa Alves <tmr6583@gmail.com>
+08/04/2026 15:59:55 - send_emails - INFO -   ✓ Enviado para Maria Eduarda Franco Degenario <thiago.rossi@arphoenix.com.br>
+08/04/2026 15:59:55 - send_emails - INFO - 1 admin(s) habilitado(s) para receber resumo.
+08/04/2026 15:59:57 - send_emails - INFO -   ✓ Resumo enviado para Thiago <thiago@betinalimpeza.com.br>
+08/04/2026 15:59:57 - send_emails - INFO - === Envio concluído | 3 enviado(s) | 0 erro(s) ===
+08/04/2026 16:12:29 - send_emails - INFO - === Início do envio de e-mails — execução 68fd5356-8c05-43ab-acd3-5b2e6c496d12 ===
+08/04/2026 16:12:29 - send_emails - INFO - Data de referência: 2026-04-08
+08/04/2026 16:12:29 - send_emails - INFO - Modo de envio: somente administradores
+08/04/2026 16:12:29 - send_emails - INFO - 1 admin(s) habilitado(s) para receber resumo.
+08/04/2026 16:12:32 - send_emails - INFO -   ✓ Resumo enviado para Thiago <thiago@betinalimpeza.com.br>
+08/04/2026 16:12:32 - send_emails - INFO - === Envio concluído | 1 enviado(s) | 0 erro(s) ===

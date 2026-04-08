@@ -4,7 +4,18 @@ const basePath = process.env.NEXT_PUBLIC_BASE_PATH || undefined;
 
 const nextConfig: NextConfig = {
   ...(basePath ? { basePath } : {}),
-  output: 'standalone', // Gera um build otimizado para economizar memória e CPU
+  output: 'standalone',
+  compress: true,
+  httpAgentOptions: {
+    keepAlive: true,
+  },
+  poweredByHeader: false,
+  productionBrowserSourceMaps: false,
+  logging: {
+    fetches: {
+      fullUrl: false,
+    },
+  },
 };
 
 export default nextConfig;

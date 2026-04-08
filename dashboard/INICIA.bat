@@ -14,7 +14,7 @@ if not exist "%DASH%\package.json" (
     exit /b 1
 )
 
-if "%PORT%"=="" set "PORT=3200"
+if "%PORT%"=="" set "PORT=3100"
 if "%JWT_SECRET%"=="" set "JWT_SECRET=local-dev-secret-please-change"
 set "NEXT_PUBLIC_BASE_PATH="
 
@@ -188,6 +188,14 @@ if not exist "node_modules" (
         popd
         exit /b 1
     )
+)
+
+echo INICIA: executando npm run build >> "%INITLOG%"
+call npm run build >> "%INITLOG%" 2>&1
+if errorlevel 1 (
+    echo ERRO: Falha no npm run build. Veja o log em %INITLOG%
+    popd
+    exit /b 1
 )
 
 :: Inicia o servidor em background (completamente desanexado da janela atual)

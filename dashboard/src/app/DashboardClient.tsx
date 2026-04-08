@@ -42,9 +42,13 @@ interface Props {
     valorMesNum: number;
   };
   basePath: string;
+  updateLog: {
+    ultimaAtualizacao: string | null;
+    eventos: Array<{ quando: string; registros: number }>;
+  };
 }
 
-export default function DashboardClient({ user, hoje, rows, totais, basePath }: Props) {
+export default function DashboardClient({ user, hoje, rows, totais, basePath, updateLog }: Props) {
   const [, mes, dia] = hoje.split('-');
   const dataExib = `${dia}/${mes}/${hoje.slice(0, 4)}`;
 
@@ -173,6 +177,9 @@ export default function DashboardClient({ user, hoje, rows, totais, basePath }: 
             {user.role === 'admin' ? 'Visão consolidada da equipe' : `Bem-vinda, ${user.name}`}
             {' — '}{dataExib}
           </p>
+          <div style={{ marginTop: 8, padding: '6px 10px', border: '1px solid var(--border)', borderRadius: 8, fontSize: 'var(--text-xs)', color: 'var(--text-muted)', background: 'rgba(248,250,252,.9)' }}>
+            Última atualização: {updateLog.ultimaAtualizacao ?? 'Sem atualizações'}
+          </div>
         </div>
         <div className="header-actions">
           {user.role === 'admin' && (
@@ -211,6 +218,28 @@ export default function DashboardClient({ user, hoje, rows, totais, basePath }: 
           {msg}
         </div>
       )}
+
+      <div className="card" style={{ marginBottom: 'var(--space-4)' }}>
+        <div style={{ padding: '10px 16px', borderBottom: '1px solid var(--border)', fontWeight: 700, fontSize: 'var(--text-sm)' }}>
+          Log de Atualização de Dados
+        </div>
+        <div style={{ padding: '10px 16px', fontSize: 'var(--text-sm)', color: 'var(--text-muted)' }}>
+          <div style={{ marginBottom: 6 }}>
+            Última atualização geral: {updateLog.ultimaAtualizacao ?? 'Sem atualizações registradas'}
+          </div>
+          {updateLog.eventos.length === 0 ? (
+            <div>Nenhuma atualização registrada para hoje.</div>
+          ) : (
+            <div>
+              {updateLog.eventos.map((e, idx) => (
+                <div key={`${e.quando}-${idx}`}>
+                  {e.quando} — {e.registros} registro(s)
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* KPIs */}
       <div className="kpi-row">

@@ -36,7 +36,7 @@ O sistema é composto por duas camadas:
 
 **Acesso público:** `https://betinalimpeza.ddns.net/performance`
 
-**Porta interna:** `localhost:3200`
+**Porta interna:** `localhost:3100`
 
 ---
 
@@ -46,7 +46,7 @@ O sistema é composto por duas camadas:
 Internet (HTTPS:443)
        │
   Apache2 (reverse proxy)
-       │  /performance/* → localhost:3200
+       │  /performance/* → localhost:3100
        │
   Next.js (performance-dashboard.service)
        │
@@ -185,7 +185,7 @@ INTERNAL_SECRET=<mesmo INTERNAL_SECRET>
 NEXT_PUBLIC_BASE_PATH=
 OLIST_CLIENT_ID=<Olist Client ID>
 OLIST_CLIENT_SECRET=<Olist Client Secret>
-OLIST_REDIRECT_URI=http://localhost:3200/api/olist/callback
+OLIST_REDIRECT_URI=http://localhost:3100/api/olist/callback
 SQLITE_DB_PATH=c:\GitHubLocal\performance\database.db
 ```
 
@@ -253,9 +253,12 @@ Arquivo: `/opt/betina/performance/database.db` (SQLite, WAL mode)
 
 | Coluna | Tipo | Descrição |
 |---|---|---|
-| `id` | INTEGER PK | Fixo = 1 (linha única) |
+| `id` | INTEGER PK | Identificador do agendamento (suporta múltiplas linhas) |
 | `hora` | TEXT | Horário no formato `HH:MM` |
 | `dias` | TEXT | Dias separados por vírgula: `seg,ter,qua,qui,sex` |
+| `recorrencia` | TEXT | `daily`, `weekly` ou `monthly` |
+| `dia_mes` | INTEGER | Dia do mês para recorrência mensal (1–31) |
+| `ultimo_dia_mes` | INTEGER | `1` para executar no último dia do mês |
 | `ativo` | INTEGER | `1` = agendamento ativo |
 | `modificado` | DATETIME | Última modificação |
 
@@ -315,7 +318,7 @@ Execução: .venv/bin/python send_emails.py
 Gera HTML responsivo e sem métricas irrelevantes (estatísticas diárias não são exibidas para focar no fechamento mensal).
 
 - **`vendedora_html()`** — métricas individuais mensais focadas no faturamento vs metas.
-- **`admin_html()`** — tabela consolidada da equipe (696px max-width) ordenada por valor mensal decrescente. O assunto exibe a data formatada como `dd/mm/yyyy`.
+- **`admin_html()`** — tabela consolidada da equipe (1040px max-width), alinhada aos indicadores do dashboard de vendas. O assunto exibe a data formatada como `dd/mm/yyyy`.
 
 ### `refresh_tokens.py`
 
@@ -338,7 +341,7 @@ Executado pelo systemd como `oneshot` antes do dashboard iniciar:
 
 **Tecnologias:** Next.js 16.2.1, React 19, TypeScript, node-cron, bcryptjs, jsonwebtoken
 
-**Porta:** `3200` (binding em `127.0.0.1`)
+**Porta:** `3100` (binding em `127.0.0.1`)
 
 **Base Path:** `/performance`
 
@@ -366,10 +369,10 @@ instrumentation.ts → reloadScheduler() → node-cron
                       (no horário configurado)│
                                               └── POST /api/scripts
                                                   { acao: "fetch_and_send" }
-                                                  Header: x-internal: 1
+                                                  Header: x-internal-secret: <INTERNAL_SECRET>
 ```
 
-O header `x-internal: 1` permite que o scheduler execute os scripts sem cookie JWT.
+O header `x-internal-secret` permite que o scheduler execute os scripts sem cookie JWT.
 
 ### Páginas
 
@@ -381,8 +384,8 @@ O header `x-internal: 1` permite que o scheduler execute os scripts sem cookie J
 
 ### Painel Admin — Seções
 
-1. **Execução Manual** — botões para Buscar Dados, Enviar E-mails ou ambos; exibe saída do script em terminal
-2. **Agendamento** — configura hora e dias da semana; ativa/desativa agendamento automático. Exibe também o **Horário atual do Servidor**
+1. **Execução Manual** — botões para Atualizar dados Olist, Enviar e-mails agora, Enviar e-mails só admins ou Atualizar e Enviar; exibe saída do script em terminal
+2. **Agendamento** — suporta múltiplos agendamentos, recorrência diária/semanal/mensal, opção de último dia do mês, alerta de conflito de horário e exibe o **Horário atual do Servidor**
 3. **Destinatários — Vendedoras** — sincroniza lista da API Olist, define e-mail, gerencia a **Meta do Mês** de cada vendedora, e ativa/desativa envio individual
 4. **Destinatários — Admins** — ativa/desativa recebimento do relatório consolidado por usuário admin
 5. **Usuários Dashboard** — cria, edita e exclui usuários; altera senhas
@@ -411,7 +414,7 @@ O header `x-internal: 1` permite que o scheduler execute os scripts sem cookie J
 
 | Método | Rota | Acesso | Descrição |
 |---|---|---|---|
-| POST | `/api/scripts` | Admin / Internal | `{ acao: "fetch" \| "send" \| "fetch_and_send" }` |
+| POST | `/api/scripts` | Admin / Internal | `{ acao: "fetch" \| "send" \| "send_admin_only" \| "fetch_and_send" }` |
 
 `fetch_and_send` executa `fetch_performance.py` e, se bem-sucedido, executa `send_emails.py`.
 
@@ -419,8 +422,8 @@ O header `x-internal: 1` permite que o scheduler execute os scripts sem cookie J
 
 | Método | Rota | Acesso | Descrição |
 |---|---|---|---|
-| GET | `/api/schedule` | Admin | Retorna configuração atual |
-| POST | `/api/schedule` | Admin | Atualiza e recarrega o cron job |
+| GET | `/api/schedule` | Admin | Retorna lista de agendamentos, agendamento principal e horário do servidor |
+| POST | `/api/schedule` | Admin | Atualiza todos os agendamentos e recarrega os cron jobs |
 
 ### Vendedoras
 
@@ -485,7 +488,7 @@ Type=simple
 WorkingDirectory=/opt/betina/performance/dashboard
 EnvironmentFile=/opt/betina/performance/env/performance.env
 Environment=NODE_ENV=production
-Environment=PORT=3200
+Environment=PORT=3100
 Environment=HOSTNAME=127.0.0.1
 # Usa a versão otimizada (standalone) com limite de 128MB de RAM para economizar recursos
 ExecStart=/usr/bin/npm run start:optimized
@@ -525,10 +528,10 @@ journalctl -u performance-dashboard -f
 Arquivo: `/etc/apache2/sites-enabled/betinalimpeza-le-ssl.conf`
 
 ```apache
-ProxyPass        /performance/ http://127.0.0.1:3200/performance/
-ProxyPassReverse /performance/ http://127.0.0.1:3200/performance/
-ProxyPass        /performance http://127.0.0.1:3200/performance
-ProxyPassReverse /performance http://127.0.0.1:3200/performance
+ProxyPass        /performance/ http://127.0.0.1:3100/performance/
+ProxyPassReverse /performance/ http://127.0.0.1:3100/performance/
+ProxyPass        /performance http://127.0.0.1:3100/performance
+ProxyPassReverse /performance http://127.0.0.1:3100/performance
 ```
 
 Módulos necessários: `proxy`, `proxy_http`, `headers`, `ssl`
@@ -541,7 +544,7 @@ Módulos necessários: `proxy`, `proxy_http`, `headers`, `ssl`
 
 1. Acesse `https://betinalimpeza.ddns.net/performance` e faça login
 2. Vá para o Painel Admin
-3. Clique em **"Conectar ao Olist"** — será redirecionado para a Tiny
+3. Clique em **"Conectar ao Olist"** — será redirecionado para a Olist/Tiny
 4. Autorize o acesso — você voltará automaticamente ao painel
 5. O status deverá mostrar **"Conectado"**
 
@@ -560,13 +563,15 @@ Módulos necessários: `proxy`, `proxy_http`, `headers`, `ssl`
 ### 4. Configurar Agendamento
 
 1. No Painel Admin → **Agendamento**
-2. Defina o horário (ex: `18:00`) e os dias da semana
-3. Ative o agendamento
+2. Adicione um ou mais agendamentos com o botão **"Novo agendamento"**
+3. Para recorrência mensal, escolha dia fixo ou ative **"Último dia do mês"**
+4. Ative os agendamentos desejados
+5. Clique em **"Salvar agendamentos"**
 
 ### 5. Testar Manualmente
 
 1. No Painel Admin → **Execução Manual**
-2. Clique em **"Buscar e Enviar"** para executar o ciclo completo
+2. Clique em **"Atualizar e Enviar"** para ciclo completo ou **"Enviar e-mails só admins"** para envio exclusivo a administradores
 3. Acompanhe a saída na área de terminal abaixo dos botões
 
 ---
@@ -588,7 +593,7 @@ Módulos necessários: `proxy`, `proxy_http`, `headers`, `ssl`
 ```bash
 cd /opt/betina/performance/dashboard
 npm run dev
-# Acesse: http://localhost:3200
+# Acesse: http://localhost:3100
 ```
 
 > Em desenvolvimento, `NEXT_PUBLIC_BASE_PATH` é vazio, então a aplicação fica na raiz.
@@ -619,6 +624,23 @@ cd /opt/betina/performance
 | Journal token refresh | `journalctl -u performance-token-refresh` | Resultado da renovação de tokens |
 | Banco de dados | Tabela `email_logs` | Histórico de todos os envios |
 | Painel web | `/performance/admin` → Histórico | Interface visual dos logs |
+
+---
+
+## Limpeza de Arquivos
+
+Arquivos/pastas que **podem ser removidos com segurança** durante manutenção:
+
+- Artefatos de compilação TypeScript: `dashboard/tsconfig.tsbuildinfo`
+- PID temporário local: `dashboard/.dev.pid`
+- Scripts de teste pontuais fora da aplicação (`test_*.py` na raiz)
+
+Arquivos que são temporários, mas podem estar em uso e reaparecer automaticamente:
+
+- `database.db-wal`
+- `database.db-shm`
+
+Esses dois arquivos pertencem ao modo WAL do SQLite e são recriados automaticamente conforme o banco é aberto.
 
 ---
 
@@ -670,7 +692,7 @@ O `access_token` Olist expira em ~30 minutos. O `refresh_token` dura vários dia
 journalctl -u performance-dashboard -n 50
 
 # Verificar se a porta está ocupada
-ss -tlnp | grep 3200
+ss -tlnp | grep 3100
 
 # Verificar variáveis de ambiente
 systemctl show performance-dashboard | grep Env

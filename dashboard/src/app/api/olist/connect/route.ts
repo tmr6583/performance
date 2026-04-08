@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getAuthUser } from '@/lib/auth';
 import crypto from 'crypto';
+import { getEffectiveRedirectUri, getOlistCredentialsRaw } from '@/lib/olist-tokens';
 
 const AUTH_URL = 'https://accounts.tiny.com.br/realms/tiny/protocol/openid-connect/auth';
 
@@ -10,8 +11,9 @@ export async function GET() {
     return NextResponse.json({ error: 'Não autorizado' }, { status: 403 });
   }
 
-  const CLIENT_ID = process.env.OLIST_CLIENT_ID;
-  const REDIRECT_URI = process.env.OLIST_REDIRECT_URI ?? 'https://betinalimpeza.ddns.net/performance/api/olist/callback';
+  const storedCreds = getOlistCredentialsRaw();
+  const CLIENT_ID = storedCreds.client_id?.trim() || process.env.OLIST_CLIENT_ID;
+  const REDIRECT_URI = getEffectiveRedirectUri();
 
   if (!CLIENT_ID) {
     return NextResponse.json({ error: 'OLIST_CLIENT_ID não configurado' }, { status: 500 });

@@ -2,6 +2,7 @@
 
 import logging
 import os
+from logging.handlers import TimedRotatingFileHandler
 
 
 def setup_logger(name: str) -> logging.Logger:
@@ -31,7 +32,13 @@ def setup_logger(name: str) -> logging.Logger:
         console_handler = logging.StreamHandler()
         console_handler.setFormatter(formatter)
 
-        file_handler = logging.FileHandler(log_file, encoding="utf-8")
+        file_handler = TimedRotatingFileHandler(
+            log_file,
+            when="midnight",
+            interval=1,
+            backupCount=30,
+            encoding="utf-8",
+        )
         file_handler.setFormatter(formatter)
 
         logger.addHandler(console_handler)

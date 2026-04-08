@@ -20,7 +20,7 @@
       "jsx",
       "js"
     ],
-    "poweredByHeader": true,
+    "poweredByHeader": false,
     "compress": true,
     "images": {
       "deviceSizes": [
@@ -91,6 +91,9 @@
     },
     "logging": {
       "serverFunctions": true,
+      "fetches": {
+        "fullUrl": false
+      },
       "browserToTerminal": "warn"
     },
     "compiler": {},

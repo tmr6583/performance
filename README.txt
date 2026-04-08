@@ -72,7 +72,7 @@ O sistema é composto por duas camadas independentes:
   Internet (HTTPS:443)
          |
     Apache2 (reverse proxy + SSL termination)
-         |  /performance/* --> localhost:3200
+        |  /performance/* --> localhost:3100
          |
     Next.js  [performance-dashboard.service]
          |
@@ -86,7 +86,7 @@ O sistema é composto por duas camadas independentes:
                  |
     (no horário configurado)
                  |
-                 +--> POST /api/scripts { acao: "fetch_and_send" }
+                +--> POST /api/scripts { acao: "fetch_and_send" }
                               |
                  +--> fetch_performance.py --> API Olist --> SQLite
                  +--> send_emails.py       --> SQLite    --> SMTP
@@ -212,7 +212,7 @@ O sistema é composto por duas camadas independentes:
   NEXT_PUBLIC_BASE_PATH=
   OLIST_CLIENT_ID=<Olist Client ID>
   OLIST_CLIENT_SECRET=<Olist Client Secret>
-  OLIST_REDIRECT_URI=http://localhost:3200/api/olist/callback
+  OLIST_REDIRECT_URI=http://localhost:3100/api/olist/callback
   SQLITE_DB_PATH=c:\GitHubLocal\performance\database.db
 
   NOTA: Em desenvolvimento, NEXT_PUBLIC_BASE_PATH é vazio (app fica na raiz).
@@ -286,9 +286,12 @@ O sistema é composto por duas camadas independentes:
   -----------------------------------------------------------------------
   Tabela: schedules
   -----------------------------------------------------------------------
-  id               INTEGER  PK — fixo em 1 (linha única)
+  id               INTEGER  PK — identificador do agendamento
   hora             TEXT     Horário no formato HH:MM (ex: '18:00')
   dias             TEXT     Dias separados por vírgula (ex: 'seg,ter,qua,qui,sex')
+  recorrencia      TEXT     daily | weekly | monthly
+  dia_mes          INTEGER  Dia do mês para recorrência mensal (1-31)
+  ultimo_dia_mes   INTEGER  1 = executa no último dia do mês
   ativo            INTEGER  1 = agendamento ativo, 0 = desativado
   modificado       DATETIME Timestamp da última alteração
 
@@ -423,7 +426,7 @@ O sistema é composto por duas camadas independentes:
   Tecnologia : Next.js 16.2.1 com App Router
   React      : 19.0.0
   Linguagem  : TypeScript
-  Porta      : 3200 (binding em 127.0.0.1 — não acessível externamente)
+  Porta      : 3100 (binding em 127.0.0.1 — não acessível externamente)
   Base Path  : /performance
 
   -----------------------------------------------------------------------
@@ -457,16 +460,17 @@ O sistema é composto por duas camadas independentes:
     register() --> reloadScheduler()  (apenas no runtime Node.js)
 
   reloadScheduler()
-    - Lê configuração da tabela schedules (id=1)
-    - Se ativo=1: cria job node-cron com expressão calculada
+    - Lê todos os agendamentos da tabela schedules
+    - Cria um job node-cron para cada agendamento ativo
     - Expressão cron: "MM HH * * DOW" (ex: "0 18 * * 1,2,3,4,5")
     - Mapeamento de dias: dom=0 seg=1 ter=2 qua=3 qui=4 sex=5 sab=6
+    - Em recorrência mensal, permite dia fixo ou último dia do mês
 
   Quando o cron dispara:
     triggerSend() --> POST /api/scripts { acao: "fetch_and_send" }
-                      Header: x-internal: 1
+                      Header: x-internal-secret: <INTERNAL_SECRET>
 
-  O header x-internal: 1 permite execução sem cookie JWT (bypass de auth
+  O header x-internal-secret permite execução sem cookie JWT (bypass de auth
   apenas para requisições originadas internamente pelo scheduler).
 
   -----------------------------------------------------------------------
@@ -493,14 +497,18 @@ O sistema é composto por duas camadas independentes:
   -----------------------------------------------------------------------
 
   1. EXECUÇÃO MANUAL
-     Botões: "Buscar Dados", "Enviar E-mails", "Buscar e Enviar"
+     Botões: "Atualizar dados Olist", "Enviar e-mails agora",
+             "Enviar e-mails só admins", "Atualizar e Enviar"
      Saída do script exibida em terminal dark abaixo dos botões.
 
   2. AGENDAMENTO
-     Configura hora (HH:MM) e dias da semana (pílulas clicáveis).
+     Suporta múltiplos agendamentos independentes.
+     Configura hora (HH:MM), recorrência e dias da semana (pílulas clicáveis).
+     Recorrência mensal com dia fixo ou opção "Último dia do mês".
+     Exibe alerta visual para conflito de horários ativos.
      Exibe o horário atual do servidor.
-     Toggle para ativar/desativar agendamento.
-     Salva via POST /api/schedule e recarrega o cron job imediatamente.
+     Toggle para ativar/desativar cada agendamento.
+     Salva via POST /api/schedule e recarrega os cron jobs imediatamente.
 
   3. DESTINATÁRIOS — VENDEDORAS
      Lista vendedoras do banco local.
@@ -559,11 +567,12 @@ O sistema é composto por duas camadas independentes:
   -----------------------------------------------------------------------
   Scripts
   -----------------------------------------------------------------------
-  POST /api/scripts           [admin ou x-internal: 1]
-    Body: { acao: "fetch" | "send" | "fetch_and_send" }
+  POST /api/scripts           [admin ou x-internal-secret válido]
+    Body: { acao: "fetch" | "send" | "send_admin_only" | "fetch_and_send" }
 
     fetch         : executa fetch_performance.py
     send          : executa send_emails.py
+    send_admin_only: executa send_emails.py apenas para admins
     fetch_and_send: executa fetch_performance.py; se OK, executa send_emails.py
 
     Timeout: 5 minutos por script.
@@ -573,11 +582,11 @@ O sistema é composto por duas camadas independentes:
   Agendamento
   -----------------------------------------------------------------------
   GET /api/schedule           [admin]
-    Retorna: { hora, dias, ativo }
+    Retorna: agendamento principal + lista schedules[] + horário do servidor
 
   POST /api/schedule          [admin]
-    Body: { hora, dias, ativo }
-    Salva no banco e recarrega node-cron.
+    Body: { schedules: [{ hora, dias, recorrencia, dia_mes, ultimo_dia_mes, ativo }] }
+    Salva todos os agendamentos no banco e recarrega node-cron.
     Retorna: { success: true }
 
   -----------------------------------------------------------------------
@@ -685,7 +694,7 @@ O sistema é composto por duas camadas independentes:
   WorkingDirectory=/opt/betina/performance/dashboard
   EnvironmentFile=/opt/betina/performance/env/performance.env
   Environment=NODE_ENV=production
-  Environment=PORT=3200
+  Environment=PORT=3100
   Environment=HOSTNAME=127.0.0.1
   # Usa a versão otimizada (standalone) com limite de 128MB de RAM para economizar recursos
   ExecStart=/usr/bin/npm run start:optimized
@@ -701,7 +710,7 @@ O sistema é composto por duas camadas independentes:
   - Inicia APÓS performance-token-refresh.service concluir
   - Usa versão build 'standalone' otimizada (npm run start:optimized)
   - Limite rígido de memória via flag --max-old-space-size=128
-  - Binding em 127.0.0.1:3200 (não exposto diretamente na internet)
+  - Binding em 127.0.0.1:3100 (não exposto diretamente na internet)
   - Reinicia automaticamente em caso de falha (intervalo 5s)
   - Carrega variáveis de performance.env
 
@@ -743,10 +752,10 @@ O sistema é composto por duas camadas independentes:
 
   Bloco relevante para o Performance:
 
-    ProxyPass        /performance/ http://127.0.0.1:3200/performance/
-    ProxyPassReverse /performance/ http://127.0.0.1:3200/performance/
-    ProxyPass        /performance  http://127.0.0.1:3200/performance
-    ProxyPassReverse /performance  http://127.0.0.1:3200/performance
+    ProxyPass        /performance/ http://127.0.0.1:3100/performance/
+    ProxyPassReverse /performance/ http://127.0.0.1:3100/performance/
+    ProxyPass        /performance  http://127.0.0.1:3100/performance
+    ProxyPassReverse /performance  http://127.0.0.1:3100/performance
 
   As duas linhas duplicadas (com e sem barra final) garantem que tanto
   /performance quanto /performance/ sejam roteados corretamente.
@@ -808,16 +817,18 @@ O sistema é composto por duas camadas independentes:
   Passo 5 — Configurar Agendamento
   -----------------------------------------------------------------------
   1. No Painel Admin > seção "Agendamento"
-  2. Defina o horário (recomendado: 18:00)
-  3. Selecione os dias da semana (clique nas pílulas)
-  4. Ative o agendamento com o toggle
-  5. Clique em "Salvar Agendamento"
+  2. Use "Novo agendamento" para criar quantos horários forem necessários
+  3. Defina recorrência (diária, semanal ou mensal)
+  4. Para mensal, selecione dia fixo ou habilite "Último dia do mês"
+  5. Ative cada agendamento desejado com o toggle
+  6. Clique em "Salvar agendamentos"
 
   -----------------------------------------------------------------------
   Passo 6 — Testar o Sistema
   -----------------------------------------------------------------------
   1. No Painel Admin > seção "Execução Manual"
-  2. Clique em "Buscar e Enviar"
+  2. Clique em "Atualizar e Enviar" para ciclo completo
+     ou em "Enviar e-mails só admins" para envio exclusivo aos administradores
   3. Aguarde a execução (pode levar 1-2 minutos dependendo do volume)
   4. Verifique a saída na área de terminal
   5. Confirme o recebimento dos e-mails
@@ -847,7 +858,7 @@ O sistema é composto por duas camadas independentes:
   node-cron dispara
        |
   POST /api/scripts { acao: "fetch_and_send" }
-  Header: x-internal: 1
+  Header: x-internal-secret: <INTERNAL_SECRET>
        |
        +-- fetch_performance.py
        |       |
@@ -884,7 +895,7 @@ O sistema é composto por duas camadas independentes:
   -----------------------------------------------------------------------
     cd /opt/betina/performance/dashboard
     npm run dev
-    # Acesse: http://localhost:3200
+    # Acesse: http://localhost:3100
 
   -----------------------------------------------------------------------
   Rebuild após alterações no código
@@ -931,14 +942,14 @@ O sistema é composto por duas camadas independentes:
   # Logs do dashboard em tempo real
   journalctl -u performance-dashboard -f
 
-  # Verificar se o Next.js está ouvindo na porta 3200
-  ss -tlnp | grep 3200
+  # Verificar se o Next.js está ouvindo na porta 3100
+  ss -tlnp | grep 3100
 
   # Verificar se o Apache está com mod_proxy ativo
   apache2ctl -M | grep proxy
 
   # Testar conexão interna do Apache ao Next.js
-  curl -s http://127.0.0.1:3200/performance | head -20
+  curl -s http://127.0.0.1:3100/performance | head -20
 
   # Consultar últimos e-mails enviados (Node.js)
   node -e "
@@ -949,6 +960,13 @@ O sistema é composto por duas camadas independentes:
     ).all();
     console.table(rows);
   "
+
+  Limpeza de arquivos/pastas recomendada:
+    - Remover dashboard/tsconfig.tsbuildinfo e dashboard/.dev.pid
+    - Remover scripts de teste ad hoc: test_*.py na raiz
+    - Manter atenção aos arquivos database.db-wal e database.db-shm:
+      eles são temporários do SQLite, podem estar bloqueados em runtime
+      e são recriados automaticamente quando o banco volta a ser aberto.
 
 
 ================================================================================
@@ -1028,12 +1046,12 @@ O sistema é composto por duas camadas independentes:
 
   Causas comuns:
     - JWT_SECRET não definido no performance.env
-    - Porta 3200 ocupada por outro processo
+    - Porta 3100 ocupada por outro processo
     - Falha no build do Next.js (arquivos .next/ ausentes ou corrompidos)
 
   Soluções:
     # Verificar porta
-    ss -tlnp | grep 3200
+    ss -tlnp | grep 3100
 
     # Rebuild completo
     cd /opt/betina/performance/dashboard

@@ -126,6 +126,7 @@ export function initDb(): void {
       dias       TEXT    NOT NULL DEFAULT 'seg,ter,qua,qui,sex',
       recorrencia TEXT   NOT NULL DEFAULT 'weekly',
       dia_mes    INTEGER NOT NULL DEFAULT 1,
+      ultimo_dia_mes INTEGER NOT NULL DEFAULT 0,
       ativo      INTEGER NOT NULL DEFAULT 0,
       modificado DATETIME DEFAULT CURRENT_TIMESTAMP
     )
@@ -139,7 +140,11 @@ export function initDb(): void {
     db.exec('ALTER TABLE schedules ADD COLUMN dia_mes INTEGER NOT NULL DEFAULT 1');
   } catch { }
 
-  // Garante que existe a linha de schedule (id = 1)
+  try {
+    db.exec('ALTER TABLE schedules ADD COLUMN ultimo_dia_mes INTEGER NOT NULL DEFAULT 0');
+  } catch { }
+
+  // Garante que existe ao menos um agendamento
   db.exec(`
     INSERT OR IGNORE INTO schedules (id, hora, dias, recorrencia, dia_mes, ativo)
     VALUES (1, '18:00', 'seg,ter,qua,qui,sex', 'weekly', 1, 0)
@@ -155,8 +160,11 @@ export function initDb(): void {
       dia_mes = CASE
         WHEN dia_mes IS NULL OR dia_mes < 1 THEN 1
         ELSE dia_mes
+      END,
+      ultimo_dia_mes = CASE
+        WHEN ultimo_dia_mes IS NULL THEN 0
+        ELSE ultimo_dia_mes
       END
-    WHERE id = 1
   `);
 
   // ── Locks de jobs (evita execuções concorrentes em múltiplos processos) ──
@@ -166,6 +174,50 @@ export function initDb(): void {
       locked_until INTEGER NOT NULL,
       lock_id      TEXT NOT NULL
     )
+  `);
+
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS olist_credentials (
+      id            INTEGER PRIMARY KEY CHECK(id = 1),
+      redirect_uri  TEXT,
+      client_id     TEXT,
+      client_secret TEXT,
+      refresh_token TEXT,
+      updated_at    DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  try {
+    db.exec('ALTER TABLE olist_credentials ADD COLUMN redirect_uri TEXT');
+  } catch { }
+
+  db.exec(`
+    INSERT OR IGNORE INTO olist_credentials (id, client_id, client_secret, refresh_token)
+    VALUES (1, NULL, NULL, NULL)
+  `);
+
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS token_refresh_logs (
+      id           INTEGER PRIMARY KEY AUTOINCREMENT,
+      attempted_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      status       TEXT NOT NULL CHECK(status IN ('ok', 'erro', 'info')),
+      message      TEXT NOT NULL
+    )
+  `);
+
+  db.exec(`
+    DELETE FROM email_logs
+    WHERE enviado_em < datetime('now', '-30 day')
+  `);
+
+  db.exec(`
+    DELETE FROM token_refresh_logs
+    WHERE attempted_at < datetime('now', '-30 day')
+  `);
+
+  db.exec(`
+    DELETE FROM login_attempts
+    WHERE updated_at < (strftime('%s','now') - 2592000)
   `);
 
   // ── Admin padrão ──────────────────────────────────────────────────────
