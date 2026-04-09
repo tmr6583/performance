@@ -117,6 +117,7 @@ NODE_ENV=production
 PORT=3100
 HOSTNAME=127.0.0.1
 TZ=America/Sao_Paulo
+APP_PORTAL_URL=https://<dominio>
 
 APP_VERBOSE_LOGS=0
 APP_ENABLE_CLUSTER=0
@@ -143,6 +144,7 @@ Antes de qualquer alteração no ambiente destino:
 - confirmar domínio e certificado SSL válidos;
 - confirmar credenciais SMTP e OAuth válidas;
 - confirmar versão Node >= 24 e Python 3.12 no destino;
+- confirmar que o serviço `atrasados.service` (porta 3000) está saudável antes da mudança;
 - confirmar plano de rollback pronto;
 - confirmar janela de mudança.
 
@@ -282,6 +284,23 @@ sudo apachectl configtest
 sudo systemctl reload apache2
 ```
 
+Observação operacional:
+
+- É permitido reiniciar o Apache se necessário durante a janela de mudança;
+- as alterações devem ficar restritas ao bloco `/performance`, sem impacto no roteamento do serviço `atrasados` (porta 3000).
+
+## Etapa H — Atualizar portal de serviços
+
+Arquivo: `/opt/betina/index.html`
+
+- O card **"Envio de Performance de Vendas"** deve apontar para:
+
+```html
+<a href="/performance/" class="card">
+```
+
+- Não alterar os links do serviço de `atrasados`.
+
 ---
 
 ## 8) Validação pós-migração
@@ -310,6 +329,8 @@ Validar manualmente:
 - status OAuth conectado;
 - gravação em `email_logs`;
 - agendamentos múltiplos visíveis e persistindo.
+- card do portal **"Envio de Performance de Vendas"** abrindo `/performance/`;
+- botão **"Sair"** do dashboard redirecionando para a página inicial do portal (`/`) após logoff.
 
 ---
 

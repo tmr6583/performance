@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import type { FormEvent } from 'react';
+import { resolveBasePath } from '@/lib/base-path';
 
 export default function LoginPage() {
-  const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+  const basePath = resolveBasePath();
   const [email,    setEmail]    = useState('');
   const [password, setPassword] = useState('');
   const [loading,  setLoading]  = useState(false);

@@ -3,8 +3,17 @@
   "pages404": true,
   "appType": "app",
   "caseSensitive": false,
-  "basePath": "",
+  "basePath": "/performance",
   "redirects": [
+    {
+      "source": "/performance/",
+      "destination": "/performance",
+      "basePath": false,
+      "internal": true,
+      "priority": true,
+      "statusCode": 308,
+      "regex": "^/performance/$"
+    },
     {
       "source": "/:path+/",
       "destination": "/:path+",

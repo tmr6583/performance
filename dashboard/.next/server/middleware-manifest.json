@@ -14,14 +14,14 @@
       "entrypoint": "server/edge/chunks/03tk_next_dist_esm_build_templates_edge-wrapper_006637n.js",
       "matchers": [
         {
-          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?(?:\\/((?:[^\\/#\\?]+?)(?:\\/(?:[^\\/#\\?]+?))*))?(\\\\.json)?[\\/#\\?]?$",
+          "regexp": "^\\/performance(?:\\/(_next\\/data\\/[^/]{1,}))?(?:\\/((?:[^\\/#\\?]+?)(?:\\/(?:[^\\/#\\?]+?))*))?(\\\\.json)?[\\/#\\?]?$",
           "originalSource": "/:path*"
         }
       ],
       "wasm": [],
       "assets": [],
       "env": {
-        "__NEXT_BUILD_ID": "1-_YOaxmJoqv4DrxVZ9Ht",
+        "__NEXT_BUILD_ID": "R9Z0cwBsfvZju5AXjeP-Q",
         "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "X9BkZixQmnYVSPZFOBoksyuZQOWCTqxVQGIzam5o5u0=",
         "__NEXT_PREVIEW_MODE_ID": "6f707c59b0da482f37375c898be0279c",
         "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "75e4d893c66480640b85399f3963161611b017d9577a62ec2cd79360c241aa80",

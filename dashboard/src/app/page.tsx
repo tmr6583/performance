@@ -1,5 +1,6 @@
 import { getAuthUser } from '@/lib/auth';
 import db, { ensureDbInitialized } from '@/lib/db';
+import { resolveBasePath } from '@/lib/base-path';
 import { redirect } from 'next/navigation';
 import DashboardClient from './DashboardClient';
 
@@ -13,7 +14,7 @@ function fmtBrl(v: number) {
 
 export default async function HomePage() {
   const user = await getAuthUser();
-  const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+  const basePath = resolveBasePath();
   
   if (!user) redirect(`${basePath}/login`);
   if (user.role !== 'admin') redirect(`${basePath}/login`);

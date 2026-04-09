@@ -7,6 +7,7 @@
 
 import cron from 'node-cron';
 import db, { ensureDbInitialized } from './db';
+import { resolveBasePath } from './base-path';
 
 let currentTasks: cron.ScheduledTask[] = [];
 const shouldLogInfo = process.env.NODE_ENV !== 'production' || process.env.APP_VERBOSE_LOGS === '1';
@@ -59,7 +60,7 @@ function shouldRunMonthly(targetDay: number, lastDayOnly: boolean, timeZone: str
 async function triggerSend(): Promise<void> {
   try {
     const port    = process.env.PORT ?? 3100;
-    const base    = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+    const base    = resolveBasePath();
     const baseUrl = `http://127.0.0.1:${port}${base}`;
     const secret  = process.env.INTERNAL_SECRET ?? '';
     const timeoutMs = Number(process.env.APP_INTERNAL_FETCH_TIMEOUT_MS ?? '15000');

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { resolveBasePath } from '@/lib/base-path';
 
 // ── Verificação JWT com Web Crypto (compatível com Edge runtime) ────────────
 
@@ -50,7 +51,7 @@ async function verifyJwt(token: string, secret: string): Promise<boolean> {
 
 // ── Middleware ──────────────────────────────────────────────────────────────
 
-const MOUNT_PATH = process.env.NEXT_PUBLIC_BASE_PATH || '';
+const MOUNT_PATH = resolveBasePath();
 const MAX_PAYLOAD_MB = Number(process.env.APP_MAX_PAYLOAD_MB ?? '1');
 const MAX_PAYLOAD_BYTES = Number.isFinite(MAX_PAYLOAD_MB) && MAX_PAYLOAD_MB > 0
   ? MAX_PAYLOAD_MB * 1024 * 1024

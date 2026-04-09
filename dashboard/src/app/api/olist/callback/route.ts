@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { getEffectiveRedirectUri, getOlistCredentialsRaw, saveOlistCredentials, writeTokens } from '@/lib/olist-tokens';
+import { resolveBasePath } from '@/lib/base-path';
 
 const TOKEN_URL = 'https://accounts.tiny.com.br/realms/tiny/protocol/openid-connect/token';
 const REQUEST_TIMEOUT_MS = Number(process.env.APP_EXTERNAL_FETCH_TIMEOUT_MS ?? '20000');
@@ -9,7 +10,7 @@ function resolveBaseUrl(request: NextRequest): string {
   const configured = process.env.APP_BASE_URL;
   if (configured) return configured.replace(/\/+$/, '');
 
-  const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+  const basePath = resolveBasePath();
   const origin = request.nextUrl.origin;
   return `${origin}${basePath}`.replace(/\/+$/, '');
 }

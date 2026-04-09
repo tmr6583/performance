@@ -5,6 +5,7 @@
 - Confirmar janela de migração e responsável por rollback.
 - Confirmar acesso SSH com sudo no servidor novo.
 - Confirmar domínio, SSL e callback OAuth válidos.
+- Confirmar que o `atrasados.service` (porta 3000) está ativo e saudável.
 - Confirmar backups de:
   - `/opt/betina/performance/database.db`
   - `/opt/betina/performance/.tiny_tokens.json`
@@ -60,6 +61,7 @@ sudo -u www-data npm run build
 - `PORT=3100`
 - `HOSTNAME=127.0.0.1`
 - `OLIST_REDIRECT_URI=https://<dominio>/performance/api/olist/callback`
+- `APP_PORTAL_URL=https://<dominio>`
 - `JWT_SECRET` e `INTERNAL_SECRET` fortes
 - `TZ=America/Sao_Paulo`
 
@@ -86,6 +88,9 @@ sudo apachectl configtest
 sudo systemctl reload apache2
 ```
 
+- Reiniciar Apache é permitido se necessário durante a janela.
+- Restringir alterações ao bloco `/performance`, sem impactar `atrasados` (porta 3000).
+
 Bloco obrigatório no VirtualHost:
 
 ```apache
@@ -94,6 +99,12 @@ ProxyPassReverse /performance/ http://127.0.0.1:3100/performance/
 ProxyPass        /performance  http://127.0.0.1:3100/performance
 ProxyPassReverse /performance  http://127.0.0.1:3100/performance
 ```
+
+## 8.1) Portal de serviços
+
+- Validar em `/opt/betina/index.html`:
+  - Card **"Envio de Performance de Vendas"** apontando para `/performance/`.
+  - Card de `atrasados` permanece inalterado.
 
 ## 9) Smoke test técnico
 
@@ -116,6 +127,7 @@ curl -I https://<dominio>/performance/login
   - `send_admin_only`
 - Validar OAuth conectado.
 - Validar agendamento e logs.
+- Validar botão **"Sair"** da aplicação Performance redirecionando para a página inicial do portal (`/`).
 
 ## 11) Cutover
 

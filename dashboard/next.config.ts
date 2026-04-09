@@ -1,6 +1,12 @@
 import type { NextConfig } from 'next';
 
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH || undefined;
+const configuredBasePath = process.env.NEXT_PUBLIC_BASE_PATH?.trim();
+const normalizedConfiguredBasePath =
+  configuredBasePath && configuredBasePath !== '/'
+    ? (configuredBasePath.startsWith('/') ? configuredBasePath : `/${configuredBasePath}`)
+    : undefined;
+const basePath =
+  normalizedConfiguredBasePath ?? (process.env.NODE_ENV === 'production' ? '/performance' : undefined);
 
 const nextConfig: NextConfig = {
   ...(basePath ? { basePath } : {}),

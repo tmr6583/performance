@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import db, { ensureDbInitialized } from '@/lib/db';
 import { signToken } from '@/lib/auth';
+import { resolveBasePath } from '@/lib/base-path';
 
 function getClientIp(request: Request): string {
   const xfwd = request.headers.get('x-forwarded-for');
@@ -66,7 +67,7 @@ export async function POST(request: Request) {
     const token = signToken({ id: user.id, email: user.email, role: user.role, name: user.name });
     const response = NextResponse.json({ success: true, role: user.role });
 
-    const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+    const basePath = resolveBasePath();
     response.cookies.set('auth_token', token, {
       httpOnly: true,
       sameSite: 'lax',
