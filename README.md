@@ -55,8 +55,10 @@ Internet (HTTPS:443)
        ├── API Routes (/api/*)
        │       └── POST /api/scripts → executa Python via child_process
        │
-       └── node-cron (scheduler)
-               └── dispara fetch_performance.py + send_emails.py
+      └── node-cron (scheduler)
+              └── dispara /api/scripts { acao: "fetch_and_send" }
+                      ├── fetch_performance.py
+                      └── send_emails.py (somente se fetch = sucesso)
 
   Python Scripts (.venv/bin/python)
        ├── fetch_performance.py → API Olist → SQLite
@@ -162,6 +164,8 @@ EMAIL_FROM_NAME=Betina Limpeza
 SQLITE_DB_PATH=/opt/betina/performance/database.db
 ```
 
+> **Importante (produção Linux):** nunca deixe `SQLITE_DB_PATH` com caminho de Windows (ex.: `c:\...`). Isso cria/usa um banco incorreto e pode gerar erros como `no such table: performance_cache` durante `fetch_performance.py`.
+
 ### `/opt/betina/performance/env/performance.env` — systemd / Next.js
 
 ```ini
@@ -170,12 +174,15 @@ INTERNAL_SECRET=<outra string aleatória para auth do cron job interno>
 OLIST_CLIENT_ID=<Olist Client ID>
 OLIST_CLIENT_SECRET=<Olist Client Secret>
 OLIST_REDIRECT_URI=https://betinalimpeza.ddns.net/performance/api/olist/callback
+APP_PORTAL_URL=https://betinalimpeza.ddns.net
 SQLITE_DB_PATH=/opt/betina/performance/database.db
 PERFORMANCE_SCRIPT_DIR=/opt/betina/performance
 NEXT_PUBLIC_BASE_PATH=/performance
 ```
 
 > **Nota sobre Standalone Build:** O Next.js usa um caminho absoluto para o `SQLITE_DB_PATH` garantindo que o build `.next/standalone` não crie um banco isolado e utilize a base de produção correta.
+>
+> **Nota sobre logout para o portal:** `APP_PORTAL_URL` define para onde o `/api/auth/logout` redireciona após limpar o cookie. Se não estiver definido, o backend usa `x-forwarded-proto` + `x-forwarded-host` da requisição.
 
 ### `/opt/betina/performance/dashboard/.env.local` — desenvolvimento local
 
@@ -313,11 +320,17 @@ Execução: .venv/bin/python send_emails.py
 5. Falha de autenticação SMTP aborta todo o lote (`sys.exit(1)`)
 6. Erros individuais são registrados mas não interrompem os demais envios
 
+No e-mail individual de vendedora, o corpo inclui explicitamente:
+- **Vendas no mês**
+- **Faturamento no mês**
+- Pedidos no mês
+- Ticket médio do mês
+
 ### `email_templates.py`
 
 Gera HTML responsivo e sem métricas irrelevantes (estatísticas diárias não são exibidas para focar no fechamento mensal).
 
-- **`vendedora_html()`** — métricas individuais mensais focadas no faturamento vs metas.
+- **`vendedora_html()`** — métricas individuais mensais com destaque para **Vendas no mês** e **Faturamento no mês**, além da meta.
 - **`admin_html()`** — tabela consolidada da equipe (1040px max-width), alinhada aos indicadores do dashboard de vendas. O assunto exibe a data formatada como `dd/mm/yyyy`.
 
 ### `refresh_tokens.py`
@@ -345,11 +358,15 @@ Executado pelo systemd como `oneshot` antes do dashboard iniciar:
 
 **Base Path:** `/performance`
 
+- Em produção, se `NEXT_PUBLIC_BASE_PATH` estiver ausente, o sistema aplica fallback automático para `/performance`.
+- Em desenvolvimento, o base path fica vazio (`''`) e a aplicação roda na raiz (`http://localhost:3100`).
+
 ### Autenticação
 
 - JWT armazenado em cookie `httpOnly` com validade de 8 horas
 - Middleware protege todas as rotas exceto `/login`, `/api/auth/*`, `/api/olist/callback` e assets estáticos
 - Dois papéis: `admin` (acesso total) e `salesperson` (vê apenas própria performance)
+- Proteção anti-força bruta no login (`login_attempts`): após 10 tentativas inválidas para o mesmo par e-mail/IP, bloqueia por 15 minutos
 
 ### Middleware
 
@@ -400,7 +417,7 @@ O header `x-internal-secret` permite que o scheduler execute os scripts sem cook
 | Método | Rota | Descrição |
 |---|---|---|
 | POST | `/api/auth/login` | Login com e-mail e senha. Retorna cookie JWT |
-| GET | `/api/auth/logout` | Remove cookie e redireciona para `/login` |
+| GET | `/api/auth/logout` | Remove cookie e redireciona para a URL do portal (`APP_PORTAL_URL`) |
 
 ### Olist OAuth
 
@@ -417,6 +434,12 @@ O header `x-internal-secret` permite que o scheduler execute os scripts sem cook
 | POST | `/api/scripts` | Admin / Internal | `{ acao: "fetch" \| "send" \| "send_admin_only" \| "fetch_and_send" }` |
 
 `fetch_and_send` executa `fetch_performance.py` e, se bem-sucedido, executa `send_emails.py`.
+
+No agendamento, o envio sempre ocorre após a atualização dos dados no Olist, mantendo os e-mails alinhados aos dados mais recentes.
+
+Antes de executar scripts Python, a rota também normaliza o ambiente para evitar desvio de base:
+- `SQLITE_DB_PATH` recebe caminho absoluto (configurado ou fallback para `/opt/betina/performance/database.db`)
+- `TOKEN_FILE` recebe caminho absoluto (configurado ou fallback para `/opt/betina/performance/.tiny_tokens.json`)
 
 ### Agendamento
 
@@ -711,4 +734,19 @@ Execute manualmente e observe a saída:
 ```bash
 cd /opt/betina/performance
 sudo -u www-data env $(cat .env | grep -v '^#' | xargs) .venv/bin/python fetch_performance.py
+```
+
+### Página sem estilos ou login em loop
+
+Causa comum: divergência de base path (`/performance`) entre ambiente, build e proxy.
+
+Checklist:
+1. Confirme `NEXT_PUBLIC_BASE_PATH=/performance` em `/opt/betina/performance/env/performance.env`
+2. Confirme regras `ProxyPass` com e sem barra final para `/performance` no Apache
+3. Rebuild da aplicação após alterações de base path:
+
+```bash
+cd /opt/betina/performance/dashboard
+npm run build
+systemctl restart performance-dashboard
 ```

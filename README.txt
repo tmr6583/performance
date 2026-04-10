@@ -90,6 +90,7 @@ O sistema é composto por duas camadas independentes:
                               |
                  +--> fetch_performance.py --> API Olist --> SQLite
                  +--> send_emails.py       --> SQLite    --> SMTP
+                      (executa somente se fetch concluir com sucesso)
 
   SQLite (database.db)
     Tabelas: users, vendedores, performance_cache, email_logs, schedules
@@ -187,6 +188,11 @@ O sistema é composto por duas camadas independentes:
 
   SQLITE_DB_PATH=/opt/betina/performance/database.db
 
+  IMPORTANTE (produção Linux):
+  Nunca usar caminho de Windows em SQLITE_DB_PATH (ex: c:\...).
+  Isso pode abrir banco incorreto e causar erro:
+    no such table: performance_cache
+
   ------------------------------------------------------------------------
   /opt/betina/performance/env/performance.env   (EnvironmentFile do systemd)
   ------------------------------------------------------------------------
@@ -196,12 +202,17 @@ O sistema é composto por duas camadas independentes:
   OLIST_CLIENT_ID=<Olist Client ID>
   OLIST_CLIENT_SECRET=<Olist Client Secret>
   OLIST_REDIRECT_URI=https://betinalimpeza.ddns.net/performance/api/olist/callback
+  APP_PORTAL_URL=https://betinalimpeza.ddns.net
   SQLITE_DB_PATH=/opt/betina/performance/database.db
   PERFORMANCE_SCRIPT_DIR=/opt/betina/performance
   NEXT_PUBLIC_BASE_PATH=/performance
 
   NOTA SOBRE STANDALONE BUILD: O Next.js usa caminho absoluto no SQLITE_DB_PATH
   para garantir que a base não seja duplicada dentro da pasta .next/standalone.
+
+  NOTA SOBRE LOGOUT PARA O PORTAL:
+  APP_PORTAL_URL define o destino do logoff.
+  Se não estiver definido, o backend monta a URL com x-forwarded-proto/host.
 
   ------------------------------------------------------------------------
   /opt/betina/performance/dashboard/.env.local  (desenvolvimento local)
@@ -380,6 +391,12 @@ O sistema é composto por duas camadas independentes:
     - Falha em e-mail individual: registra e continua para o próximo
     - Todos com erro e nenhum com sucesso: sys.exit(1)
 
+  Conteúdo do e-mail individual (vendedora):
+    - Vendas no mês
+    - Faturamento no mês
+    - Pedidos no mês
+    - Ticket médio do mês
+
   -----------------------------------------------------------------------
   email_templates.py
   -----------------------------------------------------------------------
@@ -387,8 +404,9 @@ O sistema é composto por duas camadas independentes:
   fechamento mensal vs. meta.
 
   vendedora_html(nome, pedidos_dia, valor_dia, ticket_dia,
-                 pedidos_mes, valor_mes, ticket_mes, data)
-    - Exibe métricas individuais mensais
+                 pedidos_mes, valor_mes, faturamento_mes, ticket_mes, data)
+    - Exibe métricas individuais mensais com destaque para
+      "Vendas no mês" e "Faturamento no mês"
     - Layout responsivo com gradiente azul e destaque amarelo
 
   admin_html(vendedoras[], data)
@@ -428,6 +446,7 @@ O sistema é composto por duas camadas independentes:
   Linguagem  : TypeScript
   Porta      : 3100 (binding em 127.0.0.1 — não acessível externamente)
   Base Path  : /performance
+  Fallback   : em produção, se NEXT_PUBLIC_BASE_PATH estiver vazio, usa /performance
 
   -----------------------------------------------------------------------
   Autenticação
@@ -435,6 +454,8 @@ O sistema é composto por duas camadas independentes:
   - JWT armazenado em cookie httpOnly (nome: auth_token)
   - Validade: 8 horas
   - Dois papéis: admin e salesperson
+  - Proteção anti-força bruta: após 10 tentativas inválidas por e-mail/IP,
+    o login é bloqueado por 15 minutos (tabela login_attempts)
 
   Rotas PÚBLICAS (não requerem JWT):
     /performance/login
@@ -547,7 +568,7 @@ O sistema é composto por duas camadas independentes:
     Erro 401: credenciais inválidas
 
   GET /auth/logout
-    Remove cookie auth_token, redireciona para /login
+    Remove cookie auth_token, redireciona para APP_PORTAL_URL
 
   -----------------------------------------------------------------------
   Olist OAuth
@@ -567,13 +588,18 @@ O sistema é composto por duas camadas independentes:
   -----------------------------------------------------------------------
   Scripts
   -----------------------------------------------------------------------
-  POST /api/scripts           [admin ou x-internal-secret válido]
+  POST /scripts               [admin ou x-internal-secret válido]
     Body: { acao: "fetch" | "send" | "send_admin_only" | "fetch_and_send" }
 
     fetch         : executa fetch_performance.py
     send          : executa send_emails.py
     send_admin_only: executa send_emails.py apenas para admins
     fetch_and_send: executa fetch_performance.py; se OK, executa send_emails.py
+                    (envio sempre ocorre após atualização no Olist)
+
+    A rota normaliza variáveis para os scripts Python antes da execução:
+      SQLITE_DB_PATH absoluto (configurado ou fallback para database.db da raiz)
+      TOKEN_FILE absoluto (configurado ou fallback para .tiny_tokens.json da raiz)
 
     Timeout: 5 minutos por script.
     Retorna: { success, code, output, step? }
@@ -581,10 +607,10 @@ O sistema é composto por duas camadas independentes:
   -----------------------------------------------------------------------
   Agendamento
   -----------------------------------------------------------------------
-  GET /api/schedule           [admin]
+  GET /schedule               [admin]
     Retorna: agendamento principal + lista schedules[] + horário do servidor
 
-  POST /api/schedule          [admin]
+  POST /schedule              [admin]
     Body: { schedules: [{ hora, dias, recorrencia, dia_mes, ultimo_dia_mes, ativo }] }
     Salva todos os agendamentos no banco e recarrega node-cron.
     Retorna: { success: true }
@@ -592,17 +618,17 @@ O sistema é composto por duas camadas independentes:
   -----------------------------------------------------------------------
   Vendedoras
   -----------------------------------------------------------------------
-  GET /api/vendedores         [admin]
+  GET /vendedores             [admin]
     Retorna lista de vendedores do banco local.
 
-  POST /api/vendedores        [admin]
+  POST /vendedores            [admin]
     Sincroniza com a API Olist:
     - Busca todos os vendedores ativos
     - Insere novos (preserva email e recebe_email existentes)
     - Atualiza nomes
     Retorna: { success, total, novos, ja_existentes }
 
-  PATCH /api/vendedores/[id]  [admin]
+  PATCH /vendedores/[id]      [admin]
     Body: { email?, recebe_email? }
     Atualiza e-mail e/ou flag de envio.
     Retorna: { success: true }
@@ -610,22 +636,22 @@ O sistema é composto por duas camadas independentes:
   -----------------------------------------------------------------------
   Usuários
   -----------------------------------------------------------------------
-  GET /api/users              [admin]
+  GET /users                  [admin]
     Retorna: [{ id, name, email, role, recebe_relatorio, created_at }]
 
-  POST /api/users             [admin]
+  POST /users                 [admin]
     Body: { name, email, password, role }
     Senha mínima: 6 caracteres. Hash bcrypt aplicado automaticamente.
     Retorna: usuário criado (sem campo password)
 
-  PATCH /api/users/[id]       [admin ou próprio usuário]
+  PATCH /users/[id]           [admin ou próprio usuário]
     Troca de senha:
       Admin: body { password } — sem verificação da senha atual
       Próprio: body { currentPassword, password }
     Toggle recebe_relatorio (admin only): body { recebe_relatorio }
     Retorna: { success: true }
 
-  DELETE /api/users/[id]      [admin]
+  DELETE /users/[id]          [admin]
     Restrições:
     - Não é possível excluir a si mesmo
     - Não é possível excluir o último admin
@@ -635,7 +661,7 @@ O sistema é composto por duas camadas independentes:
   -----------------------------------------------------------------------
   Logs de E-mail
   -----------------------------------------------------------------------
-  GET /api/email-logs         [admin]
+  GET /email-logs             [admin]
     Query params:
       tipo    : "vendedora" | "admin"  (opcional)
       status  : "ok" | "erro"          (opcional)
@@ -998,9 +1024,9 @@ O sistema é composto por duas camadas independentes:
   ┌──────────────────────────┐             ┌──────────▼─────────────────┐
   │  E-mail Individual       │             │  E-mail Consolidado (Admin) │
   │  vendedora_html()        │             │  admin_html()               │
-  │  - Métricas do dia       │             │  - Tabela toda equipe       │
-  │  - Métricas do mês       │             │  - KPIs totalizadores       │
-  │  - Alerta se sem pedidos │             │  - Ordenado por valor_mes   │
+  │  - Vendas no mês         │             │  - Tabela toda equipe       │
+  │  - Faturamento no mês    │             │  - KPIs totalizadores       │
+  │  - Pedidos + ticket mês  │             │  - Ordenado por faturamento │
   └──────────┬───────────────┘             └──────────┬─────────────────┘
              │                                        │
              └────────────────┬───────────────────────┘
@@ -1090,6 +1116,34 @@ O sistema é composto por duas camadas independentes:
     cd /opt/betina/performance
     sudo -u www-data env $(cat .env | grep -v '^#' | xargs) \
       .venv/bin/python fetch_performance.py
+
+  Causa crítica já observada em produção:
+    SQLITE_DB_PATH com caminho de Windows no .env (ex.: c:\...)
+    Isso faz os scripts abrirem outro banco e gera:
+      no such table: performance_cache
+
+  Correção:
+    Ajustar SQLITE_DB_PATH para caminho absoluto Linux:
+      /opt/betina/performance/database.db
+
+  -----------------------------------------------------------------------
+  PÁGINA SEM ESTILOS OU LOGIN EM LOOP
+  -----------------------------------------------------------------------
+  Sintomas:
+    - CSS não carrega em /performance/login
+    - Redirecionamentos repetidos entre login e dashboard
+
+  Causas comuns:
+    - NEXT_PUBLIC_BASE_PATH divergente do proxy Apache
+    - Build antigo sem o basePath correto
+
+  Checklist:
+    1) Confirmar NEXT_PUBLIC_BASE_PATH=/performance em env/performance.env
+    2) Confirmar ProxyPass com e sem barra final para /performance
+    3) Rebuild e reinício do serviço:
+       cd /opt/betina/performance/dashboard
+       npm run build
+       systemctl restart performance-dashboard
 
   -----------------------------------------------------------------------
   SENHA DO ADMIN PERDIDA
