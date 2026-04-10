@@ -84,6 +84,7 @@ def vendedora_html(
     ticket_dia: float,
     pedidos_mes: int,
     valor_mes: float,
+    faturamento_mes: float,
     ticket_mes: float,
     meta_mensal: float = 0.0,
     perc_meta: float = 0.0,
@@ -140,14 +141,20 @@ def vendedora_html(
     {aviso_html}
 
     <div class="section-title">Mês Corrente — {mes_exib}</div>
-    <div class="kpi-grid">
+    <div class="kpi-grid" style="grid-template-columns:1fr 1fr; margin-bottom:12px;">
       <div class="kpi">
-        <div class="label">Pedidos</div>
-        <div class="val">{pedidos_mes}</div>
+        <div class="label">Vendas no mês</div>
+        <div class="val" style="font-size:15px">{_fmt_brl(valor_mes)}</div>
       </div>
       <div class="kpi">
-        <div class="label">Faturado</div>
-        <div class="val" style="font-size:15px">{_fmt_brl(valor_mes)}</div>
+        <div class="label">Faturamento no mês</div>
+        <div class="val" style="font-size:15px">{_fmt_brl(faturamento_mes)}</div>
+      </div>
+    </div>
+    <div class="kpi-grid" style="grid-template-columns:1fr 1fr; margin-bottom:12px;">
+      <div class="kpi">
+        <div class="label">Pedidos no mês</div>
+        <div class="val">{pedidos_mes}</div>
       </div>
       <div class="kpi">
         <div class="label">Ticket Médio</div>

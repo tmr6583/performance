@@ -388,7 +388,7 @@ export default function AdminClient({ basePath, userName, userId }: { basePath: 
           </p>
         </div>
         <div className="header-actions">
-          <Link href={`${basePath}/`} className="btn-secondary">Dashboard</Link>
+          <Link href="/" className="btn-secondary">Dashboard</Link>
           <a href={`${basePath}/api/auth/logout`} className="btn-secondary">Sair</a>
         </div>
       </div>

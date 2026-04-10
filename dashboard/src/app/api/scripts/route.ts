@@ -45,9 +45,15 @@ function buildPythonEnv(): NodeJS.ProcessEnv {
   if (!env.CLIENT_ID && env.OLIST_CLIENT_ID) env.CLIENT_ID = env.OLIST_CLIENT_ID;
   if (!env.CLIENT_SECRET && env.OLIST_CLIENT_SECRET) env.CLIENT_SECRET = env.OLIST_CLIENT_SECRET;
   
-  // Evitar conflito de caminhos relativos: o Python roda na raiz do projeto e usa os defaults dele
-  delete env.SQLITE_DB_PATH;
-  delete env.TOKEN_FILE;
+  const configuredSqlitePath = env.SQLITE_DB_PATH?.trim();
+  env.SQLITE_DB_PATH = configuredSqlitePath
+    ? configuredSqlitePath
+    : path.join(ROOT_DIR, 'database.db');
+
+  const configuredTokenFile = env.TOKEN_FILE?.trim();
+  env.TOKEN_FILE = configuredTokenFile
+    ? configuredTokenFile
+    : path.join(ROOT_DIR, '.tiny_tokens.json');
   
   env.PYTHONUNBUFFERED = env.PYTHONUNBUFFERED ?? '1';
   return env;

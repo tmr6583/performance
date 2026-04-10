@@ -202,7 +202,7 @@ export default function DashboardClient({ user, hoje, rows, totais, basePath, up
                   </>
                 )}
               </div>
-              <Link href={`${basePath}/admin`} className="btn-primary">
+              <Link href="/admin" className="btn-primary">
                 Administração
               </Link>
             </>

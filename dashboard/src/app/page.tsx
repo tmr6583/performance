@@ -16,8 +16,8 @@ export default async function HomePage() {
   const user = await getAuthUser();
   const basePath = resolveBasePath();
   
-  if (!user) redirect(`${basePath}/login`);
-  if (user.role !== 'admin') redirect(`${basePath}/login`);
+  if (!user) redirect('/login');
+  if (user.role !== 'admin') redirect('/login');
 
   ensureDbInitialized();
 

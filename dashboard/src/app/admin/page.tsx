@@ -9,7 +9,7 @@ export const revalidate = 0;
 export default async function AdminPage() {
   const basePath = resolveBasePath();
   const user = await getAuthUser();
-  if (!user) redirect(`${basePath}/login`);
-  if (user.role !== 'admin') redirect(`${basePath}/`);
+  if (!user) redirect('/login');
+  if (user.role !== 'admin') redirect('/');
   return <AdminClient basePath={basePath} userName={user.name} userId={user.id} />;
 }

@@ -161,6 +161,7 @@ def main() -> None:
                     ticket_dia  = dados.get("ticket_medio_dia", 0.0),
                     pedidos_mes = dados.get("pedidos_mes",      0),
                     valor_mes   = dados.get("valor_mes",        0.0),
+                    faturamento_mes = dados.get("faturamento_mes", 0.0),
                     ticket_mes  = dados.get("ticket_medio_mes", 0.0),
                     meta_mensal = meta,
                     perc_meta   = perc_meta,
