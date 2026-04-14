@@ -1,0 +1,51 @@
+13/04/2026 07:45:00 - fetch_performance - INFO - === Início da extração de performance ===
+13/04/2026 07:45:00 - fetch_performance - INFO - Data de referência: 13/04/2026  |  Mês alvo: 2026-04 | Busca a partir de: 20/03/2026
+13/04/2026 07:45:00 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+13/04/2026 07:45:00 - fetch_performance - INFO - 10 vendedores ativos encontrados.
+13/04/2026 07:45:07 - fetch_performance - INFO -   ADRIANA COSTA ALVES: dia=0 pedidos / R$ 0.00 | mês=57 pedidos / R$ 24538.18 (Fat: R$ 24294.54)
+13/04/2026 07:45:10 - fetch_performance - INFO -   Maria Eduarda Franco Degenario: dia=0 pedidos / R$ 0.00 | mês=43 pedidos / R$ 26786.67 (Fat: R$ 26499.03)
+13/04/2026 07:45:13 - fetch_performance - INFO -   Maria Daniele Marques da Silva: dia=2 pedidos / R$ 1327.50 | mês=34 pedidos / R$ 25456.59 (Fat: R$ 24245.27)
+13/04/2026 07:45:14 - fetch_performance - INFO -   Camila Almeida: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+13/04/2026 07:45:15 - fetch_performance - INFO -   Rodrigo Barcia: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+13/04/2026 07:45:16 - fetch_performance - INFO -   Alexandre Cesar da Rosa: dia=0 pedidos / R$ 0.00 | mês=5 pedidos / R$ 1155.10 (Fat: R$ 1552.10)
+13/04/2026 07:45:17 - fetch_performance - INFO -   Diego Figueiredo: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+13/04/2026 07:45:18 - fetch_performance - INFO -   Breno Kling: dia=0 pedidos / R$ 0.00 | mês=1 pedidos / R$ 423.36 (Fat: R$ 423.36)
+13/04/2026 07:45:19 - fetch_performance - INFO -   Salvador Correa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+13/04/2026 07:45:20 - fetch_performance - INFO -   Julio Lopes: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+13/04/2026 07:45:20 - fetch_performance - INFO - === Extração concluída em 19s | 10/10 vendedores OK | 0 erro(s) ===
+13/04/2026 07:45:20 - send_emails - INFO - === Início do envio de e-mails — execução 4018cff3-7fc6-4f6c-8c6f-4198bff5e6f2 ===
+13/04/2026 07:45:20 - send_emails - INFO - Data de referência: 2026-04-13
+13/04/2026 07:45:20 - send_emails - INFO - 3 vendedora(s) habilitada(s) para receber e-mail.
+13/04/2026 07:45:23 - send_emails - INFO -   ✓ Enviado para ADRIANA COSTA ALVES <vendasbetina@betinalimpeza.com.br>
+13/04/2026 07:45:26 - send_emails - INFO -   ✓ Enviado para Maria Eduarda Franco Degenario <vendas02@betinalimpeza.com.br>
+13/04/2026 07:45:29 - send_emails - INFO -   ✓ Enviado para Maria Daniele Marques da Silva <vendas@betinalimpeza.com.br>
+13/04/2026 07:45:29 - send_emails - INFO - 3 admin(s) habilitado(s) para receber resumo.
+13/04/2026 07:45:32 - send_emails - INFO -   ✓ Resumo enviado para Thiago <thiago@betinalimpeza.com.br>
+13/04/2026 07:45:35 - send_emails - INFO -   ✓ Resumo enviado para Roxane <roxane@vassourasrossi.com.br>
+13/04/2026 07:45:38 - send_emails - INFO -   ✓ Resumo enviado para Sérgio <compras@betinalimpeza.com.br>
+13/04/2026 07:45:38 - send_emails - INFO - === Envio concluído | 6 enviado(s) | 0 erro(s) ===
+13/04/2026 15:00:49 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+13/04/2026 15:00:49 - refresh_tokens - INFO - Forçando renovação do access token...
+13/04/2026 15:00:49 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+13/04/2026 15:00:49 - OlistAuth - ERROR - Token rejeitado pelo servidor (400/401) — limpando tokens.
+13/04/2026 15:00:49 - refresh_tokens - ERROR - Não foi possível renovar o token. Ambos os tokens expiraram — reautorização manual necessária.
+13/04/2026 15:00:52 - refresh_tokens - INFO - Alerta enviado para Thiago <thiago@betinalimpeza.com.br>
+13/04/2026 15:00:55 - refresh_tokens - INFO - Alerta enviado para Roxane <roxane@vassourasrossi.com.br>
+13/04/2026 15:00:59 - refresh_tokens - INFO - Alerta enviado para Sérgio <compras@betinalimpeza.com.br>
+13/04/2026 15:03:38 - fetch_performance - INFO - === Início da extração de performance ===
+13/04/2026 15:03:38 - fetch_performance - INFO - Data de referência: 13/04/2026  |  Mês alvo: 2026-04 | Busca a partir de: 20/03/2026
+13/04/2026 15:03:38 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+13/04/2026 15:03:38 - fetch_performance - INFO - 10 vendedores ativos encontrados.
+13/04/2026 15:03:41 - fetch_performance - INFO -   ADRIANA COSTA ALVES: dia=10 pedidos / R$ 6387.99 | mês=67 pedidos / R$ 30926.17 (Fat: R$ 27511.89)
+13/04/2026 15:03:44 - fetch_performance - INFO -   Maria Eduarda Franco Degenario: dia=4 pedidos / R$ 1466.57 | mês=47 pedidos / R$ 28253.24 (Fat: R$ 27483.76)
+13/04/2026 15:03:46 - fetch_performance - INFO -   Maria Daniele Marques da Silva: dia=5 pedidos / R$ 2277.61 | mês=37 pedidos / R$ 26406.70 (Fat: R$ 25481.09)
+13/04/2026 15:03:47 - fetch_performance - INFO -   Camila Almeida: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+13/04/2026 15:03:48 - fetch_performance - INFO -   Rodrigo Barcia: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+13/04/2026 15:03:49 - fetch_performance - INFO -   Alexandre Cesar da Rosa: dia=0 pedidos / R$ 0.00 | mês=5 pedidos / R$ 1155.10 (Fat: R$ 1552.10)
+13/04/2026 15:03:50 - fetch_performance - INFO -   Diego Figueiredo: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+13/04/2026 15:03:51 - fetch_performance - INFO -   Breno Kling: dia=0 pedidos / R$ 0.00 | mês=1 pedidos / R$ 423.36 (Fat: R$ 423.36)
+13/04/2026 15:03:51 - fetch_performance - INFO -   Salvador Correa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+13/04/2026 15:03:52 - fetch_performance - INFO -   Julio Lopes: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+13/04/2026 15:03:52 - fetch_performance - INFO - === Extração concluída em 14s | 10/10 vendedores OK | 0 erro(s) ===
+14/04/2026 00:05:42 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+14/04/2026 00:05:42 - OlistAuth - ERROR - Token rejeitado pelo servidor (400/401) — limpando tokens.

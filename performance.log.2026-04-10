@@ -1,0 +1,180 @@
+10/04/2026 08:48:46 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+10/04/2026 08:48:46 - refresh_tokens - INFO - Forçando renovação do access token...
+10/04/2026 08:48:47 - refresh_tokens - ERROR - Não foi possível renovar o token. Ambos os tokens expiraram — reautorização manual necessária.
+10/04/2026 08:48:50 - refresh_tokens - INFO - Alerta enviado para Thiago <thiago@betinalimpeza.com.br>
+10/04/2026 14:02:16 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+10/04/2026 14:02:16 - refresh_tokens - INFO - Forçando renovação do access token...
+10/04/2026 14:02:16 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+10/04/2026 14:02:16 - OlistAuth - ERROR - Token rejeitado pelo servidor (400/401) — limpando tokens.
+10/04/2026 14:02:16 - refresh_tokens - ERROR - Não foi possível renovar o token. Ambos os tokens expiraram — reautorização manual necessária.
+10/04/2026 14:02:19 - refresh_tokens - INFO - Alerta enviado para Thiago <thiago@betinalimpeza.com.br>
+10/04/2026 14:05:32 - fetch_performance - INFO - === Início da extração de performance ===
+10/04/2026 14:05:32 - fetch_performance - INFO - Data de referência: 10/04/2026  |  Mês alvo: 2026-04 | Busca a partir de: 20/03/2026
+10/04/2026 14:05:32 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+10/04/2026 14:05:33 - fetch_performance - INFO - 10 vendedores ativos encontrados.
+10/04/2026 14:05:39 - fetch_performance - ERROR - Erro ao processar vendedor ADRIANA COSTA ALVES (id=854205016): no such table: performance_cache
+10/04/2026 14:05:44 - fetch_performance - ERROR - Erro ao processar vendedor Maria Eduarda Franco Degenario (id=854206705): no such table: performance_cache
+10/04/2026 14:05:49 - fetch_performance - ERROR - Erro ao processar vendedor Maria Daniele Marques da Silva (id=912076899): no such table: performance_cache
+10/04/2026 14:05:49 - fetch_performance - ERROR - Erro ao processar vendedor Camila Almeida (id=913467233): no such table: performance_cache
+10/04/2026 14:05:50 - fetch_performance - ERROR - Erro ao processar vendedor Rodrigo Barcia (id=914101137): no such table: performance_cache
+10/04/2026 14:05:53 - fetch_performance - ERROR - Erro ao processar vendedor Alexandre Cesar da Rosa (id=914102034): no such table: performance_cache
+10/04/2026 14:05:54 - fetch_performance - ERROR - Erro ao processar vendedor Diego Figueiredo (id=914102565): no such table: performance_cache
+10/04/2026 14:05:57 - fetch_performance - ERROR - Erro ao processar vendedor Breno Kling (id=914102791): no such table: performance_cache
+10/04/2026 14:05:58 - fetch_performance - ERROR - Erro ao processar vendedor Salvador Correa (id=914103702): no such table: performance_cache
+10/04/2026 14:05:59 - fetch_performance - ERROR - Erro ao processar vendedor Julio Lopes (id=914104407): no such table: performance_cache
+10/04/2026 14:05:59 - fetch_performance - INFO - === Extração concluída em 26s | 0/10 vendedores OK | 10 erro(s) ===
+10/04/2026 14:10:09 - fetch_performance - INFO - === Início da extração de performance ===
+10/04/2026 14:10:09 - fetch_performance - INFO - Data de referência: 10/04/2026  |  Mês alvo: 2026-04 | Busca a partir de: 20/03/2026
+10/04/2026 14:10:09 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+10/04/2026 14:10:09 - fetch_performance - INFO - 10 vendedores ativos encontrados.
+10/04/2026 14:10:17 - fetch_performance - INFO -   ADRIANA COSTA ALVES: dia=5 pedidos / R$ 1779.28 | mês=56 pedidos / R$ 22568.18 (Fat: R$ 18022.56)
+10/04/2026 14:10:23 - fetch_performance - INFO -   Maria Eduarda Franco Degenario: dia=2 pedidos / R$ 500.45 | mês=43 pedidos / R$ 26786.67 (Fat: R$ 22812.58)
+10/04/2026 14:10:26 - fetch_performance - INFO -   Maria Daniele Marques da Silva: dia=1 pedidos / R$ 369.10 | mês=32 pedidos / R$ 24305.11 (Fat: R$ 21879.86)
+10/04/2026 14:10:27 - fetch_performance - INFO -   Camila Almeida: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+10/04/2026 14:10:28 - fetch_performance - INFO -   Rodrigo Barcia: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+10/04/2026 14:10:29 - fetch_performance - INFO -   Alexandre Cesar da Rosa: dia=0 pedidos / R$ 0.00 | mês=5 pedidos / R$ 1155.10 (Fat: R$ 1552.10)
+10/04/2026 14:10:30 - fetch_performance - INFO -   Diego Figueiredo: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+10/04/2026 14:10:31 - fetch_performance - INFO -   Breno Kling: dia=0 pedidos / R$ 0.00 | mês=1 pedidos / R$ 423.36 (Fat: R$ 423.36)
+10/04/2026 14:10:32 - fetch_performance - INFO -   Salvador Correa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+10/04/2026 14:10:33 - fetch_performance - INFO -   Julio Lopes: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+10/04/2026 14:10:33 - fetch_performance - INFO - === Extração concluída em 24s | 10/10 vendedores OK | 0 erro(s) ===
+10/04/2026 14:14:06 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+10/04/2026 14:14:06 - refresh_tokens - INFO - Forçando renovação do access token...
+10/04/2026 14:14:06 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+10/04/2026 14:14:06 - OlistAuth - ERROR - Token rejeitado pelo servidor (400/401) — limpando tokens.
+10/04/2026 14:14:06 - refresh_tokens - ERROR - Não foi possível renovar o token. Ambos os tokens expiraram — reautorização manual necessária.
+10/04/2026 14:14:09 - refresh_tokens - INFO - Alerta enviado para Thiago <thiago@betinalimpeza.com.br>
+10/04/2026 14:14:33 - fetch_performance - INFO - === Início da extração de performance ===
+10/04/2026 14:14:33 - fetch_performance - INFO - Data de referência: 10/04/2026  |  Mês alvo: 2026-04 | Busca a partir de: 20/03/2026
+10/04/2026 14:14:33 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+10/04/2026 14:14:56 - fetch_performance - INFO - === Início da extração de performance ===
+10/04/2026 14:14:56 - fetch_performance - INFO - Data de referência: 10/04/2026  |  Mês alvo: 2026-04 | Busca a partir de: 20/03/2026
+10/04/2026 14:14:56 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+10/04/2026 14:14:56 - fetch_performance - INFO - 10 vendedores ativos encontrados.
+10/04/2026 14:14:57 - fetch_performance - INFO -   ADRIANA COSTA ALVES: dia=5 pedidos / R$ 1779.28 | mês=56 pedidos / R$ 22568.18 (Fat: R$ 18022.56)
+10/04/2026 14:14:58 - fetch_performance - INFO -   Maria Eduarda Franco Degenario: dia=2 pedidos / R$ 500.45 | mês=43 pedidos / R$ 26786.67 (Fat: R$ 22812.58)
+10/04/2026 14:14:59 - fetch_performance - INFO -   Maria Daniele Marques da Silva: dia=1 pedidos / R$ 369.10 | mês=32 pedidos / R$ 24305.11 (Fat: R$ 21879.86)
+10/04/2026 14:15:00 - fetch_performance - INFO -   Camila Almeida: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+10/04/2026 14:15:01 - fetch_performance - INFO -   Rodrigo Barcia: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+10/04/2026 14:15:02 - fetch_performance - INFO -   Alexandre Cesar da Rosa: dia=0 pedidos / R$ 0.00 | mês=5 pedidos / R$ 1155.10 (Fat: R$ 1552.10)
+10/04/2026 14:15:03 - fetch_performance - INFO -   Diego Figueiredo: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+10/04/2026 14:15:04 - fetch_performance - INFO -   Breno Kling: dia=0 pedidos / R$ 0.00 | mês=1 pedidos / R$ 423.36 (Fat: R$ 423.36)
+10/04/2026 14:15:05 - fetch_performance - INFO -   Salvador Correa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+10/04/2026 14:15:05 - fetch_performance - INFO -   Julio Lopes: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+10/04/2026 14:15:05 - fetch_performance - INFO - === Extração concluída em 9s | 10/10 vendedores OK | 0 erro(s) ===
+10/04/2026 14:17:16 - send_emails - INFO - === Início do envio de e-mails — execução 814427ea-55ee-4d11-bc77-c81a0de0632f ===
+10/04/2026 14:17:16 - send_emails - INFO - Data de referência: 2026-04-10
+10/04/2026 14:17:16 - send_emails - INFO - Modo de envio: somente administradores
+10/04/2026 14:17:16 - send_emails - INFO - 1 admin(s) habilitado(s) para receber resumo.
+10/04/2026 14:17:19 - send_emails - INFO -   ✓ Resumo enviado para Thiago <thiago@betinalimpeza.com.br>
+10/04/2026 14:17:19 - send_emails - INFO - === Envio concluído | 1 enviado(s) | 0 erro(s) ===
+10/04/2026 14:17:57 - send_emails - INFO - === Início do envio de e-mails — execução 73758c49-cfd8-4746-9015-475677ebb038 ===
+10/04/2026 14:17:57 - send_emails - INFO - Data de referência: 2026-04-10
+10/04/2026 14:17:57 - send_emails - INFO - 2 vendedora(s) habilitada(s) para receber e-mail.
+10/04/2026 14:18:00 - send_emails - INFO -   ✓ Enviado para Adriana Costa Alves <tmr6583@gmail.com>
+10/04/2026 14:18:03 - send_emails - INFO -   ✓ Enviado para Maria Eduarda Franco Degenario <thiago.rossi@arphoenix.com.br>
+10/04/2026 14:18:03 - send_emails - INFO - 1 admin(s) habilitado(s) para receber resumo.
+10/04/2026 14:18:06 - send_emails - INFO -   ✓ Resumo enviado para Thiago <thiago@betinalimpeza.com.br>
+10/04/2026 14:18:06 - send_emails - INFO - === Envio concluído | 3 enviado(s) | 0 erro(s) ===
+10/04/2026 14:24:51 - fetch_performance - INFO - === Início da extração de performance ===
+10/04/2026 14:24:51 - fetch_performance - INFO - Data de referência: 10/04/2026  |  Mês alvo: 2026-04 | Busca a partir de: 20/03/2026
+10/04/2026 14:24:51 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+10/04/2026 14:24:51 - fetch_performance - INFO - 10 vendedores ativos encontrados.
+10/04/2026 14:24:53 - fetch_performance - INFO -   ADRIANA COSTA ALVES: dia=6 pedidos / R$ 3739.29 | mês=57 pedidos / R$ 24528.19 (Fat: R$ 18022.56)
+10/04/2026 14:24:54 - fetch_performance - INFO -   Maria Eduarda Franco Degenario: dia=2 pedidos / R$ 500.45 | mês=43 pedidos / R$ 26786.67 (Fat: R$ 22812.58)
+10/04/2026 14:24:55 - fetch_performance - INFO -   Maria Daniele Marques da Silva: dia=1 pedidos / R$ 369.10 | mês=32 pedidos / R$ 24305.11 (Fat: R$ 21879.86)
+10/04/2026 14:24:56 - fetch_performance - INFO -   Camila Almeida: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+10/04/2026 14:24:57 - fetch_performance - INFO -   Rodrigo Barcia: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+10/04/2026 14:24:58 - fetch_performance - INFO -   Alexandre Cesar da Rosa: dia=0 pedidos / R$ 0.00 | mês=5 pedidos / R$ 1155.10 (Fat: R$ 1552.10)
+10/04/2026 14:24:59 - fetch_performance - INFO -   Diego Figueiredo: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+10/04/2026 14:24:59 - fetch_performance - INFO -   Breno Kling: dia=0 pedidos / R$ 0.00 | mês=1 pedidos / R$ 423.36 (Fat: R$ 423.36)
+10/04/2026 14:25:00 - fetch_performance - INFO -   Salvador Correa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+10/04/2026 14:25:01 - fetch_performance - INFO -   Julio Lopes: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+10/04/2026 14:25:01 - fetch_performance - INFO - === Extração concluída em 10s | 10/10 vendedores OK | 0 erro(s) ===
+10/04/2026 14:27:08 - send_emails - INFO - === Início do envio de e-mails — execução c24753de-3c2c-4adf-98b4-a6ec3d4794a7 ===
+10/04/2026 14:27:08 - send_emails - INFO - Data de referência: 2026-04-10
+10/04/2026 14:27:08 - send_emails - INFO - Modo de envio: somente administradores
+10/04/2026 14:27:08 - send_emails - INFO - 1 admin(s) habilitado(s) para receber resumo.
+10/04/2026 14:27:14 - send_emails - INFO -   ✓ Resumo enviado para Thiago <thiago@betinalimpeza.com.br>
+10/04/2026 14:27:14 - send_emails - INFO - === Envio concluído | 1 enviado(s) | 0 erro(s) ===
+10/04/2026 14:28:03 - send_emails - INFO - === Início do envio de e-mails — execução 0f93eaf1-ba89-4ae0-9081-96ff1041c4f1 ===
+10/04/2026 14:28:03 - send_emails - INFO - Data de referência: 2026-04-10
+10/04/2026 14:28:03 - send_emails - INFO - 2 vendedora(s) habilitada(s) para receber e-mail.
+10/04/2026 14:28:06 - send_emails - INFO -   ✓ Enviado para Adriana Costa Alves <tmr6583@gmail.com>
+10/04/2026 14:28:09 - send_emails - INFO -   ✓ Enviado para Maria Eduarda Franco Degenario <thiago.rossi@arphoenix.com.br>
+10/04/2026 14:28:09 - send_emails - INFO - 1 admin(s) habilitado(s) para receber resumo.
+10/04/2026 14:28:12 - send_emails - INFO -   ✓ Resumo enviado para Thiago <thiago@betinalimpeza.com.br>
+10/04/2026 14:28:12 - send_emails - INFO - === Envio concluído | 3 enviado(s) | 0 erro(s) ===
+10/04/2026 14:34:27 - fetch_performance - INFO - === Início da extração de performance ===
+10/04/2026 14:34:27 - fetch_performance - INFO - Data de referência: 10/04/2026  |  Mês alvo: 2026-04 | Busca a partir de: 20/03/2026
+10/04/2026 14:34:27 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+10/04/2026 14:34:28 - fetch_performance - INFO - 10 vendedores ativos encontrados.
+10/04/2026 14:34:29 - fetch_performance - INFO -   ADRIANA COSTA ALVES: dia=6 pedidos / R$ 3739.29 | mês=57 pedidos / R$ 24528.19 (Fat: R$ 18022.56)
+10/04/2026 14:34:31 - fetch_performance - INFO -   Maria Eduarda Franco Degenario: dia=2 pedidos / R$ 500.45 | mês=43 pedidos / R$ 26786.67 (Fat: R$ 22812.58)
+10/04/2026 14:34:32 - fetch_performance - INFO -   Maria Daniele Marques da Silva: dia=1 pedidos / R$ 369.10 | mês=32 pedidos / R$ 24305.11 (Fat: R$ 21879.86)
+10/04/2026 14:34:33 - fetch_performance - INFO -   Camila Almeida: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+10/04/2026 14:34:34 - fetch_performance - INFO -   Rodrigo Barcia: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+10/04/2026 14:34:35 - fetch_performance - INFO -   Alexandre Cesar da Rosa: dia=0 pedidos / R$ 0.00 | mês=5 pedidos / R$ 1155.10 (Fat: R$ 1552.10)
+10/04/2026 14:34:36 - fetch_performance - INFO -   Diego Figueiredo: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+10/04/2026 14:34:36 - fetch_performance - INFO -   Breno Kling: dia=0 pedidos / R$ 0.00 | mês=1 pedidos / R$ 423.36 (Fat: R$ 423.36)
+10/04/2026 14:34:37 - fetch_performance - INFO -   Salvador Correa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+10/04/2026 14:34:38 - fetch_performance - INFO -   Julio Lopes: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+10/04/2026 14:34:38 - fetch_performance - INFO - === Extração concluída em 10s | 10/10 vendedores OK | 0 erro(s) ===
+10/04/2026 14:38:55 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+10/04/2026 14:38:55 - refresh_tokens - INFO - Forçando renovação do access token...
+10/04/2026 14:38:55 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+10/04/2026 14:38:55 - OlistAuth - ERROR - Token rejeitado pelo servidor (400/401) — limpando tokens.
+10/04/2026 14:38:55 - refresh_tokens - ERROR - Não foi possível renovar o token. Ambos os tokens expiraram — reautorização manual necessária.
+10/04/2026 14:38:59 - refresh_tokens - INFO - Alerta enviado para Thiago <thiago@betinalimpeza.com.br>
+10/04/2026 14:45:00 - fetch_performance - INFO - === Início da extração de performance ===
+10/04/2026 14:45:00 - fetch_performance - INFO - Data de referência: 10/04/2026  |  Mês alvo: 2026-04 | Busca a partir de: 20/03/2026
+10/04/2026 14:45:00 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+10/04/2026 14:45:01 - fetch_performance - INFO - 10 vendedores ativos encontrados.
+10/04/2026 14:45:02 - fetch_performance - INFO -   ADRIANA COSTA ALVES: dia=6 pedidos / R$ 3739.29 | mês=57 pedidos / R$ 24528.19 (Fat: R$ 18022.56)
+10/04/2026 14:45:03 - fetch_performance - INFO -   Maria Eduarda Franco Degenario: dia=2 pedidos / R$ 500.45 | mês=43 pedidos / R$ 26786.67 (Fat: R$ 22812.58)
+10/04/2026 14:45:04 - fetch_performance - INFO -   Maria Daniele Marques da Silva: dia=1 pedidos / R$ 369.10 | mês=32 pedidos / R$ 24305.11 (Fat: R$ 21879.86)
+10/04/2026 14:45:05 - fetch_performance - INFO -   Camila Almeida: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+10/04/2026 14:45:06 - fetch_performance - INFO -   Rodrigo Barcia: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+10/04/2026 14:45:07 - fetch_performance - INFO -   Alexandre Cesar da Rosa: dia=0 pedidos / R$ 0.00 | mês=5 pedidos / R$ 1155.10 (Fat: R$ 1552.10)
+10/04/2026 14:45:08 - fetch_performance - INFO -   Diego Figueiredo: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+10/04/2026 14:45:09 - fetch_performance - INFO -   Breno Kling: dia=0 pedidos / R$ 0.00 | mês=1 pedidos / R$ 423.36 (Fat: R$ 423.36)
+10/04/2026 14:45:10 - fetch_performance - INFO -   Salvador Correa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+10/04/2026 14:45:11 - fetch_performance - INFO -   Julio Lopes: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+10/04/2026 14:45:11 - fetch_performance - INFO - === Extração concluída em 10s | 10/10 vendedores OK | 0 erro(s) ===
+10/04/2026 14:45:11 - send_emails - INFO - === Início do envio de e-mails — execução 74339841-8a48-40ad-8639-89a05936b98d ===
+10/04/2026 14:45:11 - send_emails - INFO - Data de referência: 2026-04-10
+10/04/2026 14:45:11 - send_emails - INFO - 2 vendedora(s) habilitada(s) para receber e-mail.
+10/04/2026 14:45:15 - send_emails - INFO -   ✓ Enviado para ADRIANA COSTA ALVES <vendasbetina@betinalimpeza.com.br>
+10/04/2026 14:45:18 - send_emails - INFO -   ✓ Enviado para Maria Eduarda Franco Degenario <vendas02@betinalimpeza.com.br>
+10/04/2026 14:45:18 - send_emails - INFO - 2 admin(s) habilitado(s) para receber resumo.
+10/04/2026 14:45:21 - send_emails - INFO -   ✓ Resumo enviado para Thiago <thiago@betinalimpeza.com.br>
+10/04/2026 14:45:24 - send_emails - INFO -   ✓ Resumo enviado para Roxane <roxane@vassourasrossi.com.br>
+10/04/2026 14:45:24 - send_emails - INFO - === Envio concluído | 4 enviado(s) | 0 erro(s) ===
+10/04/2026 15:05:01 - fetch_performance - INFO - === Início da extração de performance ===
+10/04/2026 15:05:01 - fetch_performance - INFO - Data de referência: 10/04/2026  |  Mês alvo: 2026-04 | Busca a partir de: 20/03/2026
+10/04/2026 15:05:01 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+10/04/2026 15:05:01 - fetch_performance - INFO - 10 vendedores ativos encontrados.
+10/04/2026 15:05:03 - fetch_performance - INFO -   ADRIANA COSTA ALVES: dia=6 pedidos / R$ 3739.29 | mês=57 pedidos / R$ 24528.19 (Fat: R$ 18022.56)
+10/04/2026 15:05:04 - fetch_performance - INFO -   Maria Eduarda Franco Degenario: dia=2 pedidos / R$ 500.45 | mês=43 pedidos / R$ 26786.67 (Fat: R$ 22812.58)
+10/04/2026 15:05:06 - fetch_performance - INFO -   Maria Daniele Marques da Silva: dia=1 pedidos / R$ 369.10 | mês=32 pedidos / R$ 24305.11 (Fat: R$ 21879.86)
+10/04/2026 15:05:07 - fetch_performance - INFO -   Camila Almeida: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+10/04/2026 15:05:08 - fetch_performance - INFO -   Rodrigo Barcia: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+10/04/2026 15:05:08 - fetch_performance - INFO -   Alexandre Cesar da Rosa: dia=0 pedidos / R$ 0.00 | mês=5 pedidos / R$ 1155.10 (Fat: R$ 1552.10)
+10/04/2026 15:05:09 - fetch_performance - INFO -   Diego Figueiredo: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+10/04/2026 15:05:10 - fetch_performance - INFO -   Breno Kling: dia=0 pedidos / R$ 0.00 | mês=1 pedidos / R$ 423.36 (Fat: R$ 423.36)
+10/04/2026 15:05:11 - fetch_performance - INFO -   Salvador Correa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+10/04/2026 15:05:12 - fetch_performance - INFO -   Julio Lopes: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+10/04/2026 15:05:12 - fetch_performance - INFO - === Extração concluída em 11s | 10/10 vendedores OK | 0 erro(s) ===
+10/04/2026 15:05:12 - send_emails - INFO - === Início do envio de e-mails — execução 7d4d4ffb-8e5b-40ef-b7c0-9714ab76b004 ===
+10/04/2026 15:05:12 - send_emails - INFO - Data de referência: 2026-04-10
+10/04/2026 15:05:12 - send_emails - INFO - 3 vendedora(s) habilitada(s) para receber e-mail.
+10/04/2026 15:05:15 - send_emails - INFO -   ✓ Enviado para ADRIANA COSTA ALVES <vendasbetina@betinalimpeza.com.br>
+10/04/2026 15:05:19 - send_emails - INFO -   ✓ Enviado para Maria Eduarda Franco Degenario <vendas02@betinalimpeza.com.br>
+10/04/2026 15:05:22 - send_emails - INFO -   ✓ Enviado para Maria Daniele Marques da Silva <vendas@betinalimpeza.com.br>
+10/04/2026 15:05:22 - send_emails - INFO - 2 admin(s) habilitado(s) para receber resumo.
+10/04/2026 15:05:25 - send_emails - INFO -   ✓ Resumo enviado para Thiago <thiago@betinalimpeza.com.br>
+10/04/2026 15:05:28 - send_emails - INFO -   ✓ Resumo enviado para Roxane <roxane@vassourasrossi.com.br>
+10/04/2026 15:05:28 - send_emails - INFO - === Envio concluído | 5 enviado(s) | 0 erro(s) ===
+13/04/2026 07:45:00 - OlistAuth - WARNING - 401 recebido — tentando renovar token...
+13/04/2026 07:45:00 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+13/04/2026 07:45:00 - OlistAuth - INFO - Token renovado com sucesso.

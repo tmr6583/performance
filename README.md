@@ -345,7 +345,7 @@ Executado pelo systemd como `oneshot` antes do dashboard iniciar:
 1. Lê tokens do `.tiny_tokens.json`
 2. Se não há tokens (OAuth não autorizado): loga e encerra sem erro
 3. Força renovação do `access_token` via `refresh_token`
-4. Se renovação falha (tokens expirados): envia e-mail de alerta aos admins
+4. Se renovação falha (tokens expirados): registra no log e exige reautorização manual
 5. Sempre encerra com código `0` para não bloquear o dashboard
 
 ---
@@ -705,7 +705,7 @@ SQLite (database.db)
 O `access_token` Olist expira em ~30 minutos. O `refresh_token` dura vários dias. Em caso de desligamento prolongado:
 
 1. `performance-token-refresh.service` tenta renovar o token no boot
-2. Se a renovação falhar, admins com `recebe_relatorio=1` recebem e-mail de alerta
+2. Se a renovação falhar, não há disparo automático de e-mail
 3. Acesse o painel → **"Conectar ao Olist"** para reautorizar manualmente
 
 ### Dashboard não inicia

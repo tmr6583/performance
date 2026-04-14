@@ -429,12 +429,11 @@ O sistema é composto por duas camadas independentes:
     1. Lê tokens de .tiny_tokens.json
     2. Se arquivo vazio ou inexistente: loga e encerra (OAuth não autorizado)
     3. Força refresh_access_token() via API Tiny
-    4. Se renovação falhar: envia e-mail de alerta a todos os admins
-       com recebe_relatorio=1
+    4. Se renovação falhar: registra no log e exige reautorização manual
     5. Sempre encerra com código 0 para não bloquear o dashboard
 
-  O e-mail de alerta contém link direto para o painel de administração
-  onde o admin deve clicar em "Conectar ao Olist" para reautorizar.
+  Não há envio automático de e-mail nessa falha. A ação é manual no painel:
+  admin deve clicar em "Conectar ao Olist" para reautorizar.
 
 
 ================================================================================
@@ -701,7 +700,7 @@ O sistema é composto por duas camadas independentes:
   Comportamento:
   - Type=oneshot: executa uma vez no boot e encerra
   - Aguarda rede completamente disponível (network-online.target)
-  - Tenta renovar access_token; se falhar, notifica admins por e-mail
+  - Tenta renovar access_token; se falhar, apenas registra no log
   - Sempre encerra com código 0 (não bloqueia o dashboard)
 
   -----------------------------------------------------------------------
@@ -1056,7 +1055,7 @@ O sistema é composto por duas camadas independentes:
 
   Solução automática (boot):
     performance-token-refresh.service tenta renovar no boot.
-    Se falhar, e-mail de alerta é enviado aos admins.
+    Se falhar, não há envio automático de e-mail.
 
   Solução manual:
     1. Acesse https://betinalimpeza.ddns.net/performance/admin
