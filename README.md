@@ -68,7 +68,8 @@ Internet (HTTPS:443)
        └── users, vendedores, performance_cache, email_logs, schedules
 
   systemd
-       ├── performance-token-refresh.service  (oneshot, boot)
+       ├── performance-token-refresh.service  (oneshot, execução de refresh)
+       ├── performance-token-refresh.timer    (boot + 07:00 + 15:00 + 23:00)
        └── performance-dashboard.service      (always, após token-refresh)
 ```
 
@@ -336,11 +337,14 @@ Gera HTML responsivo e sem métricas irrelevantes (estatísticas diárias não s
 ### `refresh_tokens.py`
 
 ```
-Execução automática: service performance-token-refresh (boot)
+Execução automática:
+- No boot: `performance-token-refresh.service`
+- Agendado diariamente: `performance-token-refresh.timer` (`07:00`, `15:00`, `23:00`)
+
 Execução manual: .venv/bin/python refresh_tokens.py
 ```
 
-Executado pelo systemd como `oneshot` antes do dashboard iniciar:
+Executado pelo systemd como `oneshot` (no boot e também via timer diário):
 
 1. Lê tokens do `.tiny_tokens.json`
 2. Se não há tokens (OAuth não autorizado): loga e encerra sem erro
@@ -498,6 +502,23 @@ User=www-data
 Group=www-data
 ```
 
+### `performance-token-refresh.timer`
+
+```ini
+[Unit]
+Description=Agenda renovação do token Olist (07:00, 15:00, 23:00)
+
+[Timer]
+OnCalendar=*-*-* 07:00:00
+OnCalendar=*-*-* 15:00:00
+OnCalendar=*-*-* 23:00:00
+Persistent=true
+Unit=performance-token-refresh.service
+
+[Install]
+WantedBy=timers.target
+```
+
 ### `performance-dashboard.service`
 
 ```ini
@@ -527,12 +548,19 @@ Group=www-data
 # Status dos serviços
 systemctl status performance-dashboard
 systemctl status performance-token-refresh
+systemctl status performance-token-refresh.timer
+
+# Ver próximos disparos do timer
+systemctl list-timers performance-token-refresh.timer
 
 # Reiniciar dashboard
 systemctl restart performance-dashboard
 
 # Executar refresh de tokens manualmente
 systemctl start performance-token-refresh
+
+# Habilitar e iniciar timer de refresh
+systemctl enable --now performance-token-refresh.timer
 
 # Ver logs do dashboard (últimas 100 linhas)
 journalctl -u performance-dashboard -n 100
@@ -705,8 +733,9 @@ SQLite (database.db)
 O `access_token` Olist expira em ~30 minutos. O `refresh_token` dura vários dias. Em caso de desligamento prolongado:
 
 1. `performance-token-refresh.service` tenta renovar o token no boot
-2. Se a renovação falhar, não há disparo automático de e-mail
-3. Acesse o painel → **"Conectar ao Olist"** para reautorizar manualmente
+2. `performance-token-refresh.timer` também força renovação diária às `07:00`, `15:00` e `23:00`
+3. Se a renovação falhar, não há disparo automático de e-mail
+4. Acesse o painel → **"Conectar ao Olist"** para reautorizar manualmente
 
 ### Dashboard não inicia
 

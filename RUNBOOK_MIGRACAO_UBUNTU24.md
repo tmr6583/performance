@@ -228,6 +228,23 @@ Group=www-data
 WantedBy=multi-user.target
 ```
 
+Criar `/etc/systemd/system/performance-token-refresh.timer`:
+
+```ini
+[Unit]
+Description=Agenda renovação do token Olist (07:00, 15:00, 23:00)
+
+[Timer]
+OnCalendar=*-*-* 07:00:00
+OnCalendar=*-*-* 15:00:00
+OnCalendar=*-*-* 23:00:00
+Persistent=true
+Unit=performance-token-refresh.service
+
+[Install]
+WantedBy=timers.target
+```
+
 Criar `/etc/systemd/system/performance-dashboard.service`:
 
 ```ini
@@ -255,8 +272,10 @@ Aplicar:
 ```bash
 sudo systemctl daemon-reload
 sudo systemctl enable performance-token-refresh
+sudo systemctl enable performance-token-refresh.timer
 sudo systemctl enable performance-dashboard
 sudo systemctl start performance-token-refresh
+sudo systemctl start performance-token-refresh.timer
 sudo systemctl start performance-dashboard
 ```
 
@@ -309,9 +328,11 @@ Arquivo: `/opt/betina/index.html`
 
 ```bash
 systemctl status performance-token-refresh --no-pager
+systemctl status performance-token-refresh.timer --no-pager
 systemctl status performance-dashboard --no-pager
 journalctl -u performance-dashboard -n 100 --no-pager
 journalctl -u performance-token-refresh -n 50 --no-pager
+systemctl list-timers performance-token-refresh.timer --no-pager
 curl -I http://127.0.0.1:3100/performance/login
 curl -I https://<dominio>/performance/login
 ```
@@ -366,6 +387,7 @@ Se houver falha após cutover:
 
 ```bash
 sudo systemctl stop performance-dashboard
+sudo systemctl stop performance-token-refresh.timer
 sudo systemctl stop performance-token-refresh
 ```
 
@@ -409,12 +431,16 @@ A IA executora deve seguir estas regras:
 # status
 systemctl status performance-dashboard
 systemctl status performance-token-refresh
+systemctl status performance-token-refresh.timer
 
 # reiniciar dashboard
 systemctl restart performance-dashboard
 
 # rodar refresh de token manual
 systemctl start performance-token-refresh
+
+# ver próximos disparos do timer
+systemctl list-timers performance-token-refresh.timer
 
 # logs
 journalctl -u performance-dashboard -f

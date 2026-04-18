@@ -1,0 +1,44 @@
+15/04/2026 07:45:00 - fetch_performance - INFO - === Início da extração de performance ===
+15/04/2026 07:45:00 - fetch_performance - INFO - Data de referência: 15/04/2026  |  Mês alvo: 2026-04 | Busca a partir de: 20/03/2026
+15/04/2026 07:45:00 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+15/04/2026 07:45:01 - fetch_performance - INFO - 10 vendedores ativos encontrados.
+15/04/2026 07:45:03 - fetch_performance - INFO -   ADRIANA COSTA ALVES: dia=0 pedidos / R$ 0.00 | mês=78 pedidos / R$ 34847.65 (Fat: R$ 34604.01)
+15/04/2026 07:45:05 - fetch_performance - INFO -   Maria Eduarda Franco Degenario: dia=0 pedidos / R$ 0.00 | mês=51 pedidos / R$ 29402.85 (Fat: R$ 29021.51)
+15/04/2026 07:45:06 - fetch_performance - INFO -   Maria Daniele Marques da Silva: dia=0 pedidos / R$ 0.00 | mês=47 pedidos / R$ 35527.08 (Fat: R$ 33035.47)
+15/04/2026 07:45:07 - fetch_performance - INFO -   Camila Almeida: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+15/04/2026 07:45:08 - fetch_performance - INFO -   Rodrigo Barcia: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+15/04/2026 07:45:09 - fetch_performance - INFO -   Alexandre Cesar da Rosa: dia=0 pedidos / R$ 0.00 | mês=7 pedidos / R$ 1585.65 (Fat: R$ 1552.10)
+15/04/2026 07:45:10 - fetch_performance - INFO -   Diego Figueiredo: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+15/04/2026 07:45:11 - fetch_performance - INFO -   Breno Kling: dia=0 pedidos / R$ 0.00 | mês=1 pedidos / R$ 423.36 (Fat: R$ 423.36)
+15/04/2026 07:45:11 - fetch_performance - INFO -   Salvador Correa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+15/04/2026 07:45:12 - fetch_performance - INFO -   Julio Lopes: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+15/04/2026 07:45:12 - fetch_performance - INFO - === Extração concluída em 11s | 10/10 vendedores OK | 0 erro(s) ===
+15/04/2026 07:45:12 - send_emails - INFO - === Início do envio de e-mails — execução a80324f7-68a1-44af-a8d9-ba7b74da2563 ===
+15/04/2026 07:45:12 - send_emails - INFO - Data de referência: 2026-04-15
+15/04/2026 07:45:12 - send_emails - INFO - 3 vendedora(s) habilitada(s) para receber e-mail.
+15/04/2026 07:45:15 - send_emails - INFO -   ✓ Enviado para ADRIANA COSTA ALVES <vendasbetina@betinalimpeza.com.br>
+15/04/2026 07:45:18 - send_emails - INFO -   ✓ Enviado para Maria Eduarda Franco Degenario <vendas02@betinalimpeza.com.br>
+15/04/2026 07:45:21 - send_emails - INFO -   ✓ Enviado para Maria Daniele Marques da Silva <vendas@betinalimpeza.com.br>
+15/04/2026 07:45:21 - send_emails - INFO - 3 admin(s) habilitado(s) para receber resumo.
+15/04/2026 07:45:24 - send_emails - INFO -   ✓ Resumo enviado para Thiago <thiago@betinalimpeza.com.br>
+15/04/2026 07:45:27 - send_emails - INFO -   ✓ Resumo enviado para Roxane <roxane@vassourasrossi.com.br>
+15/04/2026 07:45:30 - send_emails - INFO -   ✓ Resumo enviado para Sérgio <compras@betinalimpeza.com.br>
+15/04/2026 07:45:30 - send_emails - INFO - === Envio concluído | 6 enviado(s) | 0 erro(s) ===
+15/04/2026 08:54:59 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+15/04/2026 08:54:59 - refresh_tokens - INFO - Forçando renovação do access token...
+15/04/2026 08:54:59 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+15/04/2026 08:54:59 - OlistAuth - ERROR - Token rejeitado pelo servidor (400/401) — limpando tokens.
+15/04/2026 08:54:59 - refresh_tokens - ERROR - Não foi possível renovar o token. Ambos os tokens expiraram — reautorização manual necessária.
+15/04/2026 08:54:59 - refresh_tokens - INFO - Aviso por e-mail desabilitado para falha de renovação de token.
+15/04/2026 10:44:14 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+15/04/2026 10:44:14 - refresh_tokens - INFO - Nenhum token encontrado — OAuth ainda não autorizado. Acesse o painel e conecte ao Olist.
+15/04/2026 13:02:57 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+15/04/2026 13:02:57 - refresh_tokens - INFO - Forçando renovação do access token...
+15/04/2026 13:02:57 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+15/04/2026 13:02:58 - OlistAuth - ERROR - Token rejeitado pelo servidor (400/401) — limpando tokens.
+15/04/2026 13:02:58 - refresh_tokens - ERROR - Não foi possível renovar o token. Ambos os tokens expiraram — reautorização manual necessária.
+15/04/2026 13:02:58 - refresh_tokens - INFO - Aviso por e-mail desabilitado para falha de renovação de token.
+15/04/2026 13:06:18 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+15/04/2026 13:06:18 - refresh_tokens - INFO - Nenhum token encontrado — OAuth ainda não autorizado. Acesse o painel e conecte ao Olist.
+15/04/2026 13:52:35 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+15/04/2026 13:52:35 - refresh_tokens - INFO - Nenhum token encontrado — OAuth ainda não autorizado. Acesse o painel e conecte ao Olist.

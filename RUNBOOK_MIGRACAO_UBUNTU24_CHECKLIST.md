@@ -69,14 +69,17 @@ sudo -u www-data npm run build
 
 - Criar:
   - `/etc/systemd/system/performance-token-refresh.service`
+  - `/etc/systemd/system/performance-token-refresh.timer`
   - `/etc/systemd/system/performance-dashboard.service`
 - Aplicar:
 
 ```bash
 sudo systemctl daemon-reload
 sudo systemctl enable performance-token-refresh
+sudo systemctl enable performance-token-refresh.timer
 sudo systemctl enable performance-dashboard
 sudo systemctl start performance-token-refresh
+sudo systemctl start performance-token-refresh.timer
 sudo systemctl start performance-dashboard
 ```
 
@@ -110,9 +113,11 @@ ProxyPassReverse /performance  http://127.0.0.1:3100/performance
 
 ```bash
 systemctl status performance-token-refresh --no-pager
+systemctl status performance-token-refresh.timer --no-pager
 systemctl status performance-dashboard --no-pager
 journalctl -u performance-dashboard -n 100 --no-pager
 journalctl -u performance-token-refresh -n 50 --no-pager
+systemctl list-timers performance-token-refresh.timer --no-pager
 curl -I http://127.0.0.1:3100/performance/login
 curl -I https://<dominio>/performance/login
 ```
@@ -137,12 +142,14 @@ curl -I https://<dominio>/performance/login
 ```bash
 journalctl -u performance-dashboard -f
 journalctl -u performance-token-refresh -f
+systemctl list-timers performance-token-refresh.timer
 ```
 
 ## 12) Rollback rápido
 
 ```bash
 sudo systemctl stop performance-dashboard
+sudo systemctl stop performance-token-refresh.timer
 sudo systemctl stop performance-token-refresh
 ```
 

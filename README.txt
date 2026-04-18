@@ -96,7 +96,8 @@ O sistema é composto por duas camadas independentes:
     Tabelas: users, vendedores, performance_cache, email_logs, schedules
 
   systemd
-    performance-token-refresh.service  (oneshot, executa no boot)
+    performance-token-refresh.service  (oneshot, execução de refresh)
+    performance-token-refresh.timer    (boot + 07:00 + 15:00 + 23:00)
     performance-dashboard.service      (always, inicia após token-refresh)
 
 
@@ -422,7 +423,9 @@ O sistema é composto por duas camadas independentes:
   -----------------------------------------------------------------------
   refresh_tokens.py
   -----------------------------------------------------------------------
-  Execução automática: systemd performance-token-refresh.service (boot)
+  Execução automática:
+    - boot: performance-token-refresh.service
+    - diário: performance-token-refresh.timer (07:00, 15:00, 23:00)
   Execução manual    : .venv/bin/python refresh_tokens.py
 
   Fluxo:
@@ -697,8 +700,27 @@ O sistema é composto por duas camadas independentes:
   [Install]
   WantedBy=multi-user.target
 
+  -----------------------------------------------------------------------
+  performance-token-refresh.timer
+  /etc/systemd/system/performance-token-refresh.timer
+  -----------------------------------------------------------------------
+
+  [Unit]
+  Description=Agenda renovação do token Olist (07:00, 15:00, 23:00)
+
+  [Timer]
+  OnCalendar=*-*-* 07:00:00
+  OnCalendar=*-*-* 15:00:00
+  OnCalendar=*-*-* 23:00:00
+  Persistent=true
+  Unit=performance-token-refresh.service
+
+  [Install]
+  WantedBy=timers.target
+
   Comportamento:
-  - Type=oneshot: executa uma vez no boot e encerra
+  - Type=oneshot: executa uma vez por disparo e encerra
+  - Disparos no boot e diariamente às 07:00, 15:00 e 23:00 (timer)
   - Aguarda rede completamente disponível (network-online.target)
   - Tenta renovar access_token; se falhar, apenas registra no log
   - Sempre encerra com código 0 (não bloqueia o dashboard)
@@ -746,6 +768,10 @@ O sistema é composto por duas camadas independentes:
   # Verificar status
   systemctl status performance-dashboard
   systemctl status performance-token-refresh
+  systemctl status performance-token-refresh.timer
+
+  # Ver próximos disparos
+  systemctl list-timers performance-token-refresh.timer
 
   # Iniciar / parar / reiniciar
   systemctl start performance-dashboard
@@ -754,6 +780,9 @@ O sistema é composto por duas camadas independentes:
 
   # Executar refresh de tokens manualmente
   systemctl start performance-token-refresh
+
+  # Habilitar timer de refresh (inicia agora e no boot)
+  systemctl enable --now performance-token-refresh.timer
 
   # Habilitar inicialização automática no boot
   systemctl enable performance-dashboard
@@ -1055,6 +1084,7 @@ O sistema é composto por duas camadas independentes:
 
   Solução automática (boot):
     performance-token-refresh.service tenta renovar no boot.
+    performance-token-refresh.timer também roda diariamente às 07:00, 15:00 e 23:00.
     Se falhar, não há envio automático de e-mail.
 
   Solução manual:

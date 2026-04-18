@@ -12,6 +12,11 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'Betina — Performance',
   description: 'Relatório diário de vendas por vendedora',
+  icons: {
+    icon: 'https://betinalimpeza.ddns.net/Logo_Azul.webp',
+    shortcut: 'https://betinalimpeza.ddns.net/Logo_Azul.webp',
+    apple: 'https://betinalimpeza.ddns.net/Logo_Azul.webp',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

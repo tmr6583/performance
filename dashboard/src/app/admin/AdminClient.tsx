@@ -739,7 +739,7 @@ export default function AdminClient({ basePath, userName, userId }: { basePath: 
 
       <div className="section-card card">
         <div className="section-header">
-          <h2>6. Renovação Token Olist (12h)</h2>
+          <h2>6. Renovação Token Olist</h2>
         </div>
         <div className="section-body">
           <div style={{ display: 'grid', gap: 12, marginBottom: 12 }}>
@@ -785,7 +785,7 @@ export default function AdminClient({ basePath, userName, userId }: { basePath: 
           </div>
 
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-sm)', marginBottom: 8 }}>
-            Renovação automática configurada para cada 12 horas.
+            Renovação automática no boot e diariamente às 07:00, 15:00 e 23:00.
             {tokenRefreshTokenSet ? ' Refresh token disponível.' : ' Refresh token ausente; conecte a conta Olist.'}
             {tokenUpdatedAt ? ` Dados atualizados em: ${tokenUpdatedAt.replace('T', ' ').slice(0, 16)}` : ''}
           </p>

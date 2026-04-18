@@ -24,7 +24,10 @@ export async function GET() {
       access_token_set: !!tokens?.access_token,
       refresh_token_set: !!tokens?.refresh_token,
     },
-    auto_refresh_hours: 12,
+    auto_refresh: {
+      boot: true,
+      daily_times: ['07:00', '15:00', '23:00'],
+    },
     logs,
   });
 }
@@ -43,12 +46,17 @@ export async function POST(request: Request) {
   };
 
   const action = typeof body.action === 'string' ? body.action : '';
+  const normalizeOptionalField = (value: unknown): string | undefined => {
+    if (typeof value !== 'string') return undefined;
+    const trimmed = value.trim();
+    return trimmed.length > 0 ? trimmed : undefined;
+  };
 
   if (action === 'save') {
     await saveOlistCredentials({
-      redirect_uri: typeof body.redirect_uri === 'string' ? body.redirect_uri : undefined,
-      client_id: typeof body.client_id === 'string' ? body.client_id : undefined,
-      client_secret: typeof body.client_secret === 'string' ? body.client_secret : undefined,
+      redirect_uri: normalizeOptionalField(body.redirect_uri),
+      client_id: normalizeOptionalField(body.client_id),
+      client_secret: normalizeOptionalField(body.client_secret),
     });
     return NextResponse.json({ success: true });
   }

@@ -10,19 +10,63 @@ Uso::
 """
 
 import os
+import sqlite3
 import sys
 
 # Garante que os módulos do projeto sejam encontrados independente do cwd
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from logger_util import setup_logger
-from olist_auth import OlistAuth, OlistAuthError
 
 logger = setup_logger("refresh_tokens")
 
 
+def _carregar_credenciais_do_painel() -> None:
+    """Carrega CLIENT_ID/CLIENT_SECRET do banco (painel), quando disponíveis.
+
+    Isso evita divergência entre credenciais salvas no Admin e variáveis estáticas
+    de ambiente usadas pelos scripts Python.
+    """
+    project_root = os.path.dirname(os.path.abspath(__file__))
+    db_path = os.getenv("SQLITE_DB_PATH", os.path.join(project_root, "database.db"))
+    if not os.path.isabs(db_path):
+        db_path = os.path.join(project_root, db_path)
+
+    if not os.path.exists(db_path):
+        return
+
+    try:
+        conn = sqlite3.connect(db_path)
+        row = conn.execute(
+            "SELECT client_id, client_secret FROM olist_credentials WHERE id = 1"
+        ).fetchone()
+        conn.close()
+    except Exception as e:
+        logger.warning(f"Não foi possível ler credenciais no banco: {e}")
+        return
+
+    if not row:
+        return
+
+    client_id = (row[0] or "").strip()
+    client_secret = (row[1] or "").strip()
+
+    if client_id:
+        os.environ["CLIENT_ID"] = client_id
+    if client_secret:
+        os.environ["CLIENT_SECRET"] = client_secret
+
+    if client_id or client_secret:
+        logger.info("Credenciais Olist carregadas a partir do painel (SQLite).")
+
+
 def main() -> None:
     logger.info("=== Verificação de tokens Olist na inicialização ===")
+    _carregar_credenciais_do_painel()
+
+    # Importa depois de carregar credenciais do painel para garantir que
+    # config.py/olist_auth.py recebam os valores mais atuais.
+    from olist_auth import OlistAuth, OlistAuthError
 
     auth = OlistAuth()
 
