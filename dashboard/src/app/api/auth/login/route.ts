@@ -68,12 +68,16 @@ export async function POST(request: Request) {
     const response = NextResponse.json({ success: true, role: user.role });
 
     const basePath = resolveBasePath();
+    if (basePath && basePath !== '/') {
+      // Limpa cookie legado com escopo de basePath para evitar conflito de leitura.
+      response.cookies.set('auth_token', '', { maxAge: 0, path: basePath });
+    }
     response.cookies.set('auth_token', token, {
       httpOnly: true,
       sameSite: 'lax',
       secure: process.env.NODE_ENV === 'production',
       maxAge: 60 * 60 * 8,
-      path: basePath || '/',
+      path: '/',
     });
 
     return response;

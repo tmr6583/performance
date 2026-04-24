@@ -17,6 +17,9 @@ export async function GET(request: Request) {
   const redirectTarget = portalUrl ? `${portalUrl}/` : '/';
 
   const response = NextResponse.redirect(redirectTarget, { status: 302 });
-  response.cookies.set('auth_token', '', { maxAge: 0, path: basePath || '/' });
+  response.cookies.set('auth_token', '', { maxAge: 0, path: '/' });
+  if (basePath && basePath !== '/') {
+    response.cookies.set('auth_token', '', { maxAge: 0, path: basePath });
+  }
   return response;
 }
