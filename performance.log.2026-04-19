@@ -1,0 +1,39 @@
+19/04/2026 06:00:37 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+19/04/2026 06:00:37 - refresh_tokens - INFO - Credenciais Olist carregadas a partir do painel (SQLite).
+19/04/2026 06:00:39 - refresh_tokens - INFO - Forçando renovação do access token...
+19/04/2026 06:00:39 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+19/04/2026 06:00:40 - OlistAuth - INFO - Token renovado com sucesso.
+19/04/2026 06:00:40 - refresh_tokens - INFO - Token renovado com sucesso. Sistema pronto.
+19/04/2026 07:00:02 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+19/04/2026 07:00:02 - refresh_tokens - INFO - Credenciais Olist carregadas a partir do painel (SQLite).
+19/04/2026 07:00:02 - refresh_tokens - INFO - Forçando renovação do access token...
+19/04/2026 07:00:02 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+19/04/2026 07:00:03 - OlistAuth - INFO - Token renovado com sucesso.
+19/04/2026 07:00:03 - refresh_tokens - INFO - Token renovado com sucesso. Sistema pronto.
+19/04/2026 10:13:47 - fetch_performance - INFO - === Início da extração de performance ===
+19/04/2026 10:13:47 - fetch_performance - INFO - Data de referência: 19/04/2026  |  Mês alvo: 2026-04 | Busca a partir de: 20/03/2026
+19/04/2026 10:13:47 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+19/04/2026 10:13:48 - fetch_performance - INFO - 10 vendedores ativos encontrados.
+19/04/2026 10:13:53 - fetch_performance - INFO -   ADRIANA COSTA ALVES: dia=0 pedidos / R$ 0.00 | mês=104 pedidos / R$ 45632.51 (Fat: R$ 44419.36)
+19/04/2026 10:13:56 - fetch_performance - INFO -   Maria Eduarda Franco Degenario: dia=0 pedidos / R$ 0.00 | mês=82 pedidos / R$ 51330.78 (Fat: R$ 50981.04)
+19/04/2026 10:13:58 - fetch_performance - INFO -   Maria Daniele Marques da Silva: dia=0 pedidos / R$ 0.00 | mês=57 pedidos / R$ 42144.20 (Fat: R$ 40179.07)
+19/04/2026 10:13:59 - fetch_performance - INFO -   Camila Almeida: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+19/04/2026 10:14:00 - fetch_performance - INFO -   Rodrigo Barcia: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+19/04/2026 10:14:01 - fetch_performance - INFO -   Alexandre Cesar da Rosa: dia=0 pedidos / R$ 0.00 | mês=7 pedidos / R$ 1585.65 (Fat: R$ 1982.65)
+19/04/2026 10:14:01 - fetch_performance - INFO -   Diego Figueiredo: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+19/04/2026 10:14:03 - fetch_performance - INFO -   Breno Kling: dia=0 pedidos / R$ 0.00 | mês=2 pedidos / R$ 712.16 (Fat: R$ 712.16)
+19/04/2026 10:14:04 - fetch_performance - INFO -   Salvador Correa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+19/04/2026 10:14:05 - fetch_performance - INFO -   Julio Lopes: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+19/04/2026 10:14:05 - fetch_performance - INFO - === Extração concluída em 17s | 10/10 vendedores OK | 0 erro(s) ===
+19/04/2026 15:00:02 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+19/04/2026 15:00:02 - refresh_tokens - INFO - Credenciais Olist carregadas a partir do painel (SQLite).
+19/04/2026 15:00:02 - refresh_tokens - INFO - Forçando renovação do access token...
+19/04/2026 15:00:02 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+19/04/2026 15:00:02 - OlistAuth - INFO - Token renovado com sucesso.
+19/04/2026 15:00:02 - refresh_tokens - INFO - Token renovado com sucesso. Sistema pronto.
+19/04/2026 23:00:02 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+19/04/2026 23:00:02 - refresh_tokens - INFO - Credenciais Olist carregadas a partir do painel (SQLite).
+19/04/2026 23:00:02 - refresh_tokens - INFO - Forçando renovação do access token...
+19/04/2026 23:00:02 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+19/04/2026 23:00:03 - OlistAuth - INFO - Token renovado com sucesso.
+19/04/2026 23:00:03 - refresh_tokens - INFO - Token renovado com sucesso. Sistema pronto.

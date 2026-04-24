@@ -1,0 +1,87 @@
+17/04/2026 06:01:30 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+17/04/2026 06:01:30 - refresh_tokens - INFO - Forçando renovação do access token...
+17/04/2026 06:01:30 - refresh_tokens - ERROR - Não foi possível renovar o token. Ambos os tokens expiraram — reautorização manual necessária.
+17/04/2026 06:01:30 - refresh_tokens - INFO - Aviso por e-mail desabilitado para falha de renovação de token.
+17/04/2026 07:45:00 - fetch_performance - INFO - === Início da extração de performance ===
+17/04/2026 07:45:00 - fetch_performance - INFO - Data de referência: 17/04/2026  |  Mês alvo: 2026-04 | Busca a partir de: 20/03/2026
+17/04/2026 07:45:00 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+17/04/2026 16:10:44 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+17/04/2026 16:10:44 - refresh_tokens - INFO - Nenhum token encontrado — OAuth ainda não autorizado. Acesse o painel e conecte ao Olist.
+17/04/2026 16:13:56 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+17/04/2026 16:13:56 - refresh_tokens - INFO - Nenhum token encontrado — OAuth ainda não autorizado. Acesse o painel e conecte ao Olist.
+17/04/2026 16:18:00 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+17/04/2026 16:18:00 - refresh_tokens - INFO - Nenhum token encontrado — OAuth ainda não autorizado. Acesse o painel e conecte ao Olist.
+17/04/2026 16:19:24 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+17/04/2026 16:19:24 - refresh_tokens - INFO - Nenhum token encontrado — OAuth ainda não autorizado. Acesse o painel e conecte ao Olist.
+17/04/2026 17:17:17 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+17/04/2026 17:17:17 - refresh_tokens - INFO - Nenhum token encontrado — OAuth ainda não autorizado. Acesse o painel e conecte ao Olist.
+17/04/2026 19:00:05 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+17/04/2026 19:00:05 - refresh_tokens - INFO - Credenciais Olist carregadas a partir do painel (SQLite).
+17/04/2026 19:00:09 - refresh_tokens - INFO - Nenhum token encontrado — OAuth ainda não autorizado. Acesse o painel e conecte ao Olist.
+17/04/2026 19:13:26 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+17/04/2026 19:13:26 - refresh_tokens - INFO - Credenciais Olist carregadas a partir do painel (SQLite).
+17/04/2026 19:13:28 - refresh_tokens - INFO - Nenhum token encontrado — OAuth ainda não autorizado. Acesse o painel e conecte ao Olist.
+17/04/2026 21:42:12 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+17/04/2026 21:42:12 - refresh_tokens - INFO - Credenciais Olist carregadas a partir do painel (SQLite).
+17/04/2026 21:42:15 - refresh_tokens - INFO - Nenhum token encontrado — OAuth ainda não autorizado. Acesse o painel e conecte ao Olist.
+17/04/2026 22:18:59 - fetch_performance - INFO - === Início da extração de performance ===
+17/04/2026 22:18:59 - fetch_performance - INFO - Data de referência: 17/04/2026  |  Mês alvo: 2026-04 | Busca a partir de: 20/03/2026
+17/04/2026 22:18:59 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+17/04/2026 22:19:28 - fetch_performance - INFO - === Início da extração de performance ===
+17/04/2026 22:19:28 - fetch_performance - INFO - Data de referência: 17/04/2026  |  Mês alvo: 2026-04 | Busca a partir de: 20/03/2026
+17/04/2026 22:19:28 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+17/04/2026 22:19:28 - fetch_performance - INFO - 10 vendedores ativos encontrados.
+17/04/2026 22:19:41 - fetch_performance - INFO -   ADRIANA COSTA ALVES: dia=9 pedidos / R$ 2878.57 | mês=104 pedidos / R$ 45632.51 (Fat: R$ 44419.36)
+17/04/2026 22:19:52 - fetch_performance - INFO -   Maria Eduarda Franco Degenario: dia=9 pedidos / R$ 5140.51 | mês=82 pedidos / R$ 51330.78 (Fat: R$ 50981.04)
+17/04/2026 22:19:56 - fetch_performance - INFO -   Maria Daniele Marques da Silva: dia=3 pedidos / R$ 2351.18 | mês=57 pedidos / R$ 42144.20 (Fat: R$ 40179.07)
+17/04/2026 22:19:56 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 913467233 (2026-04-17 a 2026-04-17): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=913467233&dataInicial=2026-04-17&dataFinal=2026-04-17&limit=100&offset=0
+17/04/2026 22:19:57 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 913467233 (2026-03-20 a 2026-04-17): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=913467233&dataInicial=2026-03-20&dataFinal=2026-04-17&limit=100&offset=0
+17/04/2026 22:19:57 - fetch_performance - INFO -   Camila Almeida: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+17/04/2026 22:19:57 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914101137 (2026-04-17 a 2026-04-17): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914101137&dataInicial=2026-04-17&dataFinal=2026-04-17&limit=100&offset=0
+17/04/2026 22:19:57 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914101137 (2026-03-20 a 2026-04-17): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914101137&dataInicial=2026-03-20&dataFinal=2026-04-17&limit=100&offset=0
+17/04/2026 22:19:58 - fetch_performance - INFO -   Rodrigo Barcia: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+17/04/2026 22:19:58 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914102034 (2026-04-17 a 2026-04-17): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914102034&dataInicial=2026-04-17&dataFinal=2026-04-17&limit=100&offset=0
+17/04/2026 22:19:58 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914102034 (2026-03-20 a 2026-04-17): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914102034&dataInicial=2026-03-20&dataFinal=2026-04-17&limit=100&offset=0
+17/04/2026 22:19:58 - fetch_performance - INFO -   Alexandre Cesar da Rosa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+17/04/2026 22:19:58 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914102565 (2026-04-17 a 2026-04-17): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914102565&dataInicial=2026-04-17&dataFinal=2026-04-17&limit=100&offset=0
+17/04/2026 22:19:59 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914102565 (2026-03-20 a 2026-04-17): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914102565&dataInicial=2026-03-20&dataFinal=2026-04-17&limit=100&offset=0
+17/04/2026 22:19:59 - fetch_performance - INFO -   Diego Figueiredo: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+17/04/2026 22:19:59 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914102791 (2026-04-17 a 2026-04-17): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914102791&dataInicial=2026-04-17&dataFinal=2026-04-17&limit=100&offset=0
+17/04/2026 22:19:59 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914102791 (2026-03-20 a 2026-04-17): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914102791&dataInicial=2026-03-20&dataFinal=2026-04-17&limit=100&offset=0
+17/04/2026 22:20:00 - fetch_performance - INFO -   Breno Kling: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+17/04/2026 22:20:00 - fetch_performance - INFO -   Salvador Correa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+17/04/2026 22:20:01 - fetch_performance - INFO -   Julio Lopes: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+17/04/2026 22:20:01 - fetch_performance - INFO - === Extração concluída em 33s | 10/10 vendedores OK | 0 erro(s) ===
+17/04/2026 22:34:03 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+17/04/2026 22:34:03 - refresh_tokens - INFO - Credenciais Olist carregadas a partir do painel (SQLite).
+17/04/2026 22:34:06 - refresh_tokens - INFO - Forçando renovação do access token...
+17/04/2026 22:34:06 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+17/04/2026 22:34:06 - OlistAuth - INFO - Token renovado com sucesso.
+17/04/2026 22:34:06 - refresh_tokens - INFO - Token renovado com sucesso. Sistema pronto.
+17/04/2026 22:52:58 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+17/04/2026 22:52:58 - refresh_tokens - INFO - Credenciais Olist carregadas a partir do painel (SQLite).
+17/04/2026 22:52:58 - refresh_tokens - INFO - Forçando renovação do access token...
+17/04/2026 22:52:58 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+17/04/2026 22:52:59 - OlistAuth - INFO - Token renovado com sucesso.
+17/04/2026 22:52:59 - refresh_tokens - INFO - Token renovado com sucesso. Sistema pronto.
+17/04/2026 22:59:23 - fetch_performance - INFO - === Início da extração de performance ===
+17/04/2026 22:59:23 - fetch_performance - INFO - Data de referência: 17/04/2026  |  Mês alvo: 2026-04 | Busca a partir de: 20/03/2026
+17/04/2026 22:59:23 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+17/04/2026 22:59:23 - fetch_performance - INFO - 10 vendedores ativos encontrados.
+17/04/2026 22:59:26 - fetch_performance - INFO -   ADRIANA COSTA ALVES: dia=9 pedidos / R$ 2878.57 | mês=104 pedidos / R$ 45632.51 (Fat: R$ 44419.36)
+17/04/2026 22:59:28 - fetch_performance - INFO -   Maria Eduarda Franco Degenario: dia=9 pedidos / R$ 5140.51 | mês=82 pedidos / R$ 51330.78 (Fat: R$ 50981.04)
+17/04/2026 22:59:31 - fetch_performance - INFO -   Maria Daniele Marques da Silva: dia=3 pedidos / R$ 2351.18 | mês=57 pedidos / R$ 42144.20 (Fat: R$ 40179.07)
+17/04/2026 22:59:32 - fetch_performance - INFO -   Camila Almeida: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+17/04/2026 22:59:32 - fetch_performance - INFO -   Rodrigo Barcia: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+17/04/2026 22:59:33 - fetch_performance - INFO -   Alexandre Cesar da Rosa: dia=0 pedidos / R$ 0.00 | mês=7 pedidos / R$ 1585.65 (Fat: R$ 1982.65)
+17/04/2026 22:59:34 - fetch_performance - INFO -   Diego Figueiredo: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+17/04/2026 22:59:36 - fetch_performance - INFO -   Breno Kling: dia=0 pedidos / R$ 0.00 | mês=2 pedidos / R$ 712.16 (Fat: R$ 712.16)
+17/04/2026 22:59:36 - fetch_performance - INFO -   Salvador Correa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+17/04/2026 22:59:37 - fetch_performance - INFO -   Julio Lopes: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+17/04/2026 22:59:37 - fetch_performance - INFO - === Extração concluída em 14s | 10/10 vendedores OK | 0 erro(s) ===
+17/04/2026 23:00:18 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+17/04/2026 23:00:18 - refresh_tokens - INFO - Credenciais Olist carregadas a partir do painel (SQLite).
+17/04/2026 23:00:19 - refresh_tokens - INFO - Forçando renovação do access token...
+17/04/2026 23:00:19 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+17/04/2026 23:00:20 - OlistAuth - INFO - Token renovado com sucesso.
+17/04/2026 23:00:20 - refresh_tokens - INFO - Token renovado com sucesso. Sistema pronto.

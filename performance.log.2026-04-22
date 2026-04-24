@@ -1,0 +1,53 @@
+22/04/2026 06:00:53 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+22/04/2026 06:00:53 - refresh_tokens - INFO - Credenciais Olist carregadas a partir do painel (SQLite).
+22/04/2026 06:00:55 - refresh_tokens - INFO - Forçando renovação do access token...
+22/04/2026 06:00:55 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+22/04/2026 06:00:56 - OlistAuth - INFO - Token renovado com sucesso.
+22/04/2026 06:00:56 - refresh_tokens - INFO - Token renovado com sucesso. Sistema pronto.
+22/04/2026 07:00:26 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+22/04/2026 07:00:26 - refresh_tokens - INFO - Credenciais Olist carregadas a partir do painel (SQLite).
+22/04/2026 07:00:27 - refresh_tokens - INFO - Forçando renovação do access token...
+22/04/2026 07:00:27 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+22/04/2026 07:00:27 - OlistAuth - INFO - Token renovado com sucesso.
+22/04/2026 07:00:27 - refresh_tokens - INFO - Token renovado com sucesso. Sistema pronto.
+22/04/2026 07:45:00 - fetch_performance - INFO - === Início da extração de performance ===
+22/04/2026 07:45:00 - fetch_performance - INFO - Data de referência: 22/04/2026  |  Mês alvo: 2026-04 | Busca a partir de: 20/03/2026
+22/04/2026 07:45:00 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+22/04/2026 07:45:00 - fetch_performance - INFO - 10 vendedores ativos encontrados.
+22/04/2026 07:45:02 - fetch_performance - INFO -   Adriana Costa Alves: dia=0 pedidos / R$ 0.00 | mês=109 pedidos / R$ 47615.32 (Fat: R$ 45742.47)
+22/04/2026 07:45:05 - fetch_performance - INFO -   Maria Eduarda Franco Degenario: dia=0 pedidos / R$ 0.00 | mês=92 pedidos / R$ 56534.17 (Fat: R$ 56104.13)
+22/04/2026 07:45:07 - fetch_performance - INFO -   Maria Daniele Marques da Silva: dia=0 pedidos / R$ 0.00 | mês=63 pedidos / R$ 45420.16 (Fat: R$ 44058.72)
+22/04/2026 07:45:07 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 913467233 (2026-03-20 a 2026-04-22): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=913467233&dataInicial=2026-03-20&dataFinal=2026-04-22&limit=100&offset=0
+22/04/2026 07:45:07 - fetch_performance - INFO -   Camila Almeida: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+22/04/2026 07:45:08 - fetch_performance - INFO -   Rodrigo Barcia: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+22/04/2026 07:45:09 - fetch_performance - INFO -   Alexandre Cesar da Rosa: dia=0 pedidos / R$ 0.00 | mês=7 pedidos / R$ 1585.65 (Fat: R$ 1982.65)
+22/04/2026 07:45:10 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914102565 (2026-03-20 a 2026-04-22): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914102565&dataInicial=2026-03-20&dataFinal=2026-04-22&limit=100&offset=0
+22/04/2026 07:45:10 - fetch_performance - INFO -   Diego Figueiredo: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+22/04/2026 07:45:10 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914102791 (2026-04-22 a 2026-04-22): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914102791&dataInicial=2026-04-22&dataFinal=2026-04-22&limit=100&offset=0
+22/04/2026 07:45:11 - fetch_performance - INFO -   Breno Kling: dia=0 pedidos / R$ 0.00 | mês=2 pedidos / R$ 712.16 (Fat: R$ 712.16)
+22/04/2026 07:45:12 - fetch_performance - INFO -   Salvador Correa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+22/04/2026 07:45:13 - fetch_performance - INFO -   Julio Lopes: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+22/04/2026 07:45:13 - fetch_performance - INFO - === Extração concluída em 12s | 10/10 vendedores OK | 0 erro(s) ===
+22/04/2026 07:45:13 - send_emails - INFO - === Início do envio de e-mails — execução 07703277-d27a-42d3-9bb7-36b3bc2e6a23 ===
+22/04/2026 07:45:13 - send_emails - INFO - Data de referência: 2026-04-22
+22/04/2026 07:45:13 - send_emails - INFO - 3 vendedora(s) habilitada(s) para receber e-mail.
+22/04/2026 07:45:16 - send_emails - INFO -   ✓ Enviado para ADRIANA COSTA ALVES <vendasbetina@betinalimpeza.com.br>
+22/04/2026 07:45:19 - send_emails - INFO -   ✓ Enviado para Maria Eduarda Franco Degenario <vendas02@betinalimpeza.com.br>
+22/04/2026 07:45:22 - send_emails - INFO -   ✓ Enviado para Maria Daniele Marques da Silva <vendas@betinalimpeza.com.br>
+22/04/2026 07:45:22 - send_emails - INFO - 3 admin(s) habilitado(s) para receber resumo.
+22/04/2026 07:45:25 - send_emails - INFO -   ✓ Resumo enviado para Thiago <thiago@betinalimpeza.com.br>
+22/04/2026 07:45:27 - send_emails - INFO -   ✓ Resumo enviado para Roxane <roxane@vassourasrossi.com.br>
+22/04/2026 07:45:30 - send_emails - INFO -   ✓ Resumo enviado para Sérgio <compras@betinalimpeza.com.br>
+22/04/2026 07:45:30 - send_emails - INFO - === Envio concluído | 6 enviado(s) | 0 erro(s) ===
+22/04/2026 15:00:26 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+22/04/2026 15:00:26 - refresh_tokens - INFO - Credenciais Olist carregadas a partir do painel (SQLite).
+22/04/2026 15:00:26 - refresh_tokens - INFO - Forçando renovação do access token...
+22/04/2026 15:00:26 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+22/04/2026 15:00:27 - OlistAuth - INFO - Token renovado com sucesso.
+22/04/2026 15:00:27 - refresh_tokens - INFO - Token renovado com sucesso. Sistema pronto.
+22/04/2026 23:00:26 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+22/04/2026 23:00:26 - refresh_tokens - INFO - Credenciais Olist carregadas a partir do painel (SQLite).
+22/04/2026 23:00:26 - refresh_tokens - INFO - Forçando renovação do access token...
+22/04/2026 23:00:26 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+22/04/2026 23:00:27 - OlistAuth - INFO - Token renovado com sucesso.
+22/04/2026 23:00:27 - refresh_tokens - INFO - Token renovado com sucesso. Sistema pronto.
