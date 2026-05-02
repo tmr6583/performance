@@ -1,0 +1,191 @@
+30/04/2026 06:00:48 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+30/04/2026 06:00:48 - refresh_tokens - INFO - Credenciais Olist carregadas a partir do painel (SQLite).
+30/04/2026 06:00:51 - refresh_tokens - INFO - Forçando renovação do access token...
+30/04/2026 06:00:51 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+30/04/2026 06:00:51 - OlistAuth - INFO - Token renovado com sucesso.
+30/04/2026 06:00:51 - refresh_tokens - INFO - Token renovado com sucesso. Sistema pronto.
+30/04/2026 07:00:12 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+30/04/2026 07:00:12 - refresh_tokens - INFO - Credenciais Olist carregadas a partir do painel (SQLite).
+30/04/2026 07:00:12 - refresh_tokens - INFO - Forçando renovação do access token...
+30/04/2026 07:00:12 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+30/04/2026 07:00:13 - OlistAuth - INFO - Token renovado com sucesso.
+30/04/2026 07:00:13 - refresh_tokens - INFO - Token renovado com sucesso. Sistema pronto.
+30/04/2026 07:45:01 - fetch_performance - INFO - === Início da extração de performance ===
+30/04/2026 07:45:01 - fetch_performance - INFO - Data de referência: 30/04/2026  |  Mês alvo: 2026-04 | Busca a partir de: 20/03/2026
+30/04/2026 07:45:01 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+30/04/2026 07:45:01 - fetch_performance - INFO - 10 vendedores ativos encontrados.
+30/04/2026 07:45:08 - fetch_performance - WARNING - Rate limit ao buscar detalhes do pedido 930907236. Aguardando 2 segundos...
+30/04/2026 07:45:14 - fetch_performance - WARNING - Rate limit ao buscar detalhes do pedido 930840119. Aguardando 2 segundos...
+30/04/2026 07:45:17 - fetch_performance - WARNING - Rate limit ao buscar detalhes do pedido 930772548. Aguardando 2 segundos...
+30/04/2026 07:45:21 - fetch_performance - INFO -   Adriana Costa Alves: dia=0 pedidos / R$ 0.00 | mês=154 pedidos / R$ 67601.58 (Fat: R$ 63891.04)
+30/04/2026 07:45:23 - fetch_performance - WARNING - Rate limit ao buscar detalhes do pedido 931015415. Aguardando 2 segundos...
+30/04/2026 07:45:25 - fetch_performance - WARNING - Rate limit ao buscar detalhes do pedido 930977285. Aguardando 2 segundos...
+30/04/2026 07:45:27 - fetch_performance - WARNING - Rate limit ao buscar detalhes do pedido 930970531. Aguardando 2 segundos...
+30/04/2026 07:45:30 - fetch_performance - WARNING - Rate limit ao buscar detalhes do pedido 930970395. Aguardando 2 segundos...
+30/04/2026 07:45:32 - fetch_performance - WARNING - Rate limit ao buscar detalhes do pedido 930960666. Aguardando 2 segundos...
+30/04/2026 07:45:34 - fetch_performance - WARNING - Rate limit ao buscar detalhes do pedido 930905545. Aguardando 2 segundos...
+30/04/2026 07:45:37 - fetch_performance - WARNING - Rate limit ao buscar detalhes do pedido 930894074. Aguardando 2 segundos...
+30/04/2026 07:45:39 - fetch_performance - WARNING - Rate limit ao buscar detalhes do pedido 930883820. Aguardando 2 segundos...
+30/04/2026 07:45:41 - fetch_performance - WARNING - Rate limit ao buscar detalhes do pedido 930846852. Aguardando 2 segundos...
+30/04/2026 07:45:44 - fetch_performance - WARNING - Rate limit ao buscar detalhes do pedido 930845703. Aguardando 2 segundos...
+30/04/2026 07:45:46 - fetch_performance - WARNING - Rate limit ao buscar detalhes do pedido 930838332. Aguardando 2 segundos...
+30/04/2026 07:45:48 - fetch_performance - INFO -   Maria Eduarda Franco Degenario: dia=1 pedidos / R$ 2624.86 | mês=122 pedidos / R$ 70430.58 (Fat: R$ 64831.19)
+30/04/2026 07:45:48 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 912076899 (2026-04-30 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=912076899&dataInicial=2026-04-30&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 07:45:48 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 912076899 (2026-03-20 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=912076899&dataInicial=2026-03-20&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 07:45:49 - fetch_performance - INFO -   Maria Daniele Marques da Silva: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 07:45:49 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 913467233 (2026-04-30 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=913467233&dataInicial=2026-04-30&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 07:45:49 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 913467233 (2026-03-20 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=913467233&dataInicial=2026-03-20&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 07:45:49 - fetch_performance - INFO -   Camila Almeida: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 07:45:49 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914101137 (2026-04-30 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914101137&dataInicial=2026-04-30&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 07:45:50 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914101137 (2026-03-20 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914101137&dataInicial=2026-03-20&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 07:45:50 - fetch_performance - INFO -   Rodrigo Barcia: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 07:45:50 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914102034 (2026-04-30 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914102034&dataInicial=2026-04-30&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 07:45:50 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914102034 (2026-03-20 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914102034&dataInicial=2026-03-20&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 07:45:51 - fetch_performance - INFO -   Alexandre Cesar da Rosa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 07:45:51 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914102565 (2026-04-30 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914102565&dataInicial=2026-04-30&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 07:45:51 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914102565 (2026-03-20 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914102565&dataInicial=2026-03-20&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 07:45:51 - fetch_performance - INFO -   Diego Figueiredo: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 07:45:51 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914102791 (2026-04-30 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914102791&dataInicial=2026-04-30&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 07:45:52 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914102791 (2026-03-20 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914102791&dataInicial=2026-03-20&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 07:45:52 - fetch_performance - INFO -   Breno Kling: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 07:45:52 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914103702 (2026-04-30 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914103702&dataInicial=2026-04-30&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 07:45:52 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914103702 (2026-03-20 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914103702&dataInicial=2026-03-20&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 07:45:53 - fetch_performance - INFO -   Salvador Correa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 07:45:53 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914104407 (2026-04-30 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914104407&dataInicial=2026-04-30&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 07:45:53 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914104407 (2026-03-20 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914104407&dataInicial=2026-03-20&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 07:45:53 - fetch_performance - INFO -   Julio Lopes: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 07:45:53 - fetch_performance - INFO - === Extração concluída em 52s | 10/10 vendedores OK | 0 erro(s) ===
+30/04/2026 07:45:53 - send_emails - INFO - === Início do envio de e-mails — execução 6987ae7a-c456-4b5f-a2b0-80f8b2f9200f ===
+30/04/2026 07:45:53 - send_emails - INFO - Data de referência: 2026-04-30
+30/04/2026 07:45:53 - send_emails - INFO - 3 vendedora(s) habilitada(s) para receber e-mail.
+30/04/2026 07:45:58 - send_emails - INFO -   ✓ Enviado para ADRIANA COSTA ALVES <vendasbetina@betinalimpeza.com.br>
+30/04/2026 07:46:01 - send_emails - INFO -   ✓ Enviado para Maria Eduarda Franco Degenario <vendas02@betinalimpeza.com.br>
+30/04/2026 07:46:05 - send_emails - INFO -   ✓ Enviado para Maria Daniele Marques da Silva <vendas@betinalimpeza.com.br>
+30/04/2026 07:46:05 - send_emails - INFO - 3 admin(s) habilitado(s) para receber resumo.
+30/04/2026 07:46:07 - send_emails - INFO -   ✓ Resumo enviado para Thiago <thiago@betinalimpeza.com.br>
+30/04/2026 07:46:12 - send_emails - INFO -   ✓ Resumo enviado para Roxane <roxane@vassourasrossi.com.br>
+30/04/2026 07:46:15 - send_emails - INFO -   ✓ Resumo enviado para Sérgio <compras@betinalimpeza.com.br>
+30/04/2026 07:46:15 - send_emails - INFO - === Envio concluído | 6 enviado(s) | 0 erro(s) ===
+30/04/2026 15:00:03 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+30/04/2026 15:00:03 - refresh_tokens - INFO - Credenciais Olist carregadas a partir do painel (SQLite).
+30/04/2026 15:00:04 - refresh_tokens - INFO - Forçando renovação do access token...
+30/04/2026 15:00:04 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+30/04/2026 15:00:04 - OlistAuth - INFO - Token renovado com sucesso.
+30/04/2026 15:00:04 - refresh_tokens - INFO - Token renovado com sucesso. Sistema pronto.
+30/04/2026 16:24:29 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+30/04/2026 16:24:29 - refresh_tokens - INFO - Credenciais Olist carregadas a partir do painel (SQLite).
+30/04/2026 16:24:31 - refresh_tokens - INFO - Forçando renovação do access token...
+30/04/2026 16:24:31 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+30/04/2026 16:24:31 - OlistAuth - INFO - Token renovado com sucesso.
+30/04/2026 16:24:31 - refresh_tokens - INFO - Token renovado com sucesso. Sistema pronto.
+30/04/2026 17:50:06 - fetch_performance - INFO - === Início da extração de performance ===
+30/04/2026 17:50:06 - fetch_performance - INFO - Data de referência: 30/04/2026  |  Mês alvo: 2026-04 | Busca a partir de: 20/03/2026
+30/04/2026 17:50:06 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+30/04/2026 17:50:07 - fetch_performance - INFO - 10 vendedores ativos encontrados.
+30/04/2026 17:50:20 - fetch_performance - INFO -   Adriana Costa Alves: dia=18 pedidos / R$ 12737.28 | mês=172 pedidos / R$ 79995.21 (Fat: R$ 79995.21)
+30/04/2026 17:50:29 - fetch_performance - INFO -   Maria Eduarda Franco Degenario: dia=4 pedidos / R$ 4119.96 | mês=125 pedidos / R$ 71925.68 (Fat: R$ 72060.68)
+30/04/2026 17:50:34 - fetch_performance - WARNING - Rate limit ao buscar detalhes do pedido 931096078. Aguardando 2 segundos...
+30/04/2026 17:50:36 - fetch_performance - WARNING - Rate limit ao buscar detalhes do pedido 931074867. Aguardando 2 segundos...
+30/04/2026 17:50:39 - fetch_performance - WARNING - Rate limit ao buscar detalhes do pedido 931074641. Aguardando 2 segundos...
+30/04/2026 17:50:41 - fetch_performance - WARNING - Rate limit ao buscar detalhes do pedido 931074521. Aguardando 2 segundos...
+30/04/2026 17:50:43 - fetch_performance - WARNING - Rate limit ao buscar detalhes do pedido 931073672. Aguardando 2 segundos...
+30/04/2026 17:50:46 - fetch_performance - WARNING - Rate limit ao buscar detalhes do pedido 931065615. Aguardando 2 segundos...
+30/04/2026 17:50:48 - fetch_performance - WARNING - Rate limit ao buscar detalhes do pedido 931096078. Aguardando 2 segundos...
+30/04/2026 17:50:50 - fetch_performance - WARNING - Rate limit ao buscar detalhes do pedido 931074867. Aguardando 2 segundos...
+30/04/2026 17:50:53 - fetch_performance - WARNING - Rate limit ao buscar detalhes do pedido 931074641. Aguardando 2 segundos...
+30/04/2026 17:50:55 - fetch_performance - WARNING - Rate limit ao buscar detalhes do pedido 931074521. Aguardando 2 segundos...
+30/04/2026 17:50:57 - fetch_performance - WARNING - Rate limit ao buscar detalhes do pedido 931073672. Aguardando 2 segundos...
+30/04/2026 17:51:04 - fetch_performance - INFO -   Maria Daniele Marques da Silva: dia=15 pedidos / R$ 22158.86 | mês=98 pedidos / R$ 78914.37 (Fat: R$ 70038.14)
+30/04/2026 17:51:05 - fetch_performance - INFO -   Camila Almeida: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 17:51:06 - fetch_performance - INFO -   Rodrigo Barcia: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 17:51:08 - fetch_performance - INFO -   Alexandre Cesar da Rosa: dia=0 pedidos / R$ 0.00 | mês=11 pedidos / R$ 2490.31 (Fat: R$ 2887.31)
+30/04/2026 17:51:09 - fetch_performance - INFO -   Diego Figueiredo: dia=1 pedidos / R$ 140.40 | mês=2 pedidos / R$ 322.14 (Fat: R$ 322.14)
+30/04/2026 17:51:10 - fetch_performance - INFO -   Breno Kling: dia=0 pedidos / R$ 0.00 | mês=4 pedidos / R$ 1451.36 (Fat: R$ 1451.36)
+30/04/2026 17:51:11 - fetch_performance - INFO -   Salvador Correa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 17:51:12 - fetch_performance - INFO -   Julio Lopes: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 17:51:12 - fetch_performance - INFO - === Extração concluída em 65s | 10/10 vendedores OK | 0 erro(s) ===
+30/04/2026 17:53:31 - fetch_performance - INFO - === Início da extração de performance ===
+30/04/2026 17:53:31 - fetch_performance - INFO - Data de referência: 30/04/2026  |  Mês alvo: 2026-04 | Busca a partir de: 20/03/2026
+30/04/2026 17:53:31 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+30/04/2026 17:53:31 - fetch_performance - INFO - 10 vendedores ativos encontrados.
+30/04/2026 17:53:33 - fetch_performance - INFO -   Adriana Costa Alves: dia=18 pedidos / R$ 12737.28 | mês=172 pedidos / R$ 79995.21 (Fat: R$ 79995.21)
+30/04/2026 17:53:35 - fetch_performance - INFO -   Maria Eduarda Franco Degenario: dia=4 pedidos / R$ 4119.96 | mês=125 pedidos / R$ 71925.68 (Fat: R$ 72060.68)
+30/04/2026 17:53:38 - fetch_performance - INFO -   Maria Daniele Marques da Silva: dia=15 pedidos / R$ 22158.86 | mês=98 pedidos / R$ 78914.37 (Fat: R$ 78802.85)
+30/04/2026 17:53:39 - fetch_performance - INFO -   Camila Almeida: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 17:53:40 - fetch_performance - INFO -   Rodrigo Barcia: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 17:53:41 - fetch_performance - INFO -   Alexandre Cesar da Rosa: dia=0 pedidos / R$ 0.00 | mês=11 pedidos / R$ 2490.31 (Fat: R$ 2887.31)
+30/04/2026 17:53:42 - fetch_performance - INFO -   Diego Figueiredo: dia=1 pedidos / R$ 140.40 | mês=2 pedidos / R$ 322.14 (Fat: R$ 322.14)
+30/04/2026 17:53:42 - fetch_performance - INFO -   Breno Kling: dia=0 pedidos / R$ 0.00 | mês=4 pedidos / R$ 1451.36 (Fat: R$ 1451.36)
+30/04/2026 17:53:43 - fetch_performance - INFO -   Salvador Correa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 17:53:44 - fetch_performance - INFO -   Julio Lopes: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 17:53:44 - fetch_performance - INFO - === Extração concluída em 12s | 10/10 vendedores OK | 0 erro(s) ===
+30/04/2026 18:30:00 - fetch_performance - INFO - === Início da extração de performance ===
+30/04/2026 18:30:00 - fetch_performance - INFO - Data de referência: 30/04/2026  |  Mês alvo: 2026-04 | Busca a partir de: 20/03/2026
+30/04/2026 18:30:00 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+30/04/2026 18:30:00 - fetch_performance - INFO - 10 vendedores ativos encontrados.
+30/04/2026 18:30:06 - fetch_performance - INFO -   Adriana Costa Alves: dia=19 pedidos / R$ 12854.43 | mês=173 pedidos / R$ 80112.36 (Fat: R$ 80112.36)
+30/04/2026 18:30:06 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 854206705 (2026-03-20 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=854206705&dataInicial=2026-03-20&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 18:30:07 - fetch_performance - INFO -   Maria Eduarda Franco Degenario: dia=4 pedidos / R$ 4119.96 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 18:30:07 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 912076899 (2026-03-20 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=912076899&dataInicial=2026-03-20&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 18:30:08 - fetch_performance - INFO -   Maria Daniele Marques da Silva: dia=15 pedidos / R$ 22158.86 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 18:30:08 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 913467233 (2026-03-20 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=913467233&dataInicial=2026-03-20&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 18:30:08 - fetch_performance - INFO -   Camila Almeida: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 18:30:08 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914101137 (2026-04-30 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914101137&dataInicial=2026-04-30&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 18:30:09 - fetch_performance - INFO -   Rodrigo Barcia: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 18:30:09 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914102034 (2026-04-30 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914102034&dataInicial=2026-04-30&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 18:30:10 - fetch_performance - INFO -   Alexandre Cesar da Rosa: dia=0 pedidos / R$ 0.00 | mês=11 pedidos / R$ 2490.31 (Fat: R$ 2887.31)
+30/04/2026 18:30:10 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914102565 (2026-04-30 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914102565&dataInicial=2026-04-30&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 18:30:10 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914102565 (2026-03-20 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914102565&dataInicial=2026-03-20&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 18:30:11 - fetch_performance - INFO -   Diego Figueiredo: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 18:30:11 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914102791 (2026-03-20 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914102791&dataInicial=2026-03-20&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 18:30:12 - fetch_performance - INFO -   Breno Kling: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 18:30:13 - fetch_performance - INFO -   Salvador Correa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 18:30:14 - fetch_performance - INFO -   Julio Lopes: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 18:30:14 - fetch_performance - INFO - === Extração concluída em 13s | 10/10 vendedores OK | 0 erro(s) ===
+30/04/2026 18:30:14 - send_emails - INFO - === Início do envio de e-mails — execução 7a639827-97a3-4630-a1aa-166f21915cf4 ===
+30/04/2026 18:30:14 - send_emails - INFO - Data de referência: 2026-04-30
+30/04/2026 18:30:14 - send_emails - INFO - 3 vendedora(s) habilitada(s) para receber e-mail.
+30/04/2026 18:30:17 - send_emails - INFO -   ✓ Enviado para ADRIANA COSTA ALVES <vendasbetina@betinalimpeza.com.br>
+30/04/2026 18:30:20 - send_emails - INFO -   ✓ Enviado para Maria Eduarda Franco Degenario <vendas02@betinalimpeza.com.br>
+30/04/2026 18:30:23 - send_emails - INFO -   ✓ Enviado para Maria Daniele Marques da Silva <vendas@betinalimpeza.com.br>
+30/04/2026 18:30:23 - send_emails - INFO - 3 admin(s) habilitado(s) para receber resumo.
+30/04/2026 18:30:26 - send_emails - INFO -   ✓ Resumo enviado para Thiago <thiago@betinalimpeza.com.br>
+30/04/2026 18:30:29 - send_emails - INFO -   ✓ Resumo enviado para Roxane <roxane@vassourasrossi.com.br>
+30/04/2026 18:30:32 - send_emails - INFO -   ✓ Resumo enviado para Sérgio <compras@betinalimpeza.com.br>
+30/04/2026 18:30:32 - send_emails - INFO - === Envio concluído | 6 enviado(s) | 0 erro(s) ===
+30/04/2026 18:43:33 - fetch_performance - INFO - === Início da extração de performance ===
+30/04/2026 18:43:33 - fetch_performance - INFO - Data de referência: 30/04/2026  |  Mês alvo: 2026-04 | Busca a partir de: 20/03/2026
+30/04/2026 18:43:33 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+30/04/2026 18:43:33 - fetch_performance - INFO - 10 vendedores ativos encontrados.
+30/04/2026 18:43:35 - fetch_performance - INFO -   Adriana Costa Alves: dia=19 pedidos / R$ 12854.43 | mês=173 pedidos / R$ 80112.36 (Fat: R$ 80112.36)
+30/04/2026 18:43:37 - fetch_performance - INFO -   Maria Eduarda Franco Degenario: dia=4 pedidos / R$ 4119.96 | mês=125 pedidos / R$ 71925.68 (Fat: R$ 72060.68)
+30/04/2026 18:43:38 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 912076899 (2026-03-20 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=912076899&dataInicial=2026-03-20&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 18:43:38 - fetch_performance - INFO -   Maria Daniele Marques da Silva: dia=15 pedidos / R$ 22158.86 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 18:43:38 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 913467233 (2026-04-30 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=913467233&dataInicial=2026-04-30&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 18:43:38 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 913467233 (2026-03-20 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=913467233&dataInicial=2026-03-20&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 18:43:39 - fetch_performance - INFO -   Camila Almeida: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 18:43:39 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914101137 (2026-04-30 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914101137&dataInicial=2026-04-30&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 18:43:39 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914101137 (2026-03-20 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914101137&dataInicial=2026-03-20&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 18:43:39 - fetch_performance - INFO -   Rodrigo Barcia: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 18:43:39 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914102034 (2026-04-30 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914102034&dataInicial=2026-04-30&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 18:43:40 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914102034 (2026-03-20 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914102034&dataInicial=2026-03-20&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 18:43:40 - fetch_performance - INFO -   Alexandre Cesar da Rosa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 18:43:40 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914102565 (2026-04-30 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914102565&dataInicial=2026-04-30&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 18:43:40 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914102565 (2026-03-20 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914102565&dataInicial=2026-03-20&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 18:43:41 - fetch_performance - INFO -   Diego Figueiredo: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 18:43:41 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914102791 (2026-04-30 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914102791&dataInicial=2026-04-30&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 18:43:41 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914102791 (2026-03-20 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914102791&dataInicial=2026-03-20&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 18:43:41 - fetch_performance - INFO -   Breno Kling: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 18:43:41 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914103702 (2026-04-30 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914103702&dataInicial=2026-04-30&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 18:43:42 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914103702 (2026-03-20 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914103702&dataInicial=2026-03-20&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 18:43:42 - fetch_performance - INFO -   Salvador Correa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 18:43:42 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914104407 (2026-04-30 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914104407&dataInicial=2026-04-30&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 18:43:42 - fetch_performance - WARNING - Erro ao buscar pedidos do vendedor 914104407 (2026-03-20 a 2026-04-30): HTTP 429 — 429 Client Error: Too Many Requests for url: https://api.tiny.com.br/public-api/v3/pedidos?idVendedor=914104407&dataInicial=2026-03-20&dataFinal=2026-04-30&limit=100&offset=0
+30/04/2026 18:43:43 - fetch_performance - INFO -   Julio Lopes: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+30/04/2026 18:43:43 - fetch_performance - INFO - === Extração concluída em 9s | 10/10 vendedores OK | 0 erro(s) ===
+30/04/2026 23:00:36 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+30/04/2026 23:00:36 - refresh_tokens - INFO - Credenciais Olist carregadas a partir do painel (SQLite).
+30/04/2026 23:00:36 - refresh_tokens - INFO - Forçando renovação do access token...
+30/04/2026 23:00:36 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+30/04/2026 23:00:36 - OlistAuth - INFO - Token renovado com sucesso.
+30/04/2026 23:00:36 - refresh_tokens - INFO - Token renovado com sucesso. Sistema pronto.

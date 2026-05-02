@@ -163,6 +163,10 @@ SMTP_PASSWORD=<senha SMTP>
 EMAIL_FROM_NAME=Betina Limpeza
 
 SQLITE_DB_PATH=/opt/betina/performance/database.db
+OLIST_API_MAX_RETRIES=7
+OLIST_API_RETRY_BASE_DELAY=1.5
+OLIST_API_RETRY_MAX_DELAY=30
+OLIST_API_RETRY_JITTER=0.5
 ```
 
 > **Importante (produção Linux):** nunca deixe `SQLITE_DB_PATH` com caminho de Windows (ex.: `c:\...`). Isso cria/usa um banco incorreto e pode gerar erros como `no such table: performance_cache` durante `fetch_performance.py`.
@@ -179,6 +183,10 @@ APP_PORTAL_URL=https://betinalimpeza.ddns.net
 SQLITE_DB_PATH=/opt/betina/performance/database.db
 PERFORMANCE_SCRIPT_DIR=/opt/betina/performance
 NEXT_PUBLIC_BASE_PATH=/performance
+OLIST_API_MAX_RETRIES=7
+OLIST_API_RETRY_BASE_DELAY=1.5
+OLIST_API_RETRY_MAX_DELAY=30
+OLIST_API_RETRY_JITTER=0.5
 ```
 
 > **Nota sobre Standalone Build:** O Next.js usa um caminho absoluto para o `SQLITE_DB_PATH` garantindo que o build `.next/standalone` não crie um banco isolado e utilize a base de produção correta.
@@ -291,9 +299,11 @@ Cria logger nomeado com saída simultânea para console e para `/opt/betina/perf
 - `refresh_access_token()` — chama `POST /token` com `grant_type=refresh_token`
 - `get_valid_access_token()` — retorna token válido, renova automaticamente se necessário
 
-**Classe `OlistClient`:** Cliente HTTP autenticado.
+**Classe `OlistClient`:** Cliente HTTP autenticado com tratamento de falhas transitórias.
 
-- `api_get(endpoint, params)` — GET com retry em 401
+- `api_get(endpoint, params)` — GET com retry em `401`, `429`, `500`, `502`, `503`, `504`
+- Respeita `Retry-After` quando fornecido pela Olist
+- Backoff exponencial com jitter configurável por ambiente
 - `paginar(endpoint, params)` — itera todas as páginas usando `paginacao.total`
 
 ### `fetch_performance.py`
@@ -368,6 +378,7 @@ Executado pelo systemd como `oneshot` (no boot e também via timer diário):
 ### Autenticação
 
 - JWT armazenado em cookie `httpOnly` com validade de 8 horas
+- Cookie `auth_token` salvo em `path=/` para evitar loop de login entre rotas com `basePath`
 - Middleware protege todas as rotas exceto `/login`, `/api/auth/*`, `/api/olist/callback` e assets estáticos
 - Dois papéis: `admin` (acesso total) e `salesperson` (vê apenas própria performance)
 - Proteção anti-força bruta no login (`login_attempts`): após 10 tentativas inválidas para o mesmo par e-mail/IP, bloqueia por 15 minutos
@@ -736,6 +747,21 @@ O `access_token` Olist expira em ~30 minutos. O `refresh_token` dura vários dia
 2. `performance-token-refresh.timer` também força renovação diária às `07:00`, `15:00` e `23:00`
 3. Se a renovação falhar, não há disparo automático de e-mail
 4. Acesse o painel → **"Conectar ao Olist"** para reautorizar manualmente
+
+### API Olist com erro 429 (rate limit)
+
+Quando a API retorna `429 Too Many Requests`, o cliente agora:
+
+1. Reexecuta automaticamente a requisição
+2. Respeita o header `Retry-After` quando presente
+3. Aplica backoff exponencial com jitter para reduzir rajadas
+
+Parâmetros de ajuste:
+
+- `OLIST_API_MAX_RETRIES`
+- `OLIST_API_RETRY_BASE_DELAY`
+- `OLIST_API_RETRY_MAX_DELAY`
+- `OLIST_API_RETRY_JITTER`
 
 ### Dashboard não inicia
 

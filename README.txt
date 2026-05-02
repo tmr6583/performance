@@ -188,6 +188,10 @@ O sistema é composto por duas camadas independentes:
   EMAIL_FROM_NAME=Betina Limpeza
 
   SQLITE_DB_PATH=/opt/betina/performance/database.db
+  OLIST_API_MAX_RETRIES=7
+  OLIST_API_RETRY_BASE_DELAY=1.5
+  OLIST_API_RETRY_MAX_DELAY=30
+  OLIST_API_RETRY_JITTER=0.5
 
   IMPORTANTE (produção Linux):
   Nunca usar caminho de Windows em SQLITE_DB_PATH (ex: c:\...).
@@ -207,6 +211,10 @@ O sistema é composto por duas camadas independentes:
   SQLITE_DB_PATH=/opt/betina/performance/database.db
   PERFORMANCE_SCRIPT_DIR=/opt/betina/performance
   NEXT_PUBLIC_BASE_PATH=/performance
+  OLIST_API_MAX_RETRIES=7
+  OLIST_API_RETRY_BASE_DELAY=1.5
+  OLIST_API_RETRY_MAX_DELAY=30
+  OLIST_API_RETRY_JITTER=0.5
 
   NOTA SOBRE STANDALONE BUILD: O Next.js usa caminho absoluto no SQLITE_DB_PATH
   para garantir que a base não seja duplicada dentro da pasta .next/standalone.
@@ -346,7 +354,9 @@ O sistema é composto por duas camadas independentes:
     get_valid_access_token() Retorna token válido, renova se necessário
 
   Classe OlistClient:
-    api_get(endpoint, params)   GET autenticado com retry em 401
+    api_get(endpoint, params)   GET com retry em 401, 429 e 5xx
+    - Respeita Retry-After quando a Olist enviar
+    - Usa backoff exponencial com jitter (configurável por ambiente)
     paginar(endpoint, params)   Itera todas as páginas via paginacao.total
 
   Exceção OlistAuthError: lançada quando não há tokens ou renovação falha.
@@ -454,6 +464,7 @@ O sistema é composto por duas camadas independentes:
   Autenticação
   -----------------------------------------------------------------------
   - JWT armazenado em cookie httpOnly (nome: auth_token)
+  - Cookie auth_token salvo com path=/ para evitar loop de login em basePath
   - Validade: 8 horas
   - Dois papéis: admin e salesperson
   - Proteção anti-força bruta: após 10 tentativas inválidas por e-mail/IP,
@@ -1091,6 +1102,20 @@ O sistema é composto por duas camadas independentes:
     1. Acesse https://betinalimpeza.ddns.net/performance/admin
     2. Clique em "Conectar ao Olist"
     3. Autorize novamente na Tiny
+
+  -----------------------------------------------------------------------
+  API OLIST COM ERRO 429 (TOO MANY REQUESTS)
+  -----------------------------------------------------------------------
+  Comportamento atual:
+    - Reexecuta automaticamente chamadas com 429 e erros transitórios 5xx
+    - Respeita Retry-After quando a API informar tempo de espera
+    - Usa backoff exponencial com jitter para reduzir rajadas
+
+  Ajustes por variável de ambiente:
+    OLIST_API_MAX_RETRIES
+    OLIST_API_RETRY_BASE_DELAY
+    OLIST_API_RETRY_MAX_DELAY
+    OLIST_API_RETRY_JITTER
 
   -----------------------------------------------------------------------
   DASHBOARD NÃO INICIA

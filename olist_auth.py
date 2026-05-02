@@ -6,10 +6,21 @@ renovação automática via refresh token e tratamento de 401.
 
 import json
 import os
+import random
+import time
 
 import requests
 
-from config import CLIENT_ID, CLIENT_SECRET, TOKEN_FILE, TOKEN_URL
+from config import (
+    API_MAX_RETRIES,
+    API_RETRY_BASE_DELAY,
+    API_RETRY_JITTER,
+    API_RETRY_MAX_DELAY,
+    CLIENT_ID,
+    CLIENT_SECRET,
+    TOKEN_FILE,
+    TOKEN_URL,
+)
 from logger_util import setup_logger
 
 logger = setup_logger("OlistAuth")
@@ -135,6 +146,77 @@ class OlistClient:
 
     def __init__(self, auth: OlistAuth) -> None:
         self.auth = auth
+        self.session = requests.Session()
+
+    @staticmethod
+    def _retry_after_seconds(response: requests.Response) -> float | None:
+        raw = response.headers.get("Retry-After")
+        if not raw:
+            return None
+        try:
+            return max(0.0, float(raw))
+        except ValueError:
+            return None
+
+    @staticmethod
+    def _backoff_seconds(attempt: int) -> float:
+        base = max(0.1, API_RETRY_BASE_DELAY)
+        max_delay = max(base, API_RETRY_MAX_DELAY)
+        jitter = max(0.0, API_RETRY_JITTER)
+        wait = min(max_delay, base * (2 ** attempt))
+        if jitter > 0:
+            wait += random.uniform(0, jitter)
+        return wait
+
+    def _request_with_retries(self, url: str, params: dict | None = None) -> requests.Response:
+        retriable_status = {429, 500, 502, 503, 504}
+        max_retries = max(0, API_MAX_RETRIES)
+        refreshed_token = False
+        last_network_err: requests.RequestException | None = None
+        response: requests.Response | None = None
+
+        for attempt in range(max_retries + 1):
+            try:
+                response = self.session.get(url, headers=self._headers(), params=params, timeout=30)
+            except requests.RequestException as e:
+                last_network_err = e
+                if attempt >= max_retries:
+                    raise
+                wait = self._backoff_seconds(attempt)
+                logger.warning(
+                    f"Falha de rede ao chamar Olist (tentativa {attempt + 1}/{max_retries + 1}). "
+                    f"Nova tentativa em {wait:.2f}s."
+                )
+                time.sleep(wait)
+                continue
+
+            if response.status_code == 401 and not refreshed_token:
+                logger.warning("401 recebido — tentando renovar token...")
+                refreshed_token = True
+                if self.auth.refresh_access_token():
+                    continue
+                raise OlistAuthError(
+                    "Token inválido e renovação falhou. "
+                    "Acesse o painel e clique em 'Conectar ao Olist'."
+                )
+
+            if response.status_code in retriable_status and attempt < max_retries:
+                retry_after = self._retry_after_seconds(response)
+                wait = retry_after if retry_after is not None else self._backoff_seconds(attempt)
+                logger.warning(
+                    f"Olist retornou HTTP {response.status_code} (tentativa {attempt + 1}/{max_retries + 1}). "
+                    f"Nova tentativa em {wait:.2f}s."
+                )
+                time.sleep(wait)
+                continue
+
+            return response
+
+        if response is not None:
+            return response
+        if last_network_err is not None:
+            raise last_network_err
+        raise requests.RequestException("Falha inesperada ao chamar API Olist.")
 
     def _headers(self) -> dict:
         return {
@@ -158,18 +240,7 @@ class OlistClient:
         """
         from config import API_URL_BASE
         url = f"{API_URL_BASE}/{endpoint}"
-
-        response = requests.get(url, headers=self._headers(), params=params, timeout=30)
-
-        if response.status_code == 401:
-            logger.warning("401 recebido — tentando renovar token...")
-            if self.auth.refresh_access_token():
-                response = requests.get(url, headers=self._headers(), params=params, timeout=30)
-            else:
-                raise OlistAuthError(
-                    "Token inválido e renovação falhou. "
-                    "Acesse o painel e clique em 'Conectar ao Olist'."
-                )
+        response = self._request_with_retries(url, params=params)
 
         response.raise_for_status()
         return response.json()

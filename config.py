@@ -27,6 +27,10 @@ EMAIL_FROM     = f"{EMAIL_FROM_NAME} <{SMTP_USER}>"
 # ── Paginação / Rate limit ──────────────────────────────────────────────────
 API_LIMIT          = 100
 API_REQUEST_SLEEP  = 0.25   # segundos entre chamadas
+API_MAX_RETRIES    = int(os.getenv("OLIST_API_MAX_RETRIES", "5"))
+API_RETRY_BASE_DELAY = float(os.getenv("OLIST_API_RETRY_BASE_DELAY", "1.0"))
+API_RETRY_MAX_DELAY  = float(os.getenv("OLIST_API_RETRY_MAX_DELAY", "20.0"))
+API_RETRY_JITTER     = float(os.getenv("OLIST_API_RETRY_JITTER", "0.3"))
 
 # ── Arquivos ────────────────────────────────────────────────────────────────
 LOG_FILE        = "performance.log"
