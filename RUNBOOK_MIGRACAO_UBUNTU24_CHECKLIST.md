@@ -75,10 +75,8 @@ sudo -u www-data npm run build
 
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl enable performance-token-refresh
 sudo systemctl enable performance-token-refresh.timer
 sudo systemctl enable performance-dashboard
-sudo systemctl start performance-token-refresh
 sudo systemctl start performance-token-refresh.timer
 sudo systemctl start performance-dashboard
 ```

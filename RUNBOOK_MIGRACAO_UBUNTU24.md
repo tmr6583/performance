@@ -232,12 +232,11 @@ Criar `/etc/systemd/system/performance-token-refresh.timer`:
 
 ```ini
 [Unit]
-Description=Agenda renovação do token Olist (07:00, 15:00, 23:00)
+Description=Agenda renovação do token Olist (1 min após boot, a cada 6h)
 
 [Timer]
-OnCalendar=*-*-* 07:00:00
-OnCalendar=*-*-* 15:00:00
-OnCalendar=*-*-* 23:00:00
+OnBootSec=1min
+OnUnitActiveSec=6h
 Persistent=true
 Unit=performance-token-refresh.service
 
@@ -271,10 +270,8 @@ Aplicar:
 
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl enable performance-token-refresh
 sudo systemctl enable performance-token-refresh.timer
 sudo systemctl enable performance-dashboard
-sudo systemctl start performance-token-refresh
 sudo systemctl start performance-token-refresh.timer
 sudo systemctl start performance-dashboard
 ```
@@ -437,7 +434,7 @@ systemctl status performance-token-refresh.timer
 systemctl restart performance-dashboard
 
 # rodar refresh de token manual
-systemctl start performance-token-refresh
+systemctl start performance-token-refresh.service
 
 # ver próximos disparos do timer
 systemctl list-timers performance-token-refresh.timer
@@ -446,4 +443,3 @@ systemctl list-timers performance-token-refresh.timer
 journalctl -u performance-dashboard -f
 journalctl -u performance-token-refresh -f
 ```
-

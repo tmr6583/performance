@@ -26,7 +26,8 @@ export async function GET() {
     },
     auto_refresh: {
       boot: true,
-      daily_times: ['07:00', '15:00', '23:00'],
+      boot_delay_minutes: 1,
+      every_hours: 6,
     },
     logs,
   });

@@ -785,7 +785,7 @@ export default function AdminClient({ basePath, userName, userId }: { basePath: 
           </div>
 
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-sm)', marginBottom: 8 }}>
-            Renovação automática no boot e diariamente às 07:00, 15:00 e 23:00.
+            Renovação automática 1 minuto após o boot e a cada 6 horas.
             {tokenRefreshTokenSet ? ' Refresh token disponível.' : ' Refresh token ausente; conecte a conta Olist.'}
             {tokenUpdatedAt ? ` Dados atualizados em: ${tokenUpdatedAt.replace('T', ' ').slice(0, 16)}` : ''}
           </p>

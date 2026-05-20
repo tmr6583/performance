@@ -97,8 +97,8 @@ O sistema é composto por duas camadas independentes:
 
   systemd
     performance-token-refresh.service  (oneshot, execução de refresh)
-    performance-token-refresh.timer    (boot + 07:00 + 15:00 + 23:00)
-    performance-dashboard.service      (always, inicia após token-refresh)
+    performance-token-refresh.timer    (1 min após boot + a cada 6h)
+    performance-dashboard.service      (always)
 
 
 ================================================================================
@@ -434,8 +434,7 @@ O sistema é composto por duas camadas independentes:
   refresh_tokens.py
   -----------------------------------------------------------------------
   Execução automática:
-    - boot: performance-token-refresh.service
-    - diário: performance-token-refresh.timer (07:00, 15:00, 23:00)
+    - timer: performance-token-refresh.timer (1 minuto após o boot e a cada 6 horas)
   Execução manual    : .venv/bin/python refresh_tokens.py
 
   Fluxo:
@@ -717,12 +716,11 @@ O sistema é composto por duas camadas independentes:
   -----------------------------------------------------------------------
 
   [Unit]
-  Description=Agenda renovação do token Olist (07:00, 15:00, 23:00)
+  Description=Agenda renovação do token Olist (1 min após boot, a cada 6h)
 
   [Timer]
-  OnCalendar=*-*-* 07:00:00
-  OnCalendar=*-*-* 15:00:00
-  OnCalendar=*-*-* 23:00:00
+  OnBootSec=1min
+  OnUnitActiveSec=6h
   Persistent=true
   Unit=performance-token-refresh.service
 
@@ -731,7 +729,7 @@ O sistema é composto por duas camadas independentes:
 
   Comportamento:
   - Type=oneshot: executa uma vez por disparo e encerra
-  - Disparos no boot e diariamente às 07:00, 15:00 e 23:00 (timer)
+  - Disparo 1 minuto após o boot e depois a cada 6 horas (timer)
   - Aguarda rede completamente disponível (network-online.target)
   - Tenta renovar access_token; se falhar, apenas registra no log
   - Sempre encerra com código 0 (não bloqueia o dashboard)
@@ -744,8 +742,7 @@ O sistema é composto por duas camadas independentes:
 
   [Unit]
   Description=Performance Dashboard (Next.js)
-  After=network.target performance-token-refresh.service
-  Wants=performance-token-refresh.service
+  After=network.target
 
   [Service]
   Type=simple
@@ -790,14 +787,13 @@ O sistema é composto por duas camadas independentes:
   systemctl restart performance-dashboard
 
   # Executar refresh de tokens manualmente
-  systemctl start performance-token-refresh
+  systemctl start performance-token-refresh.service
 
   # Habilitar timer de refresh (inicia agora e no boot)
   systemctl enable --now performance-token-refresh.timer
 
   # Habilitar inicialização automática no boot
   systemctl enable performance-dashboard
-  systemctl enable performance-token-refresh
 
   # Ver logs do dashboard (últimas 100 linhas)
   journalctl -u performance-dashboard -n 100
@@ -1094,8 +1090,8 @@ O sistema é composto por duas camadas independentes:
          podem expirar ambos.
 
   Solução automática (boot):
-    performance-token-refresh.service tenta renovar no boot.
-    performance-token-refresh.timer também roda diariamente às 07:00, 15:00 e 23:00.
+    performance-token-refresh.timer roda 1 minuto após o boot.
+    Depois disso, roda novamente a cada 6 horas.
     Se falhar, não há envio automático de e-mail.
 
   Solução manual:
