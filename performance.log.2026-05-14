@@ -1,0 +1,44 @@
+14/05/2026 00:07:42 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+14/05/2026 00:07:42 - refresh_tokens - INFO - Credenciais Olist carregadas a partir do painel (SQLite).
+14/05/2026 00:07:44 - refresh_tokens - INFO - Forçando renovação do access token...
+14/05/2026 00:07:44 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+14/05/2026 00:07:45 - OlistAuth - INFO - Token renovado com sucesso.
+14/05/2026 00:07:45 - refresh_tokens - INFO - Token renovado com sucesso. Sistema pronto.
+14/05/2026 07:00:06 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+14/05/2026 07:00:06 - refresh_tokens - INFO - Credenciais Olist carregadas a partir do painel (SQLite).
+14/05/2026 07:00:07 - refresh_tokens - INFO - Forçando renovação do access token...
+14/05/2026 07:00:07 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+14/05/2026 07:00:07 - OlistAuth - INFO - Token renovado com sucesso.
+14/05/2026 07:00:07 - refresh_tokens - INFO - Token renovado com sucesso. Sistema pronto.
+14/05/2026 07:45:00 - fetch_performance - INFO - === Início da extração de performance ===
+14/05/2026 07:45:00 - fetch_performance - INFO - Data de referência: 14/05/2026  |  Mês alvo: 2026-05 | Busca a partir de: 20/04/2026
+14/05/2026 07:45:00 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+14/05/2026 07:45:01 - fetch_performance - INFO - 10 vendedores ativos encontrados.
+14/05/2026 07:45:04 - fetch_performance - INFO -   Adriana Costa Alves: dia=0 pedidos / R$ 0.00 | mês=57 pedidos / R$ 28887.29 (Fat: R$ 26271.87)
+14/05/2026 07:45:08 - fetch_performance - INFO -   Maria Eduarda Franco Degenario: dia=3 pedidos / R$ 4138.70 | mês=38 pedidos / R$ 23167.08 (Fat: R$ 17480.14)
+14/05/2026 07:45:11 - fetch_performance - INFO -   Maria Daniele Marques da Silva: dia=0 pedidos / R$ 0.00 | mês=30 pedidos / R$ 27059.40 (Fat: R$ 25287.84)
+14/05/2026 07:45:12 - fetch_performance - INFO -   Camila Almeida: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+14/05/2026 07:45:13 - fetch_performance - INFO -   Rodrigo Barcia: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+14/05/2026 07:45:14 - fetch_performance - INFO -   Alexandre Cesar da Rosa: dia=0 pedidos / R$ 0.00 | mês=1 pedidos / R$ 162.00 (Fat: R$ 162.00)
+14/05/2026 07:45:15 - fetch_performance - INFO -   Diego Figueiredo: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+14/05/2026 07:45:16 - fetch_performance - INFO -   Breno Kling: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+14/05/2026 07:45:17 - fetch_performance - INFO -   Salvador Correa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+14/05/2026 07:45:18 - fetch_performance - INFO -   Julio Lopes: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+14/05/2026 07:45:18 - fetch_performance - INFO - === Extração concluída em 17s | 10/10 vendedores OK | 0 erro(s) ===
+14/05/2026 07:45:18 - send_emails - INFO - === Início do envio de e-mails — execução 4a6bb494-546b-4265-a3d6-be32271e9b2c ===
+14/05/2026 07:45:18 - send_emails - INFO - Data de referência: 2026-05-14
+14/05/2026 07:45:18 - send_emails - INFO - 3 vendedora(s) habilitada(s) para receber e-mail.
+14/05/2026 07:45:21 - send_emails - INFO -   ✓ Enviado para ADRIANA COSTA ALVES <vendasbetina@betinalimpeza.com.br>
+14/05/2026 07:45:24 - send_emails - INFO -   ✓ Enviado para Maria Eduarda Franco Degenario <vendas02@betinalimpeza.com.br>
+14/05/2026 07:45:27 - send_emails - INFO -   ✓ Enviado para Maria Daniele Marques da Silva <vendas@betinalimpeza.com.br>
+14/05/2026 07:45:27 - send_emails - INFO - 3 admin(s) habilitado(s) para receber resumo.
+14/05/2026 07:45:30 - send_emails - INFO -   ✓ Resumo enviado para Thiago <thiago@betinalimpeza.com.br>
+14/05/2026 07:45:34 - send_emails - INFO -   ✓ Resumo enviado para Roxane <roxane@vassourasrossi.com.br>
+14/05/2026 07:45:36 - send_emails - INFO -   ✓ Resumo enviado para Sérgio <compras@betinalimpeza.com.br>
+14/05/2026 07:45:36 - send_emails - INFO - === Envio concluído | 6 enviado(s) | 0 erro(s) ===
+14/05/2026 15:00:06 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+14/05/2026 15:00:06 - refresh_tokens - INFO - Credenciais Olist carregadas a partir do painel (SQLite).
+14/05/2026 15:00:07 - refresh_tokens - INFO - Forçando renovação do access token...
+14/05/2026 15:00:07 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+14/05/2026 15:00:07 - OlistAuth - INFO - Token renovado com sucesso.
+14/05/2026 15:00:07 - refresh_tokens - INFO - Token renovado com sucesso. Sistema pronto.

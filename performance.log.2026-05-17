@@ -1,0 +1,6 @@
+17/05/2026 00:07:41 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+17/05/2026 00:07:41 - refresh_tokens - INFO - Credenciais Olist carregadas a partir do painel (SQLite).
+17/05/2026 00:07:44 - refresh_tokens - INFO - Forçando renovação do access token...
+17/05/2026 00:07:44 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+17/05/2026 00:07:44 - OlistAuth - INFO - Token renovado com sucesso.
+17/05/2026 00:07:44 - refresh_tokens - INFO - Token renovado com sucesso. Sistema pronto.

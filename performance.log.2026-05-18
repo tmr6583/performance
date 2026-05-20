@@ -1,0 +1,40 @@
+18/05/2026 00:08:02 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+18/05/2026 00:08:02 - refresh_tokens - INFO - Credenciais Olist carregadas a partir do painel (SQLite).
+18/05/2026 00:08:04 - refresh_tokens - INFO - Forçando renovação do access token...
+18/05/2026 00:08:04 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+18/05/2026 00:08:04 - OlistAuth - ERROR - Token rejeitado pelo servidor (400/401) — limpando tokens.
+18/05/2026 00:08:04 - refresh_tokens - ERROR - Não foi possível renovar o token. Ambos os tokens expiraram — reautorização manual necessária.
+18/05/2026 00:08:04 - refresh_tokens - INFO - Aviso por e-mail desabilitado para falha de renovação de token.
+18/05/2026 07:00:01 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+18/05/2026 07:00:01 - refresh_tokens - INFO - Credenciais Olist carregadas a partir do painel (SQLite).
+18/05/2026 07:00:02 - refresh_tokens - INFO - Nenhum token encontrado — OAuth ainda não autorizado. Acesse o painel e conecte ao Olist.
+18/05/2026 07:45:00 - fetch_performance - INFO - === Início da extração de performance ===
+18/05/2026 07:45:00 - fetch_performance - INFO - Data de referência: 18/05/2026  |  Mês alvo: 2026-05 | Busca a partir de: 20/04/2026
+18/05/2026 07:45:00 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+18/05/2026 14:09:51 - fetch_performance - INFO - === Início da extração de performance ===
+18/05/2026 14:09:51 - fetch_performance - INFO - Data de referência: 18/05/2026  |  Mês alvo: 2026-05 | Busca a partir de: 20/04/2026
+18/05/2026 14:09:51 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+18/05/2026 14:09:51 - fetch_performance - INFO - 10 vendedores ativos encontrados.
+18/05/2026 14:09:55 - fetch_performance - INFO -   Adriana Costa Alves: dia=5 pedidos / R$ 1509.08 | mês=77 pedidos / R$ 40418.10 (Fat: R$ 36584.88)
+18/05/2026 14:09:58 - fetch_performance - INFO -   Maria Eduarda Franco Degenario: dia=3 pedidos / R$ 961.88 | mês=49 pedidos / R$ 29062.47 (Fat: R$ 26511.05)
+18/05/2026 14:10:00 - fetch_performance - INFO -   Maria Daniele Marques da Silva: dia=2 pedidos / R$ 2123.57 | mês=44 pedidos / R$ 35387.15 (Fat: R$ 30086.85)
+18/05/2026 14:10:01 - fetch_performance - INFO -   Camila Almeida: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+18/05/2026 14:10:02 - fetch_performance - INFO -   Rodrigo Barcia: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+18/05/2026 14:10:03 - fetch_performance - INFO -   Alexandre Cesar da Rosa: dia=0 pedidos / R$ 0.00 | mês=1 pedidos / R$ 162.00 (Fat: R$ 162.00)
+18/05/2026 14:10:04 - fetch_performance - INFO -   Diego Figueiredo: dia=0 pedidos / R$ 0.00 | mês=1 pedidos / R$ 106.92 (Fat: R$ 0.00)
+18/05/2026 14:10:05 - fetch_performance - INFO -   Breno Kling: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+18/05/2026 14:10:06 - fetch_performance - INFO -   Salvador Correa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+18/05/2026 14:10:07 - fetch_performance - INFO -   Julio Lopes: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+18/05/2026 14:10:07 - fetch_performance - INFO - === Extração concluída em 16s | 10/10 vendedores OK | 0 erro(s) ===
+18/05/2026 15:00:01 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+18/05/2026 15:00:01 - refresh_tokens - INFO - Credenciais Olist carregadas a partir do painel (SQLite).
+18/05/2026 15:00:02 - refresh_tokens - INFO - Forçando renovação do access token...
+18/05/2026 15:00:02 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+18/05/2026 15:00:02 - OlistAuth - INFO - Token renovado com sucesso.
+18/05/2026 15:00:02 - refresh_tokens - INFO - Token renovado com sucesso. Sistema pronto.
+18/05/2026 23:00:01 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+18/05/2026 23:00:01 - refresh_tokens - INFO - Credenciais Olist carregadas a partir do painel (SQLite).
+18/05/2026 23:00:02 - refresh_tokens - INFO - Forçando renovação do access token...
+18/05/2026 23:00:02 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+18/05/2026 23:00:02 - OlistAuth - INFO - Token renovado com sucesso.
+18/05/2026 23:00:02 - refresh_tokens - INFO - Token renovado com sucesso. Sistema pronto.

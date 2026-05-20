@@ -1,0 +1,59 @@
+05/05/2026 06:01:14 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+05/05/2026 06:01:14 - refresh_tokens - INFO - Credenciais Olist carregadas a partir do painel (SQLite).
+05/05/2026 06:01:16 - refresh_tokens - INFO - Forçando renovação do access token...
+05/05/2026 06:01:16 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+05/05/2026 06:01:17 - OlistAuth - INFO - Token renovado com sucesso.
+05/05/2026 06:01:17 - refresh_tokens - INFO - Token renovado com sucesso. Sistema pronto.
+05/05/2026 07:00:10 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+05/05/2026 07:00:10 - refresh_tokens - INFO - Credenciais Olist carregadas a partir do painel (SQLite).
+05/05/2026 07:00:11 - refresh_tokens - INFO - Forçando renovação do access token...
+05/05/2026 07:00:11 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+05/05/2026 07:00:11 - OlistAuth - INFO - Token renovado com sucesso.
+05/05/2026 07:00:11 - refresh_tokens - INFO - Token renovado com sucesso. Sistema pronto.
+05/05/2026 07:45:01 - fetch_performance - INFO - === Início da extração de performance ===
+05/05/2026 07:45:01 - fetch_performance - INFO - Data de referência: 05/05/2026  |  Mês alvo: 2026-05 | Busca a partir de: 20/04/2026
+05/05/2026 07:45:01 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+05/05/2026 07:45:01 - fetch_performance - INFO - 10 vendedores ativos encontrados.
+05/05/2026 07:45:02 - fetch_performance - INFO -   Adriana Costa Alves: dia=0 pedidos / R$ 0.00 | mês=8 pedidos / R$ 4334.83 (Fat: R$ 3726.19)
+05/05/2026 07:45:03 - fetch_performance - INFO -   Maria Eduarda Franco Degenario: dia=0 pedidos / R$ 0.00 | mês=5 pedidos / R$ 1146.11 (Fat: R$ 1040.30)
+05/05/2026 07:45:04 - fetch_performance - INFO -   Maria Daniele Marques da Silva: dia=0 pedidos / R$ 0.00 | mês=1 pedidos / R$ 674.12 (Fat: R$ 674.12)
+05/05/2026 07:45:05 - fetch_performance - INFO -   Camila Almeida: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+05/05/2026 07:45:06 - fetch_performance - INFO -   Rodrigo Barcia: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+05/05/2026 07:45:07 - fetch_performance - INFO -   Alexandre Cesar da Rosa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+05/05/2026 07:45:08 - fetch_performance - INFO -   Diego Figueiredo: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+05/05/2026 07:45:09 - fetch_performance - INFO -   Breno Kling: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+05/05/2026 07:45:10 - fetch_performance - INFO -   Salvador Correa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+05/05/2026 07:45:11 - fetch_performance - INFO -   Julio Lopes: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+05/05/2026 07:45:11 - fetch_performance - INFO - === Extração concluída em 10s | 10/10 vendedores OK | 0 erro(s) ===
+05/05/2026 07:45:11 - send_emails - INFO - === Início do envio de e-mails — execução fc0e7e2b-83d4-4771-820d-1d1cd5f3926e ===
+05/05/2026 07:45:11 - send_emails - INFO - Data de referência: 2026-05-05
+05/05/2026 07:45:11 - send_emails - INFO - 3 vendedora(s) habilitada(s) para receber e-mail.
+05/05/2026 07:45:15 - send_emails - INFO -   ✓ Enviado para ADRIANA COSTA ALVES <vendasbetina@betinalimpeza.com.br>
+05/05/2026 07:45:17 - send_emails - INFO -   ✓ Enviado para Maria Eduarda Franco Degenario <vendas02@betinalimpeza.com.br>
+05/05/2026 07:45:21 - send_emails - INFO -   ✓ Enviado para Maria Daniele Marques da Silva <vendas@betinalimpeza.com.br>
+05/05/2026 07:45:21 - send_emails - INFO - 3 admin(s) habilitado(s) para receber resumo.
+05/05/2026 07:45:24 - send_emails - INFO -   ✓ Resumo enviado para Thiago <thiago@betinalimpeza.com.br>
+05/05/2026 07:45:27 - send_emails - INFO -   ✓ Resumo enviado para Roxane <roxane@vassourasrossi.com.br>
+05/05/2026 07:45:30 - send_emails - INFO -   ✓ Resumo enviado para Sérgio <compras@betinalimpeza.com.br>
+05/05/2026 07:45:30 - send_emails - INFO - === Envio concluído | 6 enviado(s) | 0 erro(s) ===
+05/05/2026 15:00:10 - refresh_tokens - INFO - === Verificação de tokens Olist na inicialização ===
+05/05/2026 15:00:10 - refresh_tokens - INFO - Credenciais Olist carregadas a partir do painel (SQLite).
+05/05/2026 15:00:11 - refresh_tokens - INFO - Forçando renovação do access token...
+05/05/2026 15:00:11 - OlistAuth - INFO - Token expirado — tentando renovação automática...
+05/05/2026 15:00:11 - OlistAuth - INFO - Token renovado com sucesso.
+05/05/2026 15:00:11 - refresh_tokens - INFO - Token renovado com sucesso. Sistema pronto.
+05/05/2026 16:33:32 - fetch_performance - INFO - === Início da extração de performance ===
+05/05/2026 16:33:32 - fetch_performance - INFO - Data de referência: 05/05/2026  |  Mês alvo: 2026-05 | Busca a partir de: 20/04/2026
+05/05/2026 16:33:32 - fetch_performance - INFO - Buscando lista de vendedores no Olist...
+05/05/2026 16:33:32 - fetch_performance - INFO - 10 vendedores ativos encontrados.
+05/05/2026 16:33:36 - fetch_performance - INFO -   Adriana Costa Alves: dia=10 pedidos / R$ 4460.53 | mês=18 pedidos / R$ 8795.36 (Fat: R$ 5742.28)
+05/05/2026 16:33:39 - fetch_performance - INFO -   Maria Eduarda Franco Degenario: dia=4 pedidos / R$ 1237.75 | mês=9 pedidos / R$ 2383.86 (Fat: R$ 2338.17)
+05/05/2026 16:33:42 - fetch_performance - INFO -   Maria Daniele Marques da Silva: dia=7 pedidos / R$ 7814.57 | mês=8 pedidos / R$ 8488.69 (Fat: R$ 8488.69)
+05/05/2026 16:33:43 - fetch_performance - INFO -   Camila Almeida: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+05/05/2026 16:33:44 - fetch_performance - INFO -   Rodrigo Barcia: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+05/05/2026 16:33:45 - fetch_performance - INFO -   Alexandre Cesar da Rosa: dia=1 pedidos / R$ 162.00 | mês=1 pedidos / R$ 162.00 (Fat: R$ 0.00)
+05/05/2026 16:33:46 - fetch_performance - INFO -   Diego Figueiredo: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+05/05/2026 16:33:47 - fetch_performance - INFO -   Breno Kling: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+05/05/2026 16:33:47 - fetch_performance - INFO -   Salvador Correa: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+05/05/2026 16:33:48 - fetch_performance - INFO -   Julio Lopes: dia=0 pedidos / R$ 0.00 | mês=0 pedidos / R$ 0.00 (Fat: R$ 0.00)
+05/05/2026 16:33:48 - fetch_performance - INFO - === Extração concluída em 16s | 10/10 vendedores OK | 0 erro(s) ===
